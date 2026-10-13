@@ -1,0 +1,24 @@
+/* Shared with the restrained card and table treatment on PRO DJ LINK. */
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--c-raised);
+  border-radius: 4px;
+}
+.summary > div { flex: 1; min-width: 200px; }
+.summary button { flex-shrink: 0; }
+.help { margin: 8px 0 12px; color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; }
+.summary .help, .card .help { margin-bottom: 0; }
+.card { padding: 16px; border: 1px solid var(--c-raised); border-radius: 4px; }
+.heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; }
+.heading h4 { margin: 0; font-size: inherit; }
+.heading > span { color: var(--c-text-dim); font-size: var(--f-size-sm); font-variant-numeric: tabular-nums; }
+.count { display: inline-block; margin-left: 6px; padding: 2px 7px; border-radius: 10px; background: var(--c-raised); color: var(--c-text-dim); font-size: var(--f-size-sm); font-weight: 400; }
+.empty { padding: 20px 16px; border: 1px solid var(--c-raised); border-radius: 4px; font-size: var(--f-size-sm); line-height: 1.5; }
+.empty p { margin: 6px 0 0; color: var(--c-text-dim); }
+.notice { padding: 10px 12px; border-left: 2px solid var(--c-label-yellow); background: var(--c-raised); font-size: var(--f-size-sm); line-height: 1.5; }

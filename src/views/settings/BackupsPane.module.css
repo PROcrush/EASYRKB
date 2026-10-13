@@ -1,0 +1,66 @@
+.backupButton { font-size: var(--f-size-sm); }
+.tableScroll { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; text-align: left; font-size: var(--f-size-sm); }
+.table th { color: var(--c-text-dim); font-weight: 400; }
+.table th, .table td { padding: 12px 8px; border-bottom: 1px solid var(--c-raised); vertical-align: middle; }
+.table tbody tr:hover { background: var(--c-raised); }
+.table time { font-variant-numeric: tabular-nums; line-height: 1.5; white-space: nowrap; }
+.size { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.actions button { white-space: nowrap; padding: 0 10px; }
+.actions .deleteButton { background: transparent; border-color: transparent; color: var(--c-text-dim); }
+.actions .deleteButton:hover:not(:disabled) { color: var(--c-error); border-color: var(--c-error); }
+.sectionHeading { margin: 0; font-size: inherit; font-weight: 600; }
+.sectionHeading.savedHeading { margin: 24px 0 12px; }
+.destination.restoreFile { margin-top: 24px; padding: 0; border: 0; border-radius: 0; }
+.table th:last-child { width: 150px; }
+.table th:nth-child(2) { white-space: nowrap; }
+.error { color: var(--c-error); line-height: 1.5; }
+.blockedNotice { padding: 10px 12px; border: 0; background: var(--c-error); color: var(--c-on-error); font-size: var(--f-size-sm); line-height: 1.5; }
+.status { color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; overflow-wrap: anywhere; }
+.status:empty { display: none; }
+
+.activeBackup { padding: 20px; }
+.backupProgress { width: 100%; min-width: 0; }
+.progressHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.percent { color: var(--c-accent); font-size: 20px; font-variant-numeric: tabular-nums; }
+.progressBar { display: block; appearance: none; width: 100%; height: 8px; margin: 16px 0 10px; border: 0; border-radius: 4px; overflow: hidden; background: var(--c-raised); accent-color: var(--c-accent); }
+.progressBar::-webkit-progress-bar { background: var(--c-raised); border-radius: 4px; }
+.progressBar::-webkit-progress-value { background: var(--c-accent); border-radius: 4px; transition: width 300ms ease; }
+.progressBar::-moz-progress-bar { background: var(--c-accent); border-radius: 4px; }
+.progressBar:indeterminate { background: linear-gradient(90deg, var(--c-raised) 0%, var(--c-accent) 50%, var(--c-raised) 100%); background-size: 200% 100%; animation: backup-progress 1.5s linear infinite; }
+.progressBar:indeterminate::-webkit-progress-bar { background: transparent; }
+.progressDetails { color: var(--c-text-dim); font-size: var(--f-size-sm); font-variant-numeric: tabular-nums; }
+.progressFooter { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--c-raised); }
+.progressFooter p { margin: 0; color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; }
+.currentItem { margin-top: 8px; color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes backup-progress { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .progressBar:indeterminate { animation: none; }
+  .progressBar::-webkit-progress-value { transition: none; }
+}
+
+.breakdown { margin: 24px 0; }
+.breakdownHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.breakdownHeading > span { color: var(--c-text-dim); font-size: var(--f-size-sm); font-variant-numeric: tabular-nums; }
+.sizeBar { display: flex; height: 34px; border-radius: 4px; overflow: hidden; background: var(--c-raised); }
+.sizeBar > span { flex: none; height: 100%; }
+.sizeLegend { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 24px; list-style: none; padding: 0; margin: 16px 0 0; font-size: var(--f-size-sm); }
+.sizeLegend li { display: flex; align-items: center; gap: 8px; }
+.sizeDot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.sizeValue { margin-left: auto; font-variant-numeric: tabular-nums; }
+.sizeBarFrame { position: relative; }
+.sizeCalculating { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 4px; background: var(--c-raised); color: var(--c-text); font-size: var(--f-size-sm); }
+.sizeSpinner { flex: none; animation: backup-size-spin 1s linear infinite; }
+@keyframes backup-size-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sizeSpinner { animation: none; } }
+.sizeFooter { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; }
+
+.directoryLink { padding: 0; border: 0; background: none; color: var(--c-accent); font: inherit; text-align: left; text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; cursor: pointer; }
+.directoryLink:hover { color: var(--c-label-aqua); }
+
+.destination { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px; border: 1px solid var(--c-raised); border-radius: 4px; }
+.destination > div { flex: 1; min-width: 200px; }
+.destination > button { flex-shrink: 0; }
+.destination .directoryLink { display: block; margin-top: 8px; font-size: var(--f-size-sm); line-height: 1.5; }
+.destination p { margin-bottom: 0; }

@@ -1,0 +1,116 @@
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: var(--s-top-bar-h);
+  padding: 0 14px;
+  background: var(--c-top);
+}
+.spacer { flex: 1; }
+
+.clock { font-size: var(--f-size-sm); font-weight: 700; color: var(--c-icon-on); font-variant-numeric: tabular-nums; }
+
+/* The level meter: a thin horizontal track with a filled left portion, which
+   is how rekordbox draws the master level beside the headphone button. */
+/* Both meters, measured off a capture of the top bar at 2x: each bar is 3pt
+   tall on a #323232 track, the output meter 80pt wide over two channels 3pt
+   apart, and the processor meter 35pt wide on its own. */
+.meter {
+  height: var(--s-top-meter-h);
+  background: var(--c-meter-track);
+  overflow: hidden;
+  flex: none;
+}
+.meterFill {
+  display: block;
+  height: 100%;
+  background: var(--c-meter-fill);
+}
+
+/* Green, yellow, red — a level meter's own convention rather than a
+   measurement: the capture's meters are silent. The gradient is painted
+   across the whole bar and revealed by the fill's width, so a given position
+   is always the same colour; colouring the whole bar by its level would make
+   a loud moment turn the quiet end red too. */
+.vu .meterFill {
+  background: linear-gradient(
+    to right,
+    var(--c-meter-green) 0%,
+    var(--c-meter-green) 70%,
+    var(--c-meter-yellow) 70%,
+    var(--c-meter-yellow) 90%,
+    var(--c-meter-red) 90%
+  );
+  background-size: var(--s-top-vu-w) 100%;
+  background-repeat: no-repeat;
+}
+
+.vu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-top-vu-gap);
+  width: var(--s-top-vu-w);
+  flex: none;
+}
+.vu .meter { width: 100%; }
+.cpu { width: var(--s-top-cpu-w); }
+
+/* The level knob: an arc filling clockwise from the bottom left, with a white
+   pointer at the value. Grabbed and dragged, so it takes no pointer events
+   from the bar it sits on. */
+.knob {
+  position: relative;
+  width: var(--s-top-knob-size);
+  height: var(--s-top-knob-size);
+  flex: none;
+  touch-action: none;
+  cursor: ns-resize;
+}
+/* The reading while the knob turns, under it so the hand does not cover it. */
+.knobValue {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: var(--c-raised);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  z-index: 5;
+}
+.knob svg { width: 100%; height: 100%; display: block; }
+/* Keep keyboard control without drawing the browser's square focus box around
+   a circular control. The blue arc itself remains the knob's visual affordance. */
+.knob:focus-visible { outline: none; }
+
+.knobTrack,
+.knobFill {
+  fill: none;
+  stroke-width: 2.6;
+  stroke-linecap: butt;
+}
+.knobTrack { stroke: var(--c-meter-track); }
+.knobFill { stroke: var(--c-meter-fill); }
+.knobPointer { stroke: var(--c-text); stroke-width: 1.6; stroke-linecap: round; }
+
+/* The icon buttons, all the same box so they sit on one baseline. */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-icon-off);
+  cursor: default;
+}
+.icon:hover { color: var(--c-icon-on); }
+.icon[data-on] { color: var(--c-accent); }
+.icon:focus-visible { outline: 1px solid var(--c-accent); outline-offset: -1px; }
+.glyph { width: var(--s-top-gear-size); height: var(--s-top-gear-size); }

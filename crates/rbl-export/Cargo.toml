@@ -1,0 +1,34 @@
+[package]
+name = "rbl-export"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Writes rekordbox-compatible USB exports."
+
+[lints]
+workspace = true
+
+[dependencies]
+unicode-normalization = "0.1"
+rbl-audio = { path = "../rbl-audio" }
+tempfile = "3"
+rbl-core = { path = "../rbl-core" }
+rbl-pdb = { path = "../rbl-pdb" }
+rbl-onelibrary = { path = "../rbl-onelibrary" }
+rbl-anlz = { path = "../rbl-anlz" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+sha2 = "0.10"
+
+[dev-dependencies]
+rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"] }
+tempfile = "3"
+rbl-anlz = { path = "../rbl-anlz" }
+rbl-db = { path = "../rbl-db" }
+rbl-index = { path = "../rbl-index" }
+rbl-audio = { path = "../rbl-audio" }
+rbl-analysis = { path = "../rbl-analysis" }
+rbl-onelibrary = { path = "../rbl-onelibrary" }

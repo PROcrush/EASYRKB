@@ -1,0 +1,58 @@
+.backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--c-modal-scrim); }
+.dialog { display: flex; flex-direction: column; width: 100%; height: 100vh; background: var(--c-panel); color: var(--c-text); font: var(--f-size-bars) var(--f-ui); }
+.backdrop .dialog { width: min(660px, 95vw); height: min(650px, 95vh); border: 1px solid var(--c-raised); }
+.title {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  height: var(--s-pref-title-h);
+  background: var(--c-titlebar);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-window-title);
+  font-weight: 700;
+  user-select: none;
+}
+.title button { position: absolute; right: 8px; top: 0; height: 100%; }
+.form { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.fields { display: flex; flex: 1; min-height: 0; flex-direction: column; gap: 16px; padding: 20px; overflow: auto; }
+.fields > * { flex-shrink: 0; }
+.form label { display: flex; flex-direction: column; gap: 8px; font-weight: 700; }
+.form input, .form textarea {
+  border: 1px solid var(--c-raised);
+  border-radius: 4px;
+  background: var(--c-black);
+  color: var(--c-text);
+  padding: 9px 10px;
+  font: inherit;
+  font-weight: 400;
+}
+.form input:focus-visible, .form textarea:focus-visible, .dialog button:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+.form input::placeholder, .form textarea::placeholder { color: var(--c-text-dim); }
+.optional, .hint { color: var(--c-text-dim); font-size: var(--f-size-sm); font-weight: 400; }
+.form .description { flex: 1 0 150px; }
+.description textarea { flex: 1; min-height: 110px; resize: none; line-height: 1.5; }
+.attachments { padding-top: 12px; border-top: 1px solid var(--c-raised); }
+.attachmentControls { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.form .toggle { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; }
+.toggle input { margin: 0; accent-color: var(--c-accent); }
+.form p { margin: 0; line-height: 1.5; }
+.attachments .hint { margin-top: 6px; }
+.turnstile { position: absolute; width: 0; height: 0; border: 0; }
+.dialog button { border: 1px solid var(--c-raised); border-radius: 4px; padding: 7px 12px; background: var(--c-button); color: var(--c-text); font: inherit; cursor: pointer; }
+.dialog button:hover:not(:disabled) { border-color: var(--c-accent); }
+.dialog button:disabled { opacity: 0.45; cursor: default; }
+.dialog .previewToggle { font-size: var(--f-size-sm); background: transparent; padding: 5px 8px; }
+.form footer { display: flex; flex: none; align-items: center; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--c-raised); }
+.form footer .hint { margin-right: auto; }
+.form footer button { flex: 0 0 96px; width: 96px; height: 40px; padding: 0; white-space: nowrap; }
+.dialog .save { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-icon-on); }
+.form .error { color: var(--c-error); }
+.form .thanks { font-size: var(--f-size-pref-window-title); font-weight: 700; }
+.form .sentFooter { justify-content: flex-end; }
+.form footer .open { flex: 0 0 auto; width: auto; padding: 0 14px; }
+@media (max-width: 480px) {
+  .fields { padding: 14px; }
+  .form footer { padding: 12px 14px; flex-wrap: wrap; justify-content: flex-end; }
+  .form footer .hint { flex-basis: 100%; }
+}

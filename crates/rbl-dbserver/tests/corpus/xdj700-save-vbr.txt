@@ -1,0 +1,49 @@
+XDJ-700 1.15 VBR upload regression fixture
+
+Source: https://github.com/chrisle/rbxport/issues/43#issuecomment-6099327629
+Capture: packet_capture_xdj700_e8306_no_file_rbxport_1.5.0.pcap.gz
+The .bin contains only the client database request in TCP frames 3896 and
+3897, concatenated in order. It contains no audio or library path.
+
+[OBS, capture] Transaction 0x0580002d, request 0x2205, arguments:
+[0x02080401, 148716872, 1604, <1604-byte VBR blob>]. Frame 3899 is RBX's
+0x4003 error with argument 0x2205. A separate report reproduction uses transaction 0x05800031 and records
+the player clearing its loaded track. The reporter observed E-8306 and a blank browser.
+
+[OBS, static] AlphaTheta docs platform/link-export-database-contracts.md
+records rekordbox 7.2.11 PSvDBMain::OnWriteCmd at 0x1017509d4 and
+SavVbrInf: request 0x2205 is accepted without storage or a reply.
+RBX previously routed it to the unsupported-command error branch.
+
+[ASSUME] That unsolicited error is consumed by the next browse read, ending
+the result list. The timing and firmware control flow support this hypothesis;
+hardware testing of the fix must confirm the reported symptom is resolved.
+The fix matches the inspected vendor's silent handling, without inventing
+a VBR persistence format or acknowledgement.
+
+Firmware investigation:
+XDJ700.UPD 1.15 SHA-256:
+73edec9802da51672257c2599efc04209dc92478fcbaa1a0425b3b122e33f99c
+[OBS] The update carries separate MAIN and PANEL S-record streams, with
+valid record lengths/checksums. MAIN's entry record names 0xa0000000;
+the entry bytes decode as little-endian SuperH instructions. The standard
+Linux UPD unpacker cannot read this packaging.
+[OBS, static] The corrected decoder uses a 4078-byte space prefix in its
+4096-byte dictionary. Both compressed-block checksums pass. The recovery and
+all 18,601,864 application bytes match instruction execution of the firmware
+decoder exactly. dbcl_RegVBRInfo at physical 0x08b76b3e sends 0x2205 without
+waiting for a response. Instruction execution of dbcl_GetNextRecord at
+0x08b74474 shows an unexpected 0x4003 returns 0
+(no more rows) after one receive and logs an unsupported command; a 0x4101
+control returns 1. These tests substitute mailbox and allocation helpers.
+[OBS, static] The decoded-message callback at 0x08b72006 routes both captured
+transaction IDs (0x0580002d and 0x0580002e) to mailbox 22. This was checked by
+executing the callback instructions with synthetic messages and substituted
+allocation and mailbox-send helpers.
+[UNKNOWN] Exact mailbox consumption order and the E-8306 caller remain
+untraced. No physical-player verification was performed.
+
+Related older failure:
+[OBS, issue #43] PR #260 fixed STALE refusals caused by the player's
+20 trailing file-handle bytes, and the reporter confirmed successful track
+loading on dev. That NFS fix is separate from this database-write mismatch.

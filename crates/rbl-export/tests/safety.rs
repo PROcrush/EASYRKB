@@ -1,0 +1,689 @@
+#![allow(
+    clippy::pedantic,
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic
+)]
+use rbl_export::{export_full, verify, Manifest, SourcePlaylist, SourceTrack, SyncSource};
+use std::path::Path;
+
+#[test]
+fn stopping_export_preserves_the_published_usb_library() {
+    for stop_at in [3, 4] {
+        let sources = tempfile::tempdir().unwrap();
+        let usb = tempfile::tempdir().unwrap();
+        let tracks = vec![track(sources.path(), 1), track(sources.path(), 2)];
+        sync(usb.path(), &tracks[..1], &[playlist(10, &[0])]).unwrap();
+        let db = rbl_export::export_root(usb.path()).join("rekordbox/export.pdb");
+        let before = std::fs::read(&db).unwrap();
+        let calls = std::cell::Cell::new(0);
+        let result = rbl_export::export_cancellable(
+            usb.path(), &tracks, &[playlist(10, &[0, 1])], &[],
+            &rbl_export::ExportOptions { sync: Some(&SyncSource { db_id: 123, tree: vec![], automatic: false }), ..Default::default() }, &mut |_| {}, &|| {
+                calls.set(calls.get() + 1);
+                calls.get() >= stop_at
+            },
+        );
+        assert!(matches!(result, Err(rbl_export::ExportError::Cancelled)), "{result:?}");
+        assert_eq!(std::fs::read(&db).unwrap(), before);
+        let check = verify(usb.path()).unwrap();
+        assert!(check.is_ok());
+        assert_eq!(check.tracks, 1);
+    }
+}
+fn track(root: &Path, id: u64) -> SourceTrack {
+    let path = root.join(format!("{id}.mp3"));
+    std::fs::write(&path, vec![id as u8; 128]).unwrap();
+    SourceTrack {
+        id,
+        source_path: path,
+        title: format!("Track {id}"),
+        artist: "Artist".into(),
+        album: "Album".into(),
+        analysis: vec![(
+            "DAT".into(),
+            rbl_anlz::AnlzBuilder::new().path("/original.mp3").finish(),
+        )],
+        ..Default::default()
+    }
+}
+fn playlist(id: u64, indices: &[usize]) -> SourcePlaylist {
+    SourcePlaylist {
+        id,
+        name: format!("Playlist {id}"),
+        track_indices: indices.to_vec(),
+        ..Default::default()
+    }
+}
+fn sync(
+    root: &Path,
+    tracks: &[SourceTrack],
+    playlists: &[SourcePlaylist],
+) -> rbl_export::Result<rbl_export::ExportReport> {
+    export_full(
+        root,
+        tracks,
+        playlists,
+        &[],
+        None,
+        Some(&SyncSource {
+            db_id: 123,
+            tree: playlists
+                .iter()
+                .map(|p| rbl_export::SyncNode {
+                    id: p.id,
+                    parent: p.parent_id,
+                    attribute: u8::from(p.folder),
+                })
+                .collect(),
+            automatic: false,
+        }),
+        &mut |_| {},
+    )
+}
+fn edit(root: &Path, sql: &str) {
+    let conn = rusqlite::Connection::open(
+        rbl_export::export_root(root).join("rekordbox/exportLibrary.db"),
+    )
+    .unwrap();
+    conn.pragma_update(None, "cipher", "sqlcipher").unwrap();
+    conn.pragma_update(None, "legacy", 4).unwrap();
+    conn.pragma_update(None, "key", rbl_onelibrary::key::passphrase().unwrap())
+        .unwrap();
+    conn.execute_batch(sql).unwrap();
+}
+#[test]
+fn missing_source_leaves_every_existing_database_and_audio_unchanged() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), std::slice::from_ref(&t), &[playlist(10, &[0])]).unwrap();
+    let pdb = std::fs::read(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap();
+    std::fs::remove_file(&t.source_path).unwrap();
+    assert!(sync(usb.path(), &[t], &[playlist(10, &[0])]).is_err());
+    assert_eq!(
+        pdb,
+        std::fs::read(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap()
+    );
+    assert!(verify(usb.path()).unwrap().is_ok());
+}
+#[test]
+fn collisions_and_unicode_names_keep_distinct_audio() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let mut a = track(src.path(), 1);
+    let mut b = track(src.path(), 2);
+    std::fs::create_dir(src.path().join("second")).unwrap();
+    let p = src.path().join("second/1.mp3");
+    std::fs::rename(&b.source_path, &p).unwrap();
+    b.source_path = p;
+    a.artist = format!("{}é", "a".repeat(119));
+    b.artist = a.artist.clone();
+    sync(usb.path(), &[a.clone(), b.clone()], &[playlist(1, &[0, 1])]).unwrap();
+    let m = Manifest::load(usb.path()).unwrap();
+    assert_ne!(m.tracks[0].audio, m.tracks[1].audio);
+    for (row, byte) in m.tracks.iter().zip([1, 2]) {
+        assert_eq!(
+            std::fs::read(usb.path().join(row.audio.trim_start_matches('/'))).unwrap(),
+            vec![byte; 128]
+        );
+    }
+    sync(usb.path(), &[b, a], &[playlist(1, &[0, 1])]).unwrap();
+    assert!(verify(usb.path()).unwrap().is_ok());
+}
+#[test]
+fn identity_is_written_and_another_master_cannot_reuse_the_manifest() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 42);
+    sync(usb.path(), std::slice::from_ref(&t), &[]).unwrap();
+    let snap = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert_eq!(snap.identity.get(&1), Some(&(123, 42)));
+    let result = export_full(
+        usb.path(),
+        &[t],
+        &[],
+        &[],
+        None,
+        Some(&SyncSource {
+            db_id: 999,
+            ..Default::default()
+        }),
+        &mut |_| {},
+    );
+    assert!(result.is_err());
+    assert_eq!(
+        rbl_export::snapshot::Snapshot::read(usb.path()).unwrap(),
+        snap
+    );
+}
+#[test]
+fn device_metadata_conflict_does_not_replace_either_database() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), std::slice::from_ref(&t), &[]).unwrap();
+    edit(
+        usb.path(),
+        "UPDATE content SET title='Edited on device' WHERE content_id=1",
+    );
+    let before = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert!(sync(usb.path(), &[t], &[]).is_err());
+    assert_eq!(
+        before,
+        rbl_export::snapshot::Snapshot::read(usb.path()).unwrap()
+    );
+}
+#[test]
+fn device_only_playlist_and_play_history_survive_deselection() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), &[t], &[playlist(10, &[0])]).unwrap();
+    edit(usb.path(),"INSERT INTO playlist VALUES(99,1,'On the deck',NULL,0,0); INSERT INTO playlist_content VALUES(99,1,1); INSERT INTO history VALUES(7,1,'Tonight',0,0); INSERT INTO history_content VALUES(7,1,1)");
+    sync(usb.path(), &[], &[]).unwrap();
+    let s = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert!(s
+        .one
+        .as_ref()
+        .unwrap()
+        .playlists
+        .iter()
+        .any(|p| p.name == "On the deck" && p.tracks == [1]));
+    assert_eq!(s.history.len(), 1);
+    assert_eq!(s.legacy_history.len(), 1);
+    assert!(verify(usb.path()).unwrap().is_ok());
+    sync(usb.path(), &[], &[]).unwrap();
+    assert!(verify(usb.path()).unwrap().is_ok());
+}
+#[test]
+fn last_selected_playlist_can_be_removed() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), &[t], &[playlist(10, &[0])]).unwrap();
+    sync(usb.path(), &[], &[]).unwrap();
+    let check = verify(usb.path()).unwrap();
+    assert!(check.is_ok());
+    assert_eq!(check.tracks, 0);
+    assert_eq!(check.playlists, 0);
+}
+#[test]
+fn folders_and_playlist_ids_survive_reorder() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    let folder = SourcePlaylist {
+        id: 90,
+        name: "Sets".into(),
+        folder: true,
+        ..Default::default()
+    };
+    let mut a = playlist(10, &[0]);
+    a.parent_id = 90;
+    let b = playlist(20, &[0]);
+    sync(
+        usb.path(),
+        std::slice::from_ref(&t),
+        &[folder.clone(), a.clone(), b.clone()],
+    )
+    .unwrap();
+    let before = Manifest::load(usb.path()).unwrap();
+    sync(usb.path(), &[t], &[b, folder, a]).unwrap();
+    let after = Manifest::load(usb.path()).unwrap();
+    for p in before.playlists {
+        assert_eq!(
+            after
+                .playlists
+                .iter()
+                .find(|n| n.library_id == p.library_id)
+                .unwrap()
+                .export_id,
+            p.export_id
+        );
+    }
+    assert!(verify(usb.path()).unwrap().is_ok());
+    let record = rbl_export::sync_record::read(usb.path()).unwrap();
+    assert_ne!(record.device_ids[&10], record.device_ids[&20]);
+}
+#[test]
+fn verification_rejects_missing_audio_and_disagreement() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), &[t], &[]).unwrap();
+    let m = Manifest::load(usb.path()).unwrap();
+    std::fs::remove_file(usb.path().join(m.tracks[0].audio.trim_start_matches('/'))).unwrap();
+    assert!(!verify(usb.path()).unwrap().is_ok());
+    edit(usb.path(), "UPDATE content SET title='different'");
+    assert!(!verify(usb.path()).unwrap().is_ok());
+}
+#[test]
+fn one_library_only_initialization_preserves_tracks() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), &[t], &[playlist(10, &[0])]).unwrap();
+    std::fs::remove_file(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap();
+    rbl_export::create_library(
+        usb.path(),
+        None,
+        &[],
+        Some(&SyncSource {
+            db_id: 123,
+            ..Default::default()
+        }),
+    )
+    .unwrap();
+    let check = verify(usb.path()).unwrap();
+    assert!(check.is_ok());
+    assert_eq!(check.tracks, 1);
+    assert_eq!(check.playlists, 1);
+}
+#[test]
+fn hidden_library_stays_hidden_and_plus_only_record_is_read() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    std::fs::create_dir_all(usb.path().join(".PIONEER")).unwrap();
+    std::fs::write(usb.path().join(".PIONEER/DEVSETTING.DAT"), b"existing").unwrap();
+    sync(usb.path(), std::slice::from_ref(&t), &[playlist(10, &[0])]).unwrap();
+    sync(usb.path(), &[t], &[playlist(10, &[0])]).unwrap();
+    assert!(!usb.path().join("PIONEER").exists());
+    assert!(verify(usb.path()).unwrap().is_ok());
+    std::fs::remove_file(usb.path().join(".PIONEER/rekordbox/playlists3.sync")).unwrap();
+    assert_eq!(
+        rbl_export::sync_record::read(usb.path()).unwrap().ticked,
+        vec![10]
+    );
+}
+#[test]
+fn same_size_audio_corruption_is_repaired() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), std::slice::from_ref(&t), &[]).unwrap();
+    let m = Manifest::load(usb.path()).unwrap();
+    let path = usb.path().join(m.tracks[0].audio.trim_start_matches('/'));
+    std::fs::write(&path, vec![9; 128]).unwrap();
+    let report = sync(usb.path(), &[t], &[]).unwrap();
+    assert_eq!(report.reused, 0);
+    assert_eq!(std::fs::read(path).unwrap(), vec![1; 128]);
+}
+#[test]
+fn unsupported_schema_is_left_untouched() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), std::slice::from_ref(&t), &[]).unwrap();
+    edit(usb.path(), "UPDATE property SET dbVersion='9999'");
+    let path = usb.path().join("PIONEER/rekordbox/exportLibrary.db");
+    let bytes = std::fs::read(&path).unwrap();
+    assert!(sync(usb.path(), &[t], &[]).is_err());
+    assert_eq!(bytes, std::fs::read(path).unwrap());
+}
+
+#[test]
+fn compatible_10000_keeps_its_version_and_device_cues() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let tracks = [track(src.path(), 1)];
+    sync(usb.path(), &tracks, &[]).unwrap();
+    edit(usb.path(), "UPDATE property SET dbVersion='10000'; INSERT INTO cue(cue_id,content_id,kind,inUsec,cueComment) VALUES(7,1,0,1000000,'device cue')");
+    let before = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    sync(usb.path(), &tracks, &[]).unwrap();
+    let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert_eq!(after.one_version.as_deref(), Some("10000"));
+    assert_eq!(after.cues, before.cues);
+    assert!(verify(usb.path()).unwrap().is_ok());
+}
+
+#[test]
+fn unknown_10000_structure_is_left_untouched() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let tracks = [track(src.path(), 1)];
+    sync(usb.path(), &tracks, &[]).unwrap();
+    edit(usb.path(), "UPDATE property SET dbVersion='10000'; ALTER TABLE content ADD COLUMN futureData varchar");
+    let path = usb.path().join("PIONEER/rekordbox/exportLibrary.db");
+    let bytes = std::fs::read(&path).unwrap();
+    assert!(sync(usb.path(), &tracks, &[]).unwrap_err().to_string().contains("Unsupported OneLibrary schema 10000"));
+    assert_eq!(bytes, std::fs::read(path).unwrap());
+}
+
+#[test]
+fn selected_formats_export_verify_and_sync_again() {
+    use rbl_export::{ExportOptions, LibraryFormats};
+    for (format, legacy, one) in [
+        (LibraryFormats::DeviceLibrary, true, false),
+        (LibraryFormats::OneLibrary, false, true),
+        (LibraryFormats::Both, true, true),
+    ] {
+        let src = tempfile::tempdir().unwrap();
+        let usb = tempfile::tempdir().unwrap();
+        let tracks = [track(src.path(), 1)];
+        let source = SyncSource { db_id: 123, tree: vec![], automatic: false };
+        let options = ExportOptions { sync: Some(&source), library_formats: format, ..Default::default() };
+        for _ in 0..2 {
+            rbl_export::export_with_options(usb.path(), &tracks, &[], &[], &options, &mut |_| {}).unwrap();
+            let snapshot = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+            assert_eq!(snapshot.legacy.is_some(), legacy);
+            assert_eq!(snapshot.one.is_some(), one);
+            assert!(verify(usb.path()).unwrap().is_ok());
+            assert!(rbl_export::verify_databases(usb.path()).unwrap().is_ok());
+        }
+        // A different target adds its format and keeps the old one current.
+        let other = if one { LibraryFormats::DeviceLibrary } else { LibraryFormats::OneLibrary };
+        let options = ExportOptions { sync: Some(&source), library_formats: other, ..Default::default() };
+        let tracks = [track(src.path(), 1), track(src.path(), 2)];
+        rbl_export::export_with_options(usb.path(), &tracks, &[], &[], &options, &mut |_| {}).unwrap();
+        let check = rbl_export::verify_databases(usb.path()).unwrap();
+        assert!(check.is_ok());
+        assert_eq!(check.tracks, 2);
+        let snapshot = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+        assert!(snapshot.legacy.is_some() && snapshot.one.is_some());
+    }
+}
+
+#[test]
+fn verification_detects_a_missing_previously_exported_format() {
+    for file in ["export.pdb", "exportLibrary.db"] {
+        let src = tempfile::tempdir().unwrap();
+        let usb = tempfile::tempdir().unwrap();
+        sync(usb.path(), &[track(src.path(), 1)], &[]).unwrap();
+        std::fs::remove_file(usb.path().join("PIONEER/rekordbox").join(file)).unwrap();
+        assert!(!verify(usb.path()).unwrap().is_ok());
+        assert!(!rbl_export::verify_databases(usb.path()).unwrap().is_ok());
+    }
+}
+
+#[test]
+fn legacy_only_conversion_preserves_history_and_master_identity() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), std::slice::from_ref(&t), &[playlist(10, &[0])]).unwrap();
+    edit(
+        usb.path(),
+        "INSERT INTO history VALUES(7,1,'Tonight',0,0); INSERT INTO history_content VALUES(7,1,1)",
+    );
+    sync(usb.path(), &[t], &[playlist(10, &[0])]).unwrap();
+    std::fs::remove_file(usb.path().join("PIONEER/rekordbox/exportLibrary.db")).unwrap();
+    rbl_export::create_library(
+        usb.path(),
+        None,
+        &[],
+        Some(&SyncSource {
+            db_id: 123,
+            ..Default::default()
+        }),
+    )
+    .unwrap();
+    let s = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert_eq!(s.identity.get(&1), Some(&(123, 1)));
+    assert_eq!(s.history.len(), 1);
+    assert_eq!(s.history[0].tracks, vec![1]);
+    assert!(verify(usb.path()).unwrap().is_ok());
+}
+#[test]
+fn same_size_artwork_change_and_removed_analysis_extension_are_published() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let mut t = track(src.path(), 1);
+    let artwork = src.path().join("cover.jpg");
+    std::fs::write(&artwork, b"first").unwrap();
+    t.artwork = Some(artwork.clone());
+    t.analysis.push((
+        "EXT".into(),
+        rbl_anlz::AnlzBuilder::new().path("/original.mp3").finish(),
+    ));
+    sync(usb.path(), std::slice::from_ref(&t), &[]).unwrap();
+    let m = Manifest::load(usb.path()).unwrap();
+    let image = usb.path().join(m.tracks[0].artwork.trim_start_matches('/'));
+    let ext = usb
+        .path()
+        .join(m.tracks[0].anlz_dir.trim_start_matches('/'))
+        .join("ANLZ0000.EXT");
+    assert!(ext.exists());
+    std::fs::write(artwork, b"other").unwrap();
+    t.analysis.retain(|(e, _)| e != "EXT");
+    sync(usb.path(), &[t], &[]).unwrap();
+    assert_eq!(std::fs::read(image).unwrap(), b"other");
+    assert!(!ext.exists());
+}
+#[test]
+fn late_external_edit_aborts_publication() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), std::slice::from_ref(&t), &[]).unwrap();
+    let pdb = std::fs::read(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap();
+    let result = export_full(
+        usb.path(),
+        &[t],
+        &[],
+        &[],
+        None,
+        Some(&SyncSource {
+            db_id: 123,
+            ..Default::default()
+        }),
+        &mut |_| edit(usb.path(), "UPDATE content SET title='Changed during copy'"),
+    );
+    assert!(result.is_err());
+    assert_eq!(
+        pdb,
+        std::fs::read(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap()
+    );
+}
+#[test]
+fn device_only_tags_and_cue_rows_are_preserved() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let t = track(src.path(), 1);
+    sync(usb.path(), &[t], &[playlist(10, &[0])]).unwrap();
+    edit(usb.path(),"INSERT INTO playlist VALUES(99,1,'On the deck',NULL,0,0); INSERT INTO playlist_content VALUES(99,1,1); INSERT INTO myTag VALUES(111,1,'Device tag',0,0); INSERT INTO myTag_content VALUES(111,1); INSERT INTO cue(cue_id,content_id,kind,inUsec,cueComment) VALUES(7,1,0,1000000,'device cue')");
+    let before = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    sync(usb.path(), &[], &[]).unwrap();
+    let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert_eq!(after.cues, before.cues);
+    assert_eq!(after.my_tags, before.my_tags);
+    assert_eq!(after.tag_memberships, before.tag_memberships);
+}
+/// An export that adds to a stick (Export Playlist, Export Track) leaves
+/// what earlier exports put there: playlists it does not name, even one the
+/// library no longer has, and empty folders, each in its place and under
+/// its device id, still recorded as the library's so a later SYNC can take
+/// them off. Playlists made on a player stay too (#304).
+#[test]
+fn keep_unlisted_adds_to_the_stick_without_taking_anything_off() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let tracks = [track(src.path(), 1), track(src.path(), 2), track(src.path(), 3)];
+    let folder = |id: u64, parent_id: u64| SourcePlaylist { id, name: format!("Folder {id}"), folder: true, parent_id, ..Default::default() };
+    let mut a = playlist(10, &[0]);
+    a.parent_id = 90;
+    sync(usb.path(), &tracks[..2], &[folder(90, 0), folder(91, 90), a, playlist(20, &[1])]).unwrap();
+    edit(usb.path(), "INSERT INTO playlist VALUES(99,1,'On the deck',NULL,0,0); INSERT INTO playlist_content VALUES(99,1,1)");
+    let before = Manifest::load(usb.path()).unwrap();
+
+    let add = SyncSource { db_id: 123, tree: vec![rbl_export::SyncNode { id: 30, parent: 0, attribute: 0 }], automatic: false };
+    rbl_export::export_cancellable(
+        usb.path(), &tracks[2..], &[playlist(30, &[0])], &[],
+        &rbl_export::ExportOptions { sync: Some(&add), keep_unlisted: true, ..Default::default() },
+        &mut |_| {}, &|| false,
+    )
+    .unwrap();
+
+    let after = Manifest::load(usb.path()).unwrap();
+    let listed: Vec<(u64, u32, bool)> = after.playlists.iter().filter(|p| !p.device_only).map(|p| (p.library_id, p.export_id, p.folder)).collect();
+    let mut expected: Vec<(u64, u32, bool)> = before.playlists.iter().filter(|p| !p.device_only).map(|p| (p.library_id, p.export_id, p.folder)).collect();
+    assert_eq!(listed[..expected.len()], expected[..], "what the stick held keeps its place, id and owner");
+    expected.push((30, listed[expected.len()].1, false));
+    assert_eq!(listed, expected, "the new playlist goes after them");
+    let s = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    let names: Vec<&str> = s.one.as_ref().unwrap().playlists.iter().map(|p| p.name.as_str()).collect();
+    for name in ["Folder 90", "Folder 91", "Playlist 10", "Playlist 20", "Playlist 30", "On the deck"] {
+        assert!(names.contains(&name), "{name} is on the stick: {names:?}");
+    }
+    let one = s.one.as_ref().unwrap();
+    let held = |name: &str| one.playlists.iter().find(|p| p.name == name).unwrap().tracks.len();
+    assert_eq!((held("Playlist 10"), held("Playlist 20"), held("Playlist 30")), (1, 1, 1));
+    assert!(verify(usb.path()).unwrap().is_ok());
+
+    // Still the library's: a SYNC of only the new playlist takes them off,
+    // and keeps the one made on the player.
+    sync(usb.path(), &tracks[2..], &[playlist(30, &[0])]).unwrap();
+    let s = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    let mut names: Vec<&str> = s.one.as_ref().unwrap().playlists.iter().map(|p| p.name.as_str()).collect();
+    names.sort_unstable();
+    assert_eq!(names, ["On the deck", "Playlist 30"]);
+    assert!(verify(usb.path()).unwrap().is_ok());
+}
+
+/// Makes `usb` a stick another writer filled: rbxport's record of it is
+/// gone, so nothing on it reads as this app's.
+fn forget_our_record(usb: &Path) {
+    std::fs::remove_file(usb.join("PIONEER/rbxport/manifest.json")).unwrap();
+}
+
+fn track_on_stick<'a>(s: &'a rbl_export::snapshot::Library, title: &str) -> Option<&'a rbl_export::snapshot::Track> {
+    s.tracks.iter().find(|t| t.title == title)
+}
+
+/// A stick that holds a track without its audio file, in exportLibrary.db
+/// alone, was refused by every sync with "OneLibrary: device-only track
+/// '…' would be lost": the export left the track out because it could not
+/// read the file, and the conflict check caught the loss (#317). rekordbox
+/// leaves a device track it was not asked to export as it is, so the sync
+/// carries it as the stick has it: same id, path, analysis and cues.
+#[test]
+fn a_device_track_without_its_audio_is_kept_as_the_stick_has_it() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let (kept, chosen) = (track(src.path(), 1), track(src.path(), 2));
+    sync(usb.path(), &[kept], &[playlist(10, &[0])]).unwrap();
+    let audio = Manifest::load(usb.path()).unwrap().tracks[0].audio.clone();
+    forget_our_record(usb.path());
+    // Another writer's OneLibrary-only stick, and a cue made on a player.
+    std::fs::remove_file(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap();
+    edit(usb.path(), "INSERT INTO cue(cue_id,content_id,kind,inUsec,cueComment) VALUES(7,1,0,1000000,'device cue')");
+    std::fs::remove_file(usb.path().join(audio.trim_start_matches('/'))).unwrap();
+    let before = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    let was = track_on_stick(before.one.as_ref().unwrap(), "Track 1").unwrap().clone();
+    let analysis = std::fs::read(usb.path().join(was.analysis.trim_start_matches('/'))).unwrap();
+
+    for attempt in ["first", "second"] {
+        let report = sync(usb.path(), std::slice::from_ref(&chosen), &[playlist(20, &[0])])
+            .unwrap_or_else(|e| panic!("{attempt} sync: {e}"));
+        assert!(report.skipped.is_empty() && report.failed.is_empty(), "{attempt} sync: {report:?}");
+        // Only Track 2 is written, and only the first time.
+        assert_eq!(report.tracks_added, usize::from(attempt == "first"), "{attempt} sync: {report:?}");
+        let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+        for (format, library) in [("OneLibrary", &after.one), ("Device Library", &after.legacy)] {
+            let now = track_on_stick(library.as_ref().unwrap(), "Track 1")
+                .unwrap_or_else(|| panic!("{attempt} sync: Track 1 left the {format}"));
+            assert_eq!((now.id, &now.path, &now.analysis), (was.id, &was.path, &was.analysis), "{attempt} sync, {format}");
+            assert!(track_on_stick(library.as_ref().unwrap(), "Track 2").is_some(), "{attempt} sync, {format}");
+        }
+        assert_eq!(after.cues, before.cues, "{attempt} sync: the player's cue stays");
+        assert_eq!(std::fs::read(usb.path().join(was.analysis.trim_start_matches('/'))).unwrap(), analysis);
+        assert!(!usb.path().join(audio.trim_start_matches('/')).exists(), "nothing is made up for the missing file");
+    }
+}
+
+/// A track another writer put on the stick, in no playlist, was kept by
+/// the first sync from here and then dropped, file and all, by the next:
+/// the first sync's record listed it as exported (#317).
+#[test]
+fn a_device_track_in_no_playlist_is_kept_by_every_later_sync() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let (kept, chosen) = (track(src.path(), 1), track(src.path(), 2));
+    sync(usb.path(), &[kept], &[playlist(10, &[0])]).unwrap();
+    let audio = Manifest::load(usb.path()).unwrap().tracks[0].audio.clone();
+    forget_our_record(usb.path());
+    for attempt in ["first", "second", "third"] {
+        sync(usb.path(), std::slice::from_ref(&chosen), &[playlist(20, &[0])])
+            .unwrap_or_else(|e| panic!("{attempt} sync: {e}"));
+        let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+        assert!(track_on_stick(after.one.as_ref().unwrap(), "Track 1").is_some(), "{attempt} sync dropped it");
+        assert!(usb.path().join(audio.trim_start_matches('/')).is_file(), "{attempt} sync deleted its audio");
+        assert!(Manifest::load(usb.path()).unwrap().tracks.iter().any(|t| t.preserved == Some(true) && t.audio == audio));
+        assert!(verify(usb.path()).unwrap().is_ok());
+    }
+}
+
+/// A stick an older build already synced once has a record that lists the
+/// tracks it carried as exported, without `preserved`. The next sync must
+/// still read them as the stick's: otherwise a carried track in no playlist
+/// is taken off, audio and analysis with it, without a warning (#317).
+#[test]
+fn a_track_an_older_build_carried_is_kept_by_the_next_sync() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let (kept, chosen) = (track(src.path(), 1), track(src.path(), 2));
+    sync(usb.path(), &[kept], &[playlist(10, &[0])]).unwrap();
+    let audio = Manifest::load(usb.path()).unwrap().tracks[0].audio.clone();
+    forget_our_record(usb.path());
+    sync(usb.path(), std::slice::from_ref(&chosen), &[playlist(20, &[0])]).unwrap();
+    let analysis = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap().one.as_ref().and_then(|l| track_on_stick(l, "Track 1").map(|t| t.analysis.clone())).unwrap();
+    for attempt in ["second", "third"] {
+        // What an older build wrote: the carried track with no flag.
+        let path = usb.path().join("PIONEER/rbxport/manifest.json");
+        let mut record: serde_json::Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        let mut carried = 0;
+        for entry in record["tracks"].as_array_mut().unwrap() {
+            carried += usize::from(entry.as_object_mut().unwrap().remove("preserved") == Some(serde_json::Value::Bool(true)));
+        }
+        assert_eq!(carried, 1, "{attempt} sync: the carried track was recorded as carried");
+        std::fs::write(&path, serde_json::to_vec_pretty(&record).unwrap()).unwrap();
+        assert!(Manifest::load(usb.path()).unwrap().tracks.iter().all(|t| t.preserved.is_none()));
+
+        let report = sync(usb.path(), std::slice::from_ref(&chosen), &[playlist(20, &[0])])
+            .unwrap_or_else(|e| panic!("{attempt} sync: {e}"));
+        assert_eq!(report.removed, 0, "{attempt} sync: {report:?}");
+        let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+        for (format, library) in [("OneLibrary", &after.one), ("Device Library", &after.legacy)] {
+            assert!(track_on_stick(library.as_ref().unwrap(), "Track 1").is_some(), "{attempt} sync: Track 1 left the {format}");
+        }
+        assert!(usb.path().join(audio.trim_start_matches('/')).is_file(), "{attempt} sync deleted its audio");
+        assert!(usb.path().join(analysis.trim_start_matches('/')).is_file(), "{attempt} sync deleted its analysis");
+        assert!(Manifest::load(usb.path()).unwrap().tracks.iter().any(|t| t.preserved == Some(true) && t.audio == audio));
+        assert!(verify(usb.path()).unwrap().is_ok());
+    }
+}
+
+/// A track this app exported, then deselected while a device playlist still
+/// named it, is carried for that one sync because the playlist needs it. It
+/// stays ours: once nothing on the stick names it, the next sync takes it
+/// off, audio and all, like any track no longer selected. Recording it as
+/// carried kept it on the stick forever (#317 review).
+#[test]
+fn a_track_we_exported_and_a_device_playlist_kept_is_removed_once_unnamed() {
+    let src = tempfile::tempdir().unwrap();
+    let usb = tempfile::tempdir().unwrap();
+    let tracks = [track(src.path(), 1), track(src.path(), 2)];
+    sync(usb.path(), &tracks, &[playlist(10, &[0, 1])]).unwrap();
+    let audio = Manifest::load(usb.path()).unwrap().tracks.iter().find(|t| t.library_id == 1).unwrap().audio.clone();
+    edit(usb.path(), "INSERT INTO playlist VALUES(99,1,'On the deck',NULL,0,0); INSERT INTO playlist_content VALUES(99,1,1)");
+    std::fs::remove_file(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap();
+    let chosen = std::slice::from_ref(&tracks[1]);
+    sync(usb.path(), chosen, &[playlist(20, &[0])]).unwrap();
+    let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    assert!(track_on_stick(after.one.as_ref().unwrap(), "Track 1").is_some(), "the device playlist still names it");
+    let manifest = Manifest::load(usb.path()).unwrap();
+    assert!(manifest.tracks.iter().any(|t| t.audio == audio && t.preserved == Some(false)), "still recorded as ours");
+
+    edit(usb.path(), "DELETE FROM playlist_content WHERE playlist_id=99; DELETE FROM playlist WHERE playlist_id=99");
+    std::fs::remove_file(usb.path().join("PIONEER/rekordbox/export.pdb")).unwrap();
+    let report = sync(usb.path(), chosen, &[playlist(20, &[0])]).unwrap();
+    assert_eq!(report.removed, 1, "{report:?}");
+    let after = rbl_export::snapshot::Snapshot::read(usb.path()).unwrap();
+    for (format, library) in [("OneLibrary", &after.one), ("Device Library", &after.legacy)] {
+        assert!(track_on_stick(library.as_ref().unwrap(), "Track 1").is_none(), "Track 1 stayed in the {format}");
+        assert!(track_on_stick(library.as_ref().unwrap(), "Track 2").is_some(), "{format}");
+    }
+    assert!(!usb.path().join(audio.trim_start_matches('/')).exists(), "its audio stayed");
+    assert!(verify(usb.path()).unwrap().is_ok());
+}

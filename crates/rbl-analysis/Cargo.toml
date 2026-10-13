@@ -1,0 +1,27 @@
+[package]
+name = "rbl-analysis"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Tempo, beat grid, key and waveform analysis."
+
+[lints]
+workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+tracing = { workspace = true }
+realfft = "3"
+
+[dev-dependencies]
+tempfile = "3"
+# For the rigs' `RUST_LOG=rbl_analysis=debug`, which prints what the tempo
+# stage decided at each change.
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rbl-audio = { path = "../rbl-audio" }
+rbl-anlz = { path = "../rbl-anlz" }
+rbl-db = { path = "../rbl-db" }
+rbl-index = { path = "../rbl-index" }
+# For the rigs' read queries; the features unify with rbl-db's.
+rusqlite = "0.40"

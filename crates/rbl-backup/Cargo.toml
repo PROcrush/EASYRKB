@@ -1,0 +1,39 @@
+[package]
+name = "rbl-backup"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "RBXport backup archives: what they hold, and restoring them as the library."
+
+[lints]
+workspace = true
+
+[dependencies]
+rbl-core = { path = "../rbl-core" }
+rbl-db = { path = "../rbl-db" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+# The same build rbl-db uses; this crate only runs queries on its handles.
+rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"] }
+zip = { version = "4.6.1", default-features = false, features = ["deflate"] }
+# Inflating and checking entries in memory, off the one thread that reads the
+# archive; both are what `zip` already builds with.
+flate2 = { version = "1", default-features = false, features = ["zlib-rs"] }
+crc32fast = "1"
+uuid = { version = "1", features = ["v4"] }
+dirs = "5"
+# Free space on the library's volume before unpacking a restore.
+fs2 = "0.4"
+# The unpacked database of a backup without a summary, while it is counted.
+tempfile = "3"
+
+[features]
+# Fixture libraries and archives laid out as RBXport writes them, for the
+# tests of programs built on this crate.
+testing = []
+
+[dev-dependencies]
+tempfile = "3"

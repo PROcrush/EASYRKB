@@ -1,0 +1,27 @@
+.pane { display: grid; gap: 16px; font-size: 13px; line-height: 1.6; color: var(--c-icon-on); }
+.pane p { margin: 6px 0; }
+.pane fieldset { border: 1px solid var(--c-divider, #414141); border-radius: 4px; padding: 12px; min-width: 0; }
+.pane legend { font-weight: 600; padding: 0 6px; }
+.pane label { display: grid; gap: 6px; margin: 8px 0; }
+.pane input:not([type="radio"]):not([type="checkbox"]), .pane select { min-width: 0; max-width: 100%; background: var(--c-black); color: inherit; border: 1px solid #666; padding: 7px; border-radius: 3px; }
+.pane button, .dialog header button { color: inherit; background: #303030; border: 1px solid #666; border-radius: 3px; padding: 6px 12px; cursor: pointer; }
+.pane button:disabled, .dialog header button:disabled { opacity: .45; cursor: default; }
+.pane .primary { background: var(--c-blue, #326ce5); }
+.pane .choice { display: flex; align-items: center; gap: 8px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; }
+.source { padding: 8px 0; border-bottom: 1px solid #414141; }
+.source:last-of-type { margin-bottom: 12px; }
+.warning { color: #ffbe78; overflow-wrap: anywhere; }
+.pane code { font-size: 11px; overflow-wrap: anywhere; white-space: normal; }
+.pane ul { padding-left: 20px; max-height: 220px; overflow: auto; }
+.tableWrap { overflow: auto; max-height: 270px; }
+.pane table { width: 100%; border-collapse: collapse; text-align: left; }
+.pane caption { text-align: left; margin-bottom: 8px; }
+.pane th, .pane td { padding: 5px 8px; border-bottom: 1px solid #414141; }
+.pane th { position: sticky; top: 0; background: #242424; }
+.result { padding: 12px; border: 1px solid #407d57; border-radius: 4px; }
+.result code { display: block; margin-top: 4px; }
+.dialog { width: min(850px, calc(100vw - 48px)); max-height: calc(100vh - 48px); box-sizing: border-box; overflow: auto; border: 1px solid #666; border-radius: 8px; background: #1b1b1b; color: var(--c-icon-on); padding: 20px; }
+.dialog::backdrop { background: rgba(0, 0, 0, .65); }
+.dialog header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.dialog h2 { font-size: 16px; margin: 0; }

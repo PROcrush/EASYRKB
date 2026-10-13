@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<!--
+  The AppleScript dictionary. Every `cocoa class` below is defined in
+  src/scripting/ and every `cocoa key` is an accessor there; a name changed
+  here has to change there too.
+-->
+<dictionary title="EASYRKB Terminology" xmlns:xi="http://www.w3.org/2003/XInclude">
+  <xi:include href="file:///System/Library/ScriptingDefinitions/CocoaStandard.sdef" xpointer="xpointer(/dictionary/suite)"/>
+
+  <suite name="EASYRKB Suite" code="Rbxp" description="The library, the decks, USB export, PRO DJ LINK and the preferences.">
+
+    <enumeration name="track color" code="RClr">
+      <enumerator name="no color" code="RCno"/>
+      <enumerator name="pink" code="RCpk"/>
+      <enumerator name="red" code="RCrd"/>
+      <enumerator name="orange" code="RCor"/>
+      <enumerator name="yellow" code="RCyl"/>
+      <enumerator name="green" code="RCgn"/>
+      <enumerator name="aqua" code="RCaq"/>
+      <enumerator name="blue" code="RCbl"/>
+      <enumerator name="purple" code="RCpu"/>
+    </enumeration>
+
+    <enumeration name="playlist kind" code="RPKd">
+      <enumerator name="regular playlist" code="RKpl" description="A list of tracks."/>
+      <enumerator name="playlist folder" code="RKfd" description="Holds other playlists and folders."/>
+      <enumerator name="smart playlist" code="RKsm" description="An intelligent playlist: its tracks are whatever its rule admits."/>
+    </enumeration>
+
+    <class-extension extends="application" description="EASYRKB's top-level scripting object.">
+      <element type="track" access="r" description="Every track in the collection.">
+        <cocoa key="rbxTracks"/>
+      </element>
+      <element type="playlist" description="Every playlist and folder, at any depth.">
+        <cocoa key="rbxPlaylists"/>
+      </element>
+      <element type="deck" access="r">
+        <cocoa key="rbxDecks"/>
+      </element>
+      <element type="device" access="r" description="The volumes a playlist can be exported to.">
+        <cocoa key="rbxDevices"/>
+      </element>
+      <element type="link player" access="r" description="The players heard on the network over PRO DJ LINK.">
+        <cocoa key="rbxLinkPlayers"/>
+      </element>
+      <element type="setting" access="r" description="The Preferences window's choices.">
+        <cocoa key="rbxSettings"/>
+      </element>
+      <property name="link export" code="RLnk" type="boolean" description="Whether the library is being served to the players over PRO DJ LINK. Set it to turn LINK on or off.">
+        <cocoa key="rbxLinkExport"/>
+      </property>
+      <property name="rekordbox running" code="RRbx" type="boolean" access="r" description="Whether rekordbox is running. The library cannot be edited while it is.">
+        <cocoa key="rbxRekordboxRunning"/>
+      </property>
+    </class-extension>
+
+    <class name="track" code="RTrk" description="A track in the collection." plural="tracks">
+      <cocoa class="RbxTrack"/>
+      <property name="id" code="ID  " type="text" access="r" description="rekordbox's id for the track, as text like a playlist's.">
+        <cocoa key="uniqueID"/>
+      </property>
+      <property name="name" code="pnam" type="text" description="The title.">
+        <cocoa key="name"/>
+      </property>
+      <property name="artist" code="RArt" type="text">
+        <cocoa key="rbxArtist"/>
+      </property>
+      <property name="album" code="RAlb" type="text">
+        <cocoa key="rbxAlbum"/>
+      </property>
+      <property name="genre" code="RGen" type="text">
+        <cocoa key="rbxGenre"/>
+      </property>
+      <property name="label" code="RLbl" type="text" description="The record label.">
+        <cocoa key="rbxLabel"/>
+      </property>
+      <property name="key" code="RKey" type="text" description="The musical key, as the library stores it: Ebm, F#.">
+        <cocoa key="rbxKey"/>
+      </property>
+      <property name="bpm" code="RBpm" type="real" description="The tempo. Setting it rewrites the beat grid's tempo, and is refused while the grid is locked.">
+        <cocoa key="rbxBpm"/>
+      </property>
+      <property name="duration" code="RDur" type="real" access="r" description="The length in seconds.">
+        <cocoa key="rbxDuration"/>
+      </property>
+      <property name="year" code="RYer" type="integer" description="The release year, 0 when unknown.">
+        <cocoa key="rbxYear"/>
+      </property>
+      <property name="rating" code="RRat" type="integer" description="Stars, 0 to 5.">
+        <cocoa key="rbxRating"/>
+      </property>
+      <property name="color" code="RClc" type="track color">
+        <cocoa key="rbxColor"/>
+      </property>
+      <property name="comment" code="RCmt" type="text">
+        <cocoa key="rbxComment"/>
+      </property>
+      <property name="play count" code="RPlc" type="integer">
+        <cocoa key="rbxPlayCount"/>
+      </property>
+      <property name="date added" code="RDAd" type="text" access="r" description="As the library records it: 2026-09-24.">
+        <cocoa key="rbxDateAdded"/>
+      </property>
+      <property name="location" code="RLoc" type="file" access="r" description="The audio file.">
+        <cocoa key="rbxLocation"/>
+      </property>
+      <property name="analysed" code="RAnl" type="boolean" access="r" description="Whether the track has been analysed.">
+        <cocoa key="rbxAnalysed"/>
+      </property>
+      <property name="bit rate" code="RBit" type="integer" access="r" description="In kbps.">
+        <cocoa key="rbxBitRate"/>
+      </property>
+      <property name="sample rate" code="RSmp" type="integer" access="r" description="In hertz.">
+        <cocoa key="rbxSampleRate"/>
+      </property>
+      <!-- An object named as a command's direct parameter is its receiver,
+           and Cocoa refuses a command its receiver's class does not list. -->
+      <responds-to command="load">
+        <cocoa method="scriptLoad:"/>
+      </responds-to>
+      <responds-to command="add">
+        <cocoa method="scriptAdd:"/>
+      </responds-to>
+      <responds-to command="remove">
+        <cocoa method="scriptRemove:"/>
+      </responds-to>
+    </class>
+
+    <class name="playlist" code="RPly" description="A playlist, folder or intelligent playlist." plural="playlists">
+      <cocoa class="RbxPlaylist"/>
+      <element type="track" description="The playlist's tracks, in its order. Deleting one takes it out of the playlist.">
+        <cocoa key="rbxTracks"/>
+      </element>
+      <element type="playlist" description="A folder's playlists and folders, one level down.">
+        <cocoa key="rbxPlaylists"/>
+      </element>
+      <property name="id" code="ID  " type="text" access="r" description="rekordbox's id for the playlist, as text: playlist ids run to 2^32, past the largest integer AppleScript holds.">
+        <cocoa key="uniqueID"/>
+      </property>
+      <property name="name" code="pnam" type="text">
+        <cocoa key="name"/>
+      </property>
+      <property name="kind" code="RKnd" type="playlist kind" description="Given when the playlist is made; it cannot be changed after. A smart playlist cannot be made from a script.">
+        <cocoa key="rbxKind"/>
+      </property>
+      <property name="parent" code="RPar" type="playlist" access="r" description="The folder it is in; missing value at the top.">
+        <cocoa key="rbxParent"/>
+      </property>
+      <responds-to command="export">
+        <cocoa method="scriptExport:"/>
+      </responds-to>
+    </class>
+
+    <class name="deck" code="RDck" description="One of the window's two players: deck 1 is player A, deck 2 is player B." plural="decks">
+      <cocoa class="RbxDeck"/>
+      <property name="index" code="pidx" type="integer" access="r">
+        <cocoa key="rbxIndex"/>
+      </property>
+      <property name="current track" code="RCtk" type="track" access="r" description="The track loaded; missing value when there is none.">
+        <cocoa key="rbxCurrentTrack"/>
+      </property>
+      <property name="playing" code="RPlg" type="boolean" access="r">
+        <cocoa key="rbxPlaying"/>
+      </property>
+      <property name="player position" code="RPos" type="real" access="r" description="Where the playhead is, in seconds.">
+        <cocoa key="rbxPosition"/>
+      </property>
+      <property name="duration" code="RDur" type="real" access="r" description="The loaded track's length in seconds.">
+        <cocoa key="rbxDuration"/>
+      </property>
+      <property name="tempo" code="RTmp" type="real" access="r" description="The tempo slider, in percent: 0 plays at the track's own speed.">
+        <cocoa key="rbxTempo"/>
+      </property>
+      <responds-to command="play">
+        <cocoa method="scriptPlay:"/>
+      </responds-to>
+      <responds-to command="pause">
+        <cocoa method="scriptPause:"/>
+      </responds-to>
+    </class>
+
+    <class name="device" code="RDev" description="A volume a playlist can be exported to." plural="devices">
+      <cocoa class="RbxDevice"/>
+      <property name="name" code="pnam" type="text" access="r">
+        <cocoa key="name"/>
+      </property>
+      <property name="location" code="RLoc" type="file" access="r" description="Where the volume is mounted.">
+        <cocoa key="rbxLocation"/>
+      </property>
+      <property name="removable" code="RRmv" type="boolean" access="r">
+        <cocoa key="rbxRemovable"/>
+      </property>
+      <property name="capacity" code="RCap" type="real" access="r" description="In bytes.">
+        <cocoa key="rbxCapacity"/>
+      </property>
+      <property name="free space" code="RFre" type="real" access="r" description="In bytes.">
+        <cocoa key="rbxFreeSpace"/>
+      </property>
+    </class>
+
+    <class name="link player" code="RLPl" description="A player on the network. Its id is its player number." plural="link players">
+      <cocoa class="RbxLinkPlayer"/>
+      <property name="id" code="ID  " type="integer" access="r" description="The player number.">
+        <cocoa key="uniqueID"/>
+      </property>
+      <property name="name" code="pnam" type="text" access="r" description="The model: CDJ-3000.">
+        <cocoa key="name"/>
+      </property>
+      <property name="address" code="RAdr" type="text" access="r" description="Its IP address.">
+        <cocoa key="rbxAddress"/>
+      </property>
+    </class>
+
+    <class name="setting" code="RSet" description="One of the Preferences window's choices, named by pane and field: &quot;advanced.protectLibrary&quot;." plural="settings">
+      <cocoa class="RbxSetting"/>
+      <property name="name" code="pnam" type="text" access="r">
+        <cocoa key="name"/>
+      </property>
+      <property name="value" code="RVal" description="A boolean, number, text or list of text, as the choice takes. A value the choice does not accept is refused.">
+        <type type="any"/>
+        <cocoa key="rbxValue"/>
+      </property>
+    </class>
+
+    <command name="play" code="RbxpPlay" description="Plays a deck, the way its PLAY button does. Nothing happens if it is already playing.">
+      <cocoa class="RbxPlayCommand"/>
+      <direct-parameter type="deck" optional="yes" description="Deck 1 when none is given."/>
+    </command>
+
+    <command name="pause" code="RbxpPaus" description="Pauses a deck. Nothing happens if it is not playing.">
+      <cocoa class="RbxPauseCommand"/>
+      <direct-parameter type="deck" optional="yes" description="Deck 1 when none is given."/>
+    </command>
+
+    <command name="load" code="RbxpLoad" description="Loads a track onto a deck, or asks a player on the network to load it.">
+      <cocoa class="RbxLoadCommand"/>
+      <direct-parameter type="track"/>
+      <parameter name="into" code="Into" type="specifier" optional="yes" description="A deck or a link player; deck 1 when none is given.">
+        <cocoa key="into"/>
+      </parameter>
+    </command>
+
+    <command name="add" code="RbxpAdd " description="Adds tracks to the end of a playlist.">
+      <cocoa class="RbxAddCommand"/>
+      <direct-parameter description="A track, a list of tracks, or every track whose …">
+        <type type="track"/>
+        <type type="track" list="yes"/>
+      </direct-parameter>
+      <parameter name="to" code="To  " type="specifier" description="A regular playlist.">
+        <cocoa key="to"/>
+      </parameter>
+    </command>
+
+    <command name="remove" code="RbxpRmve" description="Takes tracks out of a playlist. The tracks stay in the collection.">
+      <cocoa class="RbxRemoveCommand"/>
+      <direct-parameter description="A track, a list of tracks, or every track whose …">
+        <type type="track"/>
+        <type type="track" list="yes"/>
+      </direct-parameter>
+      <parameter name="from" code="From" type="specifier" description="A regular playlist.">
+        <cocoa key="from"/>
+      </parameter>
+    </command>
+
+    <command name="export" code="RbxpExpt" description="Writes a playlist to a device, as the Sync Manager does, with the DJ System and USB export preferences. Returns what was written. Allow for a long export with a `with timeout` block.">
+      <cocoa class="RbxExportCommand"/>
+      <direct-parameter type="playlist"/>
+      <parameter name="to" code="To  " type="specifier" description="A device.">
+        <cocoa key="to"/>
+      </parameter>
+      <result type="text"/>
+    </command>
+  </suite>
+</dictionary>

@@ -1,0 +1,29 @@
+[package]
+name = "rbl-nfs"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "SUN-RPC/XDR and a read-only NFSv2 server over a virtual filesystem."
+
+[lints]
+workspace = true
+
+[dependencies]
+socket2 = { version = "0.6", features = ["all"] }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+# Names on the wire in NFD, as rekordbox's `UTF8-MAC` conversion sends them.
+unicode-normalization = "0.1"
+
+[target.'cfg(unix)'.dependencies]
+# `statfs`, for the STATFS reply's block figures, which rekordbox takes
+# from the host filesystem; a safe wrapper, as the workspace forbids
+# `unsafe`.
+nix = { version = "0.29", default-features = false, features = ["fs"] }
+
+[target.'cfg(target_vendor = "apple")'.dependencies]
+if-addrs = "0.15"
+
+[dev-dependencies]
+tempfile = "3"

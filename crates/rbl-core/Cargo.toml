@@ -1,0 +1,26 @@
+[package]
+name = "rbl-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Shared ids, time formats and error primitives for rbxport."
+
+[lints]
+workspace = true
+
+[dependencies]
+dirs = "5"
+# `clock` only: the local offset for the dates rekordbox writes in local
+# time. Already in the lock through other dependencies, so nothing new is built.
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+serde = { workspace = true }
+thiserror = { workspace = true }
+
+# Unique sibling files for durable publication.
+tempfile = "3"
+serde_json = { workspace = true }
+fs2 = "0.4"
+# Name forms: macOS FAT/exFAT drivers list NFD names but rename and delete
+# only under the form a name was stored in.
+unicode-normalization = "0.1"

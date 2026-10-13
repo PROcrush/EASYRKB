@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a reproducible problem in rbxport
+title: ""
+labels:
+  - bug
+  - user-report
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting this. Do not include private library files or credentials.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: rbxport version
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Relevant DJ hardware and firmware
+      description: Include exact model and firmware version when this involves a player or controller.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs and other evidence
+      description: Attach the rbxport report or a redacted excerpt. Remove credentials and unrelated personal data.

@@ -1,0 +1,1317 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal.
+   Every size was measured off a 2x capture of rekordbox 7.2.11 running — see
+   the `source` on each token in design/tokens/theme.json. */
+/* Nothing loaded: no playhead and no position bar. A head at zero over an
+   empty strip reads as a track sitting at its start, which it is not. */
+.player[data-empty] .playhead,
+.player[data-empty] .scrub { display: none; }
+
+/* Sharing a transport column with the other deck leaves this one two columns:
+   the waveforms and the panel beside them. */
+.player[data-shared] {
+  grid-template-columns: 1fr var(--s-player-right-w);
+  /* Its height comes from the row it is in, which is half the pair's band. */
+  height: 100%;
+  min-height: 0;
+}
+
+.player {
+  display: grid;
+  grid-template-columns: var(--s-player-transport-w) 1fr var(--s-player-right-w);
+  height: var(--s-player-h);
+  min-height: 0;
+  background: var(--c-black);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------- transport */
+
+/* No flex `gap` here: every control sits at its own measured distance from
+   the one above, and a shared gap plus per-item margins meant the two added
+   up — which put PLAY 34pt below CUE instead of the measured 10.5. */
+/* Half a column each, every control at its measured distance from the half's
+   outer edge — deck A's from the top of the pair, deck B's from the bottom.
+   Scanned off the two-player capture: the rings are 32 across, not 40, the
+   jump buttons 24.5x22 with a 4.5 gap, the size box 54x27. Deck B's groups
+   mirror deck A's — the rings at the outside, the jump controls towards the
+   middle — but the order inside each group is kept, CUE over PLAY and the
+   jumps over the size box; the `*-bottom` tokens are its own measurements. */
+.transport[data-shared] {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  padding: 0;
+}
+.transport[data-shared] > * {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  margin: 0;
+}
+.transport[data-shared] .cue,
+.transport[data-shared] .play {
+  width: var(--s-mixer-jog-w);
+  height: var(--s-mixer-jog-w);
+  border-width: 1.5px;
+}
+.transport[data-shared] .pair { gap: var(--s-mixer-btn-gap); }
+.transport[data-shared] .square {
+  width: var(--s-mixer-btn-w);
+  height: var(--s-mixer-btn-h);
+}
+.transport[data-shared] .beats {
+  width: var(--s-mixer-size-w);
+  height: var(--s-mixer-size-h);
+}
+.transport[data-shared] .cue { top: var(--s-mixer-cue-top); }
+.transport[data-shared] .play { top: var(--s-mixer-play-top); }
+.transport[data-shared] .pair { top: var(--s-mixer-jump-top); }
+.transport[data-shared] .beats { top: var(--s-mixer-size-top); }
+.transport[data-shared][data-flipped] > * { top: auto; }
+.transport[data-shared][data-flipped] .play { bottom: var(--s-mixer-play-bottom); }
+.transport[data-shared][data-flipped] .cue { bottom: var(--s-mixer-cue-bottom); }
+.transport[data-shared][data-flipped] .beats { bottom: var(--s-mixer-size-bottom); }
+.transport[data-shared][data-flipped] .pair { bottom: var(--s-mixer-jump-bottom); }
+
+.transport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--c-panel);
+  padding: 0 12px;
+}
+
+/* Two buttons to a row, 26pt each with a 4pt gap in a 56pt column. */
+/* Measured from the top of the player: the skip row at 36pt, the beat-jump
+   row 24pt below it, the size box 6pt below that. */
+.pair { display: flex; gap: 4px; }
+.pair:first-child { margin-top: 36px; }
+.pair + .pair { margin-top: 24px; }
+
+.square {
+  width: var(--s-player-btn-w);
+  height: var(--s-player-btn-h);
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-button);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-xs);
+  line-height: 1;
+  cursor: default;
+  padding: 0;
+}
+.square:hover:not(:disabled) { background: var(--c-raised); }
+.square:disabled { color: var(--c-icon-off); }
+
+/* The beat-jump size, a dropdown in rekordbox. */
+.beats {
+  margin-top: 6px;
+  width: 56px;
+  height: 26px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-button);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  cursor: default;
+  padding: 0;
+}
+.chevron {
+  width: 7px;
+  height: 4px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: currentColor;
+}
+
+.cue,
+.play {
+  width: var(--s-player-jog-w);
+  height: var(--s-player-jog-w);
+  border-radius: 50%;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  padding: 0;
+  flex: none;
+}
+
+/* Measured: the CUE ring spans y 212..251.5pt, 20pt below the size box, and
+   the PLAY ring y 262..301.5pt — 10.5pt below CUE, not the 34 a shared gap
+   plus a margin was producing. */
+.cue {
+  margin-top: 20px;
+  border: 2px solid var(--c-cue-ring);
+  /* The ring is amber and the word inside it is white. */
+  color: var(--c-text);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+}
+
+/* The triangle stays a triangle and the colour carries the state: grey on a
+   resting ring, white on a lit one. Both sampled from a capture of the button
+   running rather than picked to look right. */
+.play {
+  margin-top: 10.5px;
+  border: 2px solid var(--c-play-ring);
+  color: var(--c-icon-off);
+}
+.play[data-on] {
+  border-color: var(--c-play-ring-on);
+  color: var(--c-play-glyph-on);
+}
+
+.cue:disabled,
+.play:disabled { opacity: .55; }
+
+.playGlyph {
+  width: 0;
+  height: 0;
+  border-left: 11px solid currentColor;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  margin-left: 3px;
+}
+
+/* Hovering a running deck shows what the press will do. Only then: on a
+   stopped deck the triangle already is what the press will do, and swapping
+   it for something else would be a button that lies about itself. */
+.pauseGlyph {
+  display: none;
+  width: 10px;
+  height: 13px;
+  border-left: 3.5px solid currentColor;
+  border-right: 3.5px solid currentColor;
+}
+.play[data-on]:hover:not(:disabled) .playGlyph { display: none; }
+.play[data-on]:hover:not(:disabled) .pauseGlyph { display: block; }
+
+/* ------------------------------------------------------------------ deck */
+
+/* The two-deck body, whose rows are DualDeck's and whose heights are the
+   `--s-player-dual-*` tokens: the title row with the sleeve in it, the
+   overview band the deck's full width, the phrase bar, a black point, the
+   control row, and the detail taking the rest of the 210 — 76pt, against the
+   62 the one-deck rows left it at half height. No margin: the deck's panel is
+   black to its edges in the capture, and the control row insets itself. */
+.player[data-dual] .main {
+  margin: 0;
+  grid-template-rows:
+    var(--s-player-dual-title-h)
+    var(--s-player-dual-overview-h)
+    var(--s-player-phrase-h)
+    calc(var(--s-player-dual-control-h) + var(--s-player-dual-phrase-gap))
+    1fr;
+  /* The overview, the phrase bar and the position bar all start the same
+     12pt in from the deck's edge and end 12pt short of the other. */
+  --deck-strip-left: var(--s-player-inset);
+}
+
+/* Deck B reads detail, control row, overview, phrase bar, title down the
+   panel. Not the mirror of deck A's order: the overview stays over its phrase
+   bar, as measured, and the title row goes to the bottom with the sleeve
+   hanging from the panel's edge. Its overview band is 5 shorter than deck
+   A's, the 5 going between the phrase bar and the title instead. */
+.player[data-dual][data-flipped] .main {
+  grid-template-rows:
+    1fr
+    var(--s-player-dual-control-h)
+    var(--s-player-dual-overview-hb)
+    var(--s-player-phrase-h)
+    calc(var(--s-player-dual-title-hb) + var(--s-player-dual-phrase-gap-b));
+}
+.player[data-dual][data-flipped] .main > :nth-child(1) { grid-row: 5; }
+.player[data-dual][data-flipped] .overviewRow { grid-row: 3; }
+.player[data-dual][data-flipped] .phrase { grid-row: 4; }
+.player[data-dual][data-flipped] .main > [data-testid="player-controls"] { grid-row: 2; }
+.player[data-dual][data-flipped] .detailRow { grid-row: 1; }
+
+/* The control row sits at the bottom of its track in deck A, the black point
+   above it; in deck B the title row does, under its 6pt of black. */
+.player[data-dual] .main > [data-testid="player-controls"] { align-self: end; }
+.player[data-dual][data-flipped] .main > [data-testid="player-head-row"] { align-self: end; }
+
+/* The sleeve is in the title row here, at its own measured size. */
+.player[data-dual] .artwork {
+  width: var(--s-player-dual-sleeve);
+  height: var(--s-player-dual-sleeve);
+}
+
+/* The overview band: black over the vocal strip, the strip, the waveform
+   directly under it, a gap, the position bar, and the rest dark. Deck B's
+   starts closer under the control row than deck A's does under the title. */
+.player[data-dual] .overviewRow { padding: 0 var(--s-player-inset); }
+.player[data-dual] .overviewStack {
+  grid-template-rows:
+    var(--s-player-dual-overview-top)
+    var(--s-player-vocal-h)
+    var(--s-player-dual-overview-wave-h)
+    var(--s-player-dual-scrub-gap)
+    var(--s-player-scrub-h)
+    1fr;
+}
+.player[data-dual][data-flipped] .overviewStack {
+  grid-template-rows:
+    var(--s-player-dual-overview-top-b)
+    var(--s-player-vocal-h)
+    var(--s-player-dual-overview-wave-h)
+    var(--s-player-dual-scrub-gap)
+    var(--s-player-scrub-h)
+    1fr;
+}
+.player[data-dual] .overviewStack > .vocal { grid-row: 2; }
+.player[data-dual] .overviewStack > .overview { grid-row: 3; }
+.player[data-dual] .overviewStack > .scrub { grid-row: 5; }
+
+.player[data-dual] .phrase { margin-right: var(--s-player-inset); }
+
+/* The detail runs edge to edge and to the line between the decks: no zoom
+   column, no inset, nothing under it. */
+.player[data-dual] .detailRow { padding: 0; }
+
+/* Deck B reads bottom-up — its rows are reordered under `[data-dual]` above,
+   rather than the whole panel being flipped, because everything in them is
+   text or a control and a mirrored one of those is unreadable.
+
+   Only the detail waveform is mirrored, below, so the two details meet at the
+   line between the decks. The overview is not: the capture draws deck B's
+   overview the same way up as deck A's, peaks rising from a baseline at the
+   bottom, with the vocal strip over it and the position bar under it. The
+   overlays over the detail — the beat heads, the cue markers, the bar count
+   — hang from the bottom of deck B's band, further below. */
+/* The detail bitmap, upside down. A transform on the canvas rather than a
+   scale inside every draw call: the drawing is where the pixel alignment work
+   lives — a fractional offset splits every one-pixel bar across two columns —
+   and flipping the finished bitmap cannot disturb any of it. Nothing painted
+   into the canvas has an up or a down; the labels and badges over it are DOM,
+   and stay the right way up. */
+.player[data-flipped] .detail canvas { transform: scaleY(-1); }
+
+/* The overlays over deck B's detail hang from the bottom of the band, as the
+   capture has them: the beat lines' heads start the measured distance above
+   the band's bottom edge, the memory cue's triangle points up from it, the
+   hot cue's badge sits the measured distance above it, and the bar count
+   prints along the bottom. The beat lines keep a head at each end, so only
+   their extents swap. */
+.player[data-flipped] .beat,
+.player[data-flipped] .downbeat {
+  top: calc(var(--s-beat-marker-bottom) + var(--s-beat-head-h) + 1px);
+  bottom: calc(var(--s-beat-marker-top) + var(--s-beat-head-h) + 1px);
+}
+.player[data-flipped] .cueMarker {
+  top: auto;
+  bottom: var(--s-cue-marker-top);
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
+}
+.player[data-flipped] .hotCue[data-band="detail"] .hotCueBadge {
+  top: auto;
+  bottom: var(--s-cue-badge-top);
+}
+.player[data-flipped] .bars { top: auto; bottom: 4px; }
+
+.main {
+  position: relative;
+  display: grid;
+  grid-template-rows:
+    var(--s-player-title-h)
+    var(--s-player-overview-h)
+    var(--s-player-phrase-h)
+    1fr
+    var(--s-player-pad-h);
+  min-width: 0;
+  min-height: 0;
+  /* Keep the top and side insets; the shared player gutter supplies the
+     bottom gap so this panel ends level with the transport and cue list. */
+  margin: var(--s-player-margin) var(--s-player-margin) 0;
+  background: var(--c-black);
+  /* Where every strip that starts past the sleeve begins: the overview, the
+     phrase bar, the detail waveform — and the title, which lines up with the
+     waveform rather than with the sleeve. */
+  --deck-strip-left: calc(
+    var(--s-player-inset) + var(--s-player-artwork-size) + var(--s-player-artwork-gap)
+  );
+}
+
+/* --------------------------------------------------------- the title row */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* No right inset: every strip runs to the deck's own edge. */
+  padding-right: 0;
+  padding-left: var(--deck-strip-left);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--f-size-title);
+  font-weight: 700;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Everything from the artist rightwards is pushed to the far edge and
+   separated by hairlines, as the capture shows. */
+.artist {
+  margin-left: auto;
+  color: var(--c-text-dim);
+  font-size: var(--f-size-sm);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+.remaining,
+.elapsed,
+.readout {
+  border-left: 1px solid var(--c-raised);
+  padding-left: 12px;
+  font-size: var(--f-size-ui);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex: none;
+}
+
+.remaining { color: var(--c-text); font-weight: 700; }
+.elapsed { border-left: 0; color: var(--c-text-dim); }
+.keyControl {
+  border-left: 1px solid var(--c-raised);
+  padding-left: 12px;
+  flex: none;
+}
+.readout { padding-right: 12px; color: var(--c-text); min-width: 54px; text-align: right; }
+
+/* The tenths are a size down, which is how rekordbox prints them. */
+.tenths { font-size: var(--f-size-sm); font-style: normal; }
+
+/* ---------------------------------------------------- overview and vocal */
+
+.overviewRow {
+  display: flex;
+  /* Stretch, not centre: the stack below is a grid with an `1fr` row, and in a
+     centred flex line it collapses to its content height and the overview
+     waveform gets no height at all. */
+  align-items: stretch;
+  gap: var(--s-player-artwork-gap);
+  /* The sleeve keeps its inset; the strip beside it runs to the deck's edge. */
+  padding: 0 0 0 var(--s-player-inset);
+  min-width: 0;
+}
+
+/* The sleeve is the eject button, as it is on a CDJ. A button rather than a
+   div so it is reachable from the keyboard and announces itself; it keeps the
+   square it always was. */
+.artwork {
+  width: var(--s-player-artwork-size);
+  height: 100%;
+  flex: none;
+  padding: 0;
+  border: 0;
+  /* The well the record sits in: the (15,15,15) the simple player's empty
+     sleeve and the track list's cells were sampled at. */
+  background: var(--c-simple-well);
+  overflow: hidden;
+  cursor: pointer;
+}
+.artwork:disabled { cursor: default; }
+
+/* Hovered, the sleeve dims and shows what clicking it does. The glyph is
+   measured — a triangle over a bar, both 26px wide on a 79px sleeve, in a flat
+   #CDCDCD; the darkening under it is inferred, because the capture's sleeve is
+   uniform there and a glyph over bright artwork is unreadable without it. */
+.artwork { position: relative; }
+.artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--c-eject-scrim);
+  opacity: 0;
+  transition: opacity 90ms linear;
+}
+.eject {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: var(--s-eject-glyph-w);
+  color: var(--c-eject);
+  opacity: 0;
+  transition: opacity 90ms linear;
+}
+.artwork:hover:not(:disabled)::after { opacity: 0.45; }
+.artwork:hover:not(:disabled) .eject { opacity: 1; }
+/* The glyph sits over the scrim, not under it. */
+.eject { z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .artwork::after,
+  .eject { transition: none; }
+}
+/* Hidden until it has decoded, so the square is empty rather than carrying
+   WebKit's broken-file glyph while the library is still opening. */
+.sleeve {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  visibility: hidden;
+}
+.sleeve[data-state="shown"] { visibility: visible; }
+
+/* The record under the sleeve: `design/icons/ui/record.svg`, the disc the
+   track list draws in a cell without artwork, filling the square in the
+   colour it was sampled at. No artwork, and no track at all, both show it;
+   artwork covers it once it has decoded, and while it is decoding the square
+   is empty rather than a record that is about to be covered. */
+.disc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--c-simple-disc);
+}
+.artwork:has(.sleeve[data-state="pending"]) > .disc { visibility: hidden; }
+
+/* The band is not one waveform stretched to fill it. In the capture it is the
+   vocal strip, then a 30pt waveform, then the position bar, with the rest of
+   the 49pt left dark: giving the waveform the whole band drew it half again as
+   tall as rekordbox does and flattened every quiet passage into a slab. */
+.overviewStack {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  /* Rows, top to bottom: vocal strip, 1pt clear, waveform, 3.5pt clear,
+     position bar, and the rest dark. Placed by index rather than by margin —
+     a margin comes out of its own grid track, which cost the waveform a
+     point of height. */
+  grid-template-rows:
+    var(--s-player-vocal-h)
+    1px
+    var(--s-player-overview-wave-h)
+    3.5px
+    var(--s-player-scrub-h)
+    1fr;
+}
+.overviewStack > .vocal { grid-row: 1; }
+.overviewStack > .overview { grid-row: 3; }
+.overviewStack > .scrub { grid-row: 5; }
+
+.vocal { min-width: 0; overflow: hidden; }
+.vocal canvas { width: 100%; height: 100%; display: block; }
+
+/* Clipped: a cue at the very edge of the window is drawn at 100% and its two
+   pixels landed in the panel beside the deck. */
+.overview {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+.overview canvas { width: 100%; height: 100%; display: block; }
+
+/* Hollow while unplayed, solid behind the playhead — the capture has the bar
+   at (200,200,200) left of the head and only its two edges to the right. */
+.scrub {
+  box-sizing: border-box;
+  border-top: 1px solid var(--c-scrub);
+  border-bottom: 1px solid var(--c-scrub);
+  min-width: 0;
+}
+/* Scaled rather than sized: the frame loop writes a transform, and a width in
+   percent would lay out and paint the bar on every frame. */
+.scrubFill {
+  width: 100%;
+  height: 100%;
+  background: var(--c-scrub-played);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* ------------------------------------------------------------ the phrase */
+
+/* Aligned with the overview strip above it, which starts past the sleeve. */
+.phrase {
+  position: relative;
+  margin-right: 0;
+  margin-left: var(--deck-strip-left);
+  overflow: hidden;
+}
+
+.phraseBlock {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  /* Butted, not gapped: rekordbox's phrases tile the whole track. */
+  border-right: 1px solid var(--c-black);
+}
+.phraseBlock[data-kind="intro"] { background: var(--c-phrase-intro); }
+.phraseBlock[data-kind="verse"] { background: var(--c-phrase-verse); }
+.phraseBlock[data-kind="bridge"] { background: var(--c-phrase-bridge); }
+.phraseBlock[data-kind="chorus"] { background: var(--c-phrase-chorus); }
+.phraseBlock[data-kind="up"] { background: var(--c-phrase-up); }
+.phraseBlock[data-kind="up2"] { background: var(--c-phrase-up2); }
+.phraseBlock[data-kind="up3"] { background: var(--c-phrase-up3); }
+.phraseBlock[data-kind="down"] { background: var(--c-phrase-down); }
+.phraseBlock[data-kind="outro"] { background: var(--c-phrase-outro); }
+
+/* ------------------------------------------------------------ the detail */
+
+/* The same inset as every row above it, and the same gap below as beside: the
+   detail used to run edge to edge while the strips above it stopped short. The
+   zoom column then puts the waveform on the overview's own left edge. */
+.detailRow {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 0 var(--s-player-inset);
+}
+
+/* Over the waveform, not beside it. The column it used to occupy was as wide
+   as the sleeve and cost the detail strip 55px of music to hold three
+   controls; floating them on a scrim gives that back and still leaves the
+   rings readable over a bright transient.
+
+   A sibling of the strip rather than a child of it, so a press on a button is
+   not also the first frame of a drag on the waveform underneath. */
+.zoom {
+  position: absolute;
+  z-index: 3;
+  left: var(--s-player-zoom-inset);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 5px;
+  border-radius: 4px;
+  background: var(--c-zoom-scrim);
+}
+.zoom button {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--c-icon-off);
+  border-radius: 50%;
+  background: none;
+  color: var(--c-icon-off);
+  font-size: var(--f-size-sm);
+  line-height: 1;
+  cursor: default;
+  padding: 0;
+}
+.zoom button:hover { color: var(--c-icon-on); border-color: var(--c-icon-on); }
+.rst { font-size: var(--f-size-xs); color: var(--c-icon-off); }
+
+.detail {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+.detail canvas { width: 100%; height: 100%; display: block; }
+
+/* The waveform, the grid and the cue markers, drawn wider than the strip and
+   slid under the fixed playhead by a transform. Sliding is the compositor's
+   work; redrawing is not, which is why only one of the two happens per frame. */
+.scroller {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -50%;
+  width: 200%;
+  will-change: transform;
+}
+
+/* --------------------------------------------------------- markers, head */
+
+/* Moved by a transform from the frame loop, not by `left`: a percentage moves
+   the head by laying the strip out again sixty times a second. */
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--c-text);
+  pointer-events: none;
+  will-change: transform;
+}
+/* Red while the deck has the keyboard, so it is obvious which of the two
+   things the arrow keys are about to move. */
+.player[data-armed] .playhead { background: var(--c-playhead-armed); }
+
+/* Cues sit over the waveform, the grid and the bar count — a marker behind a
+   downbeat line is a marker nobody can find. A hot cue sits over a memory cue:
+   rekordbox keeps one beside each hot cue, and the user's crop shows the badge
+   covering the red triangle's point. */
+/* A loop is a band over the waveform: a stored memory loop dim, the deck's
+   own lit while it plays, in the pad blue the AU button lights with. */
+.loopBand {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--c-pad-active);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 1;
+}
+.loopBand[data-active] { opacity: 0.38; }
+
+.memoryCue,
+.hotCue {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.hotCue { z-index: 3; }
+
+/* In the overview a memory cue is a small red head at its position, widest at
+   the top and tapering to a point, and no line at all: measured beside each
+   hot cue badge, with the waveform under it unbroken. */
+.cueHead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -50% 0;
+  width: var(--s-cue-head-w);
+  height: var(--s-cue-head-h);
+  background: var(--c-cue-head);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* In the detail a memory cue is a red triangle pointing down at what it marks,
+   16pt across and 11pt tall, centred on the cue and 8.25pt under the band's
+   top: measured off the user's crop, where it shows over the hot cue's badge.
+   No line under it — the only line in the crop is the downbeat's, and a memory
+   cue on its own is in no capture. */
+.cueMarker {
+  position: absolute;
+  top: var(--s-cue-marker-top);
+  left: 0;
+  translate: -50% 0;
+  width: var(--s-cue-marker-w);
+  height: var(--s-cue-marker-h);
+  background: var(--c-cue-head);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* A hot cue contributes its badge, not another vertical line. In the
+   Cannonball reference E is at 11 ms and the first beat at 18 ms: rekordbox
+   draws the line at the beat, with E beside it. Adding a line at the hot cue
+   turned those distinct saved positions into an apparent grid misalignment. */
+
+/* The badge: 11pt square, the letter inside. Its colour is the cue's own where
+   one was measured for its ColorTableIndex — set on the marker as --cue-colour
+   — and the default green otherwise. The overview hangs it from the top of the
+   strip with its left edge on the cue, so the marker overhangs the position
+   rather than nudging it. */
+.hotCueBadge {
+  position: absolute;
+  top: 0;
+  width: var(--s-cue-badge);
+  height: var(--s-cue-badge);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cue-colour, var(--c-cue-hot));
+  color: var(--c-cue-hot-text);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  line-height: 1;
+}
+/* The detail centres the same badge on the cue, 15pt under the band's top:
+   measured off the user's crop, where its last row is the one before the beat
+   head's first. */
+.hotCue[data-band="detail"] .hotCueBadge {
+  top: var(--s-cue-badge-top);
+  left: 0;
+  translate: -50% 0;
+}
+
+.beat,
+.downbeat {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+}
+/* A beat marker is a line with a small triangle at each end, and it does not
+   span the band: measured, the head starts 26pt below the band's top and the
+   foot ends 6.5pt above its bottom, with the line between them a point's gap
+   inside each — 31pt to 11.5pt, which the user's crop has too. Every fourth
+   is white with red heads. */
+.beat,
+.downbeat {
+  position: absolute;
+  top: calc(var(--s-beat-marker-top) + var(--s-beat-head-h) + 1px);
+  bottom: calc(var(--s-beat-marker-bottom) + var(--s-beat-head-h) + 1px);
+  width: 1px;
+  background: var(--c-beat);
+  pointer-events: none;
+}
+.downbeat { background: var(--c-downbeat); }
+
+/* Keep thicker PCM markers centred on the same beat timestamp. */
+.detail[data-pcm] .beat { width: 2px; margin-left: -0.5px; background: #b3b3b3; }
+.detail[data-pcm] .downbeat { width: 2px; margin-left: -0.5px; background: #fff; }
+
+.beat::before,
+.beat::after,
+.downbeat::before,
+.downbeat::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+}
+/* Pointing inward from each end, as the capture shows. */
+.beat::before,
+.downbeat::before {
+  top: calc(var(--s-beat-head-h) * -1 - 1px);
+  border-top: var(--s-beat-head-h) solid var(--c-beat-head);
+}
+.beat::after,
+.downbeat::after {
+  bottom: calc(var(--s-beat-head-h) * -1 - 1px);
+  border-bottom: var(--s-beat-head-h) solid var(--c-beat-head);
+}
+.downbeat::before { border-top-color: var(--c-downbeat-head); }
+.downbeat::after { border-bottom-color: var(--c-downbeat-head); }
+
+/* The bar count, sitting above the playhead in the strip the waveform leaves
+   clear at the top of the band. */
+.bars {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  /* Its own offset, so the frame loop owns `transform` alone. */
+  translate: -100% 0;
+  will-change: transform;
+  padding: 3px 8px;
+  background: var(--c-black);
+  /* Its own size, measured: it was borrowing the track title's 17px, which is
+     three points bigger than the capture's. */
+  font-size: var(--f-size-bars);
+  font-weight: 700;
+  color: var(--c-bars-label);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------- the pads */
+
+.pads {
+  display: flex;
+  align-items: stretch;
+  background: var(--c-panel);
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Two stacked tabs filling the row's height, 80x24pt each. The selected one
+   takes the row's own colour and the other is cut out in black — the opposite
+   of the usual convention, and what the capture shows. */
+.modes {
+  display: flex;
+  flex-direction: column;
+  width: var(--s-pad-tab-w);
+  flex: none;
+}
+
+.mode {
+  height: var(--s-pad-tab-h);
+  border: 0;
+  background: var(--c-black);
+  color: var(--c-text);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  cursor: default;
+  padding: 0;
+}
+.mode[data-on] { background: var(--c-panel); }
+
+/* Pads, memory, cue mode and page travel together as one cluster. In the
+   capture they sit left of centre rather than at either edge. */
+.padCluster {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+}
+
+.hotCues { display: flex; gap: var(--s-pad-cue-gap); flex: none; }
+
+/* GRID replaces the pads with two labelled sections, measured off
+   docs/screenshots: a section label along the top and the buttons below it,
+   grouped in pairs with a wider gap between groups. */
+.gridRow {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  padding-left: 10px;
+  overflow: hidden;
+}
+
+.editGroup { display: flex; flex-direction: column; flex: none; }
+
+.sectionLabel {
+  height: var(--s-pad-section-h);
+  line-height: var(--s-pad-section-h);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  color: var(--c-text-dim);
+}
+
+.editButtons { display: flex; gap: 10px; }
+.editPair { display: flex; gap: var(--s-pad-edit-gap); align-items: center; }
+
+.editButton {
+  width: var(--s-pad-edit-w);
+  height: var(--s-pad-edit-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-deck-button);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-xs);
+  line-height: 1;
+  cursor: default;
+  padding: 0;
+}
+/* A button that cannot act sinks into the panel, its glyph and beat lines
+   each a step dimmer, as the capture's undo and redo are. */
+.editButton:disabled { background: var(--c-pad-edit-off); color: var(--c-pad-edit-off-glyph); }
+.editButton:hover:not(:disabled) { background: #383838; color: #fff; }
+/* On — the metronome clicking, the grid cut or locked — the icon goes blue
+   on the button's own grey, as rekordbox's metronome does. */
+.editButton[aria-pressed="true"] { color: var(--c-pad-edit-on); }
+.editButton[aria-pressed="true"]:hover:not(:disabled) { color: #70b1ff; }
+/* Each icon is drawn in its button's box, so it fills the button. */
+.editIcon { width: 100%; height: 100%; }
+.editIcon :global(.dim) { fill: var(--c-pad-label); }
+.editIcon :global(.faint) { fill: var(--c-pad-edit-faint); }
+.editButton:disabled .editIcon :global(.dim),
+.editButton:disabled .editIcon :global(.faint) { fill: var(--c-pad-edit-off-bar); }
+/* The mark's red half, the colour of a downbeat's head on the waveform. */
+.editIcon :global(.head) { fill: var(--c-downbeat-head); }
+
+.bpmField {
+  width: var(--s-pad-field-w);
+  height: var(--s-pad-edit-h);
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  text-align: center;
+  background: var(--c-pad-well);
+  border-radius: 2px;
+  color: var(--c-text);
+  font-size: var(--f-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.bpmField:hover:not(:disabled) { background: #202020; }
+
+/* A pad is a dark well; a cue is a small bright square inside it, not a
+   filled button. */
+.pad {
+  width: var(--s-pad-cue-w);
+  height: var(--s-pad-cue-h);
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-pad-well);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  padding: 0;
+  flex: none;
+}
+
+.padInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--s-pad-cue-inner);
+  height: var(--s-pad-cue-inner);
+  border-radius: 1px;
+  font-size: var(--f-size-ui);
+  font-weight: 700;
+  color: var(--c-pad-label);
+}
+.pad[data-set] .padInner { background: var(--cue-colour, var(--c-pad-set)); color: var(--c-black); }
+.pad:hover:not(:disabled) { background: #383838; }
+
+.memory,
+.auto,
+.page { display: flex; align-items: center; gap: 2.5px; flex: none; }
+
+.memoryLabel {
+  width: 60px;
+  height: 20px;
+  border: 0;
+  background: var(--c-deck-button);
+  color: var(--c-text);
+  font: inherit;
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  border-radius: 2px;
+  padding: 0;
+  cursor: default;
+}
+.memoryLabel:disabled { color: var(--c-icon-off); }
+.memoryLabel:hover:not(:disabled) { background: #383838; }
+
+.step {
+  border: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--c-deck-button);
+  color: var(--c-text);
+  font-size: var(--f-size-sm);
+  cursor: default;
+  padding: 0;
+}
+.step:disabled { color: var(--c-icon-off); }
+.step:hover:not(:disabled) { background: #383838; }
+
+/* AU / MA and Q share a shape: on is the pad blue, off is the row colour with
+   dim text. */
+.chip {
+  width: 37px;
+  height: 20px;
+  border: 1px solid var(--c-outline);
+  border-radius: 2px;
+  background: #222;
+  color: var(--c-text);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  padding: 0;
+  cursor: default;
+  flex: none;
+  align-self: center;
+}
+.chip[data-on] { border-color: var(--c-pad-active); background: var(--c-pad-active); color: var(--c-icon-on); }
+.chip:hover:not(:disabled) { background: #383838; border-color: #969696; color: #fff; }
+.chip[data-on]:hover:not(:disabled) { background: #4a82ed; border-color: #4a82ed; }
+
+/* The beat count is the auto loop's button: a press loops that many beats
+   from the head, and lit it is the loop that is playing. IN and RELOOP light
+   the same way. */
+button.pageNumber {
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  cursor: default;
+}
+button.pageNumber:disabled { color: var(--c-icon-off); }
+.pageNumber[data-on],
+.memoryLabel[data-on] { background: var(--c-pad-active); color: var(--c-icon-on); }
+
+.pageNumber {
+  min-width: 70px;
+  height: 20px;
+  text-align: center;
+  background: var(--c-deck-button);
+  color: var(--c-text);
+  border-radius: 2px;
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  padding: 0;
+}
+.pageNumber:hover:not(:disabled) { background: #383838; }
+.pageNumber[data-on]:hover:not(:disabled) { background: #4a82ed; }
+
+.padMenu {
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  font-size: var(--f-size-ui);
+  cursor: default;
+  padding: 0 10px 0 8px;
+  flex: none;
+  align-self: center;
+}
+
+/* --------------------------------------------------------- the cue panel */
+
+.side {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 0;
+  /* The panel's own grey, measured: the list's boxes sit on it. */
+  background: var(--c-panel);
+  border-left: 1px solid var(--c-panel);
+}
+
+/* Measured off the capture's MEMORY list: boxes on the panel, a point of
+   panel between them, five points of panel above the first. */
+.cueList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-cue-row-gap);
+  padding: var(--s-cue-list-inset) var(--s-cue-list-inset-x) 0;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* A whole row is the target: a cue list is for jumping to a cue. */
+.cueRow {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: var(--s-cue-row-h);
+  padding: 0 8px;
+  font-size: var(--f-size-sm);
+  border: 0;
+  background: var(--c-cue-row);
+  color: var(--c-text);
+  cursor: default;
+  text-align: left;
+}
+.cueRow:hover:not([data-empty]) { background: var(--c-button); }
+/* An empty box keeps its ✕ at the right, dimmed, where a cue's would be. */
+.cueRow[data-blank] { justify-content: flex-end; }
+.cueRow[data-blank] .cueDelete { color: var(--c-cue-delete-empty); }
+
+/* The hot-cue list is eight fixed slots; an empty one shows its letter and
+   nothing else, so the list reads as the pads do. */
+.cueChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--s-pad-cue-inner);
+  height: var(--s-pad-cue-inner);
+  border-radius: 1px;
+  font-size: var(--f-size-sm);
+  font-weight: 700;
+  color: var(--c-pad-label);
+  flex: none;
+}
+.cueChip[data-set] { background: var(--cue-colour, var(--c-pad-set)); color: var(--c-black); }
+
+.cueTime { color: var(--c-text); font-variant-numeric: tabular-nums; flex: none; }
+.memoryCueDot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.cueName { color: var(--c-text); flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; }
+.cueNameInput {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  color: var(--c-text);
+  background: transparent;
+  border: 1px solid var(--c-text);
+  padding: 0 2px;
+}
+.cueDelete { color: var(--c-cue-delete); flex: none; }
+/* The memory list's ✕ is a button of its own; the hot-cue list's is still a
+   glyph. Same glyph, same place, and disabled it dims like the pad row's. */
+button.cueDelete {
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  /* The padding is what the hover fills; the margin takes it back so the
+     ✕ stays where the capture has it. */
+  padding: 2px 5px;
+  margin: -2px -5px;
+  font: inherit;
+  cursor: default;
+}
+button.cueDelete:hover:not(:disabled),
+button.cueDelete:focus-visible:not(:disabled) { background: var(--c-error); color: var(--c-icon-on); }
+button.cueDelete:disabled { color: var(--c-icon-off); }
+.cueRow[role="button"] { cursor: default; text-align: left; }
+/* A hot cue row dragged to another slot: it dims where it was lifted from and
+   the slot it would land on is outlined. */
+.cueRow[data-dragging] { opacity: .4; }
+.cueRow[data-drop] { outline: 1px solid var(--c-accent); outline-offset: -1px; }
+
+/* The INFO tab is DeckInfo.module.css. */
+
+/* Three equal tabs: the selected one is a lighter blue than the pad buttons,
+   the others are outlined. */
+/* Sync, at the end of the title row where the capture puts it. **Not
+   measured**: the capture's own pair sits in a header this deck does not draw
+   the same way. */
+.sync {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+/* The tempo cluster in the control row: the BPM being played with a step
+   either side, the key lock, and a reset — the order the capture has them in.
+   **The sizes here are not measured**: the capture's own row is a different
+   set of controls, and this cluster has not been scanned off it the way the
+   pad row was. */
+.tempo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sideTabs { display: flex; gap: 4px; padding: 4px; }
+.sideTab {
+  flex: 1;
+  border: 1px solid var(--c-outline);
+  border-radius: 2px;
+  background: var(--c-panel);
+  color: var(--c-text);
+  font-size: var(--f-size-xs);
+  font-weight: 700;
+  padding: 5px 0;
+  cursor: default;
+}
+.sideTab[data-on] {
+  background: var(--c-tab-active);
+  border-color: var(--c-tab-active);
+  color: var(--c-icon-on);
+}
+
+
+/* A track being dragged over the deck is not marked on the sleeve: rekordbox
+   draws nothing there, and the row travelling with the hand is the whole of
+   the feedback. `data-droppable` stays on the deck for the drop itself. */
+
+/* The CUT point of the GRID panel: a dashed line the full height of the
+   band in the downbeat head's red, so it reads as the grid's and not as a
+   cue. Our own mark: rekordbox draws no such line [OBS]. */
+.cutMark {
+  position: absolute;
+  top: var(--s-beat-marker-top);
+  bottom: var(--s-beat-marker-bottom);
+  width: 0;
+  border-left: 1px dashed var(--c-downbeat-head);
+  pointer-events: none;
+}
+
+/* The BPM field while TAP is being pressed: the taps' tempo, lit the way a
+   pressed pad is, until they stop and the grid takes it. */
+.bpmField[data-tapping] { color: var(--c-pad-set); }
+
+.tempoOverlay {
+  position: absolute;
+  z-index: 10;
+  top: var(--s-player-title-h);
+  bottom: var(--s-player-pad-h);
+  right: 0;
+  width: 76px;
+  display: grid;
+  box-shadow: -4px 0 12px var(--c-shadow-side);
+}
+.player[data-dual] .tempoOverlay { top: var(--s-player-dual-title-h); bottom: 0; }
+.player[data-dual][data-flipped] .tempoOverlay { top: 0; bottom: var(--s-player-dual-title-hb); }
+
+.cueTempo {
+  --tempo-color: var(--c-tempo-annotation);
+  position: absolute;
+  z-index: 1;
+  left: 4px;
+  bottom: 1px;
+  padding: 1px 4px;
+  color: var(--tempo-color);
+  background: var(--c-panel);
+  font-size: var(--f-size-cue-tempo);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.overviewTempo {
+  font-size: var(--f-size-xs);
+  pointer-events: none;
+}
+
+/* Lit bars show the metronome's Low / Medium / High level. */
+.editButton[data-metronome="Low"] rect:not(:first-child),
+.editButton[data-metronome="Medium"] rect:last-child,
+.editButton[data-metronome="Off"] rect { opacity: .25; }
+
+/* One annotation across a measured tempo ramp, not one label per beat. */
+.detailTempo,
+.tempoRamp {
+  bottom: calc(var(--s-beat-marker-bottom) + var(--s-beat-head-h) + 2px);
+  pointer-events: none;
+}
+.tempoRamp {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--c-tempo-annotation);
+  font-size: var(--f-size-cue-tempo);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tempoRamp > span:not(.tempoRampArrow) {
+  padding: 1px 4px;
+  background: var(--c-panel);
+  flex-shrink: 0;
+}
+.tempoRampArrow {
+  position: relative;
+  flex: 1;
+  min-width: 12px;
+  height: 1px;
+  background: currentColor;
+}
+.tempoRampArrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid currentColor;
+  border-top: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.overviewRamp { bottom: 1px; font-size: var(--f-size-xs); gap: 4px; }
+.player[data-flipped] .detailTempo,
+.player[data-flipped] .tempoRamp:not(.overviewRamp) {
+  bottom: calc(var(--s-beat-marker-top) + var(--s-beat-head-h) + 2px);
+}

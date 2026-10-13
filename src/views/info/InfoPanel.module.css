@@ -1,0 +1,477 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal.
+   Every token named info* was measured from the three captures of
+   rekordbox's Information Window — see design/tokens/theme.json. */
+.panel {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  min-height: 0;
+  background: var(--c-panel);
+  font-family: var(--f-ui);
+}
+
+/* ------------------------------------------------------------------ tabs */
+
+.tabs {
+  position: relative;
+  display: flex;
+  gap: var(--s-info-tab-gap);
+  height: var(--s-info-tab-h);
+  margin: var(--s-info-tab-top) 0 0;
+  /* The right inset leaves room for the reload glyph: the third tab ends
+     37pt short of the panel's edge in the capture. */
+  padding: 0 37px 0 var(--s-info-tab-inset);
+}
+
+.tab {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: var(--c-raised);
+  color: var(--c-info-tab-text);
+  font: inherit;
+  font-size: var(--f-size-info);
+  line-height: var(--s-info-tab-h);
+  cursor: default;
+}
+.tab[aria-selected="true"] {
+  background: var(--c-info-tab-active);
+  color: var(--c-info-tab-active-text);
+}
+/* Summary with several tracks selected: rekordbox greys it and moves to Info. */
+.tab:disabled {
+  background: var(--c-info-tab-disabled);
+  color: var(--c-info-tab-disabled-text);
+}
+
+.reload {
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--s-info-reload-w);
+  height: var(--s-info-reload-h);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-icon-on);
+  display: flex;
+}
+.reload:disabled { cursor: default; }
+.reloadGlyph { width: 100%; height: 100%; }
+
+.empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--c-text-dim);
+  font-size: var(--f-size-ui);
+}
+
+/* --------------------------------------------------------------- summary */
+
+.summary {
+  overflow: auto;
+  min-height: 0;
+}
+
+.summaryHead {
+  display: grid;
+  /* The sleeve, then the text column, which starts where every value on
+     the tab starts: 174pt from the panel's left edge. */
+  grid-template-columns: var(--s-info-sleeve) 1fr;
+  column-gap: calc(var(--s-info-value-x) - var(--s-info-inset) - var(--s-info-sleeve));
+  padding: var(--s-info-sleeve-top) 0 0 var(--s-info-inset);
+  align-items: start;
+}
+
+.sleeve {
+  width: var(--s-info-sleeve);
+  height: var(--s-info-sleeve);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  background: var(--c-info-field);
+  border: 1px solid var(--c-info-sleeve-border);
+}
+
+/* The record drawn where there is no sleeve: `design/icons/ui/record.svg`,
+   the same asset every other empty sleeve draws, filling the square. Its disc
+   is 86% of the square where the capture's reads 89% — a point and a half on
+   this sleeve, kept so one record looks the same everywhere. */
+.disc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--c-simple-disc);
+  filter: hue-rotate(var(--hue, 0deg));
+}
+
+.sleeveImage,
+.pictureImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Hidden until it has decoded: a missing file leaves the ground showing
+     rather than WebKit's broken-file glyph over it. */
+  visibility: hidden;
+}
+.sleeveImage[data-state="shown"],
+.pictureImage[data-state="shown"] { visibility: visible; }
+
+.headFields { margin: 0; min-width: 0; }
+
+/* Label, value 17pt lower, a rule 36pt down, and a 39pt pitch. The last
+   of the three — Album — has no rule under it in the capture. */
+.headField {
+  position: relative;
+  height: 37px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--c-raised);
+}
+.headField:last-child { border-bottom-color: transparent; }
+.headField dd {
+  margin: 0;
+  position: absolute;
+  top: 17px;
+  left: 0;
+  right: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--c-info-value);
+  line-height: 16px;
+}
+.headTitle { font-size: var(--f-size-info-title); }
+.headValue { font-size: var(--f-size-info); }
+
+.label {
+  display: block;
+  font-size: var(--f-size-info-label);
+  line-height: 14px;
+  color: var(--c-info-label);
+  white-space: nowrap;
+}
+
+/* The two-column table. Its rules run from the left inset to the panel's
+   edge; the divider stands 5pt left of the values. The 9pt above it is
+   measured from the third head field's block, which ends 6pt below the
+   sleeve. */
+.facts {
+  margin: 9px 0 0 var(--s-info-inset);
+  border-top: 1px solid var(--c-raised);
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: calc(var(--s-info-value-x) - var(--s-info-inset) - 5px) 1fr;
+  height: var(--s-info-row-h);
+  border-bottom: 1px solid var(--c-raised);
+  align-items: center;
+  min-width: 0;
+}
+.fact .label { line-height: normal; }
+
+.value {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-left: 1px solid var(--c-raised);
+  padding-left: 4px;
+  font-size: var(--f-size-info);
+  color: var(--c-info-value);
+  /* A long path is cut at the panel's edge, as the capture shows — not
+     wrapped, not ellipsised. */
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------------ info */
+
+.info {
+  overflow: auto;
+  min-height: 0;
+  padding: var(--s-info-form-top) var(--s-info-form-inset-right) 12px var(--s-info-form-inset);
+}
+
+.banner {
+  margin: 0 0 8px;
+  font-size: var(--f-size-sm);
+  color: var(--c-text-dim);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  row-gap: calc(var(--s-info-form-row-h) - var(--s-info-label-h) - var(--s-info-field-h));
+}
+
+/* Each row is a grid in the capture's own proportions (2x pixel widths). */
+.rowFull { display: grid; grid-template-columns: 1fr; }
+.rowArtist { display: grid; grid-template-columns: 876fr 176fr; column-gap: var(--s-info-form-gap); }
+.rowHalves { display: grid; grid-template-columns: 564fr 488fr; column-gap: var(--s-info-form-gap); }
+.rowThirds { display: grid; grid-template-columns: 564fr 234fr 234fr; column-gap: var(--s-info-form-gap); }
+.rowRemixer { display: grid; grid-template-columns: 458fr 594fr; column-gap: var(--s-info-form-gap); }
+.rowComments { display: grid; grid-template-columns: 564fr 488fr; column-gap: var(--s-info-form-gap); align-items: start; }
+/* The last row's three boxes are equal. */
+.rowThirds:last-child { grid-template-columns: 1fr 1fr 1fr; }
+
+.fieldBlock { min-width: 0; display: flex; flex-direction: column; }
+
+.formLabel {
+  display: block;
+  height: var(--s-info-label-h);
+  box-sizing: border-box;
+  font-size: var(--f-size-info-label);
+  line-height: 14px;
+  color: var(--c-info-form-text);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.box {
+  position: relative;
+  height: var(--s-info-field-h);
+  box-sizing: border-box;
+  background: var(--c-info-field);
+  min-width: 0;
+}
+
+.input,
+.select {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0;
+  margin: 0;
+  padding: 0 5px;
+  background: transparent;
+  color: var(--c-info-form-text);
+  font: inherit;
+  font-size: var(--f-size-info);
+  outline: none;
+}
+.input:focus,
+.select:focus,
+.comments:focus { outline: 1px solid var(--c-info-tab-active); outline-offset: -1px; }
+.input::-webkit-calendar-picker-indicator { display: none; }
+.select {
+  appearance: none;
+  padding-right: calc(var(--s-info-spinner-right) + 14px);
+}
+.select option { background: var(--c-info-field); color: var(--c-text); }
+/* A box rekordbox greys rather than dims: the Track Title, for several
+   tracks at once. */
+[data-greyed] .box { background: var(--c-info-field-disabled); }
+.input:disabled,
+.select:disabled,
+.comments:disabled,
+.star:disabled { color: var(--c-field-placeholder); }
+
+/* A field the writer will not take: drawn as the others, with the reason
+   in its tooltip and its text a shade dimmer. */
+[data-locked] .input,
+[data-locked] .dateText { color: var(--c-info-spinner); }
+
+.spinner {
+  position: absolute;
+  right: var(--s-info-spinner-right);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 16px;
+  color: var(--c-info-spinner);
+  pointer-events: none;
+}
+
+.comments {
+  height: var(--s-info-comments-h);
+  width: 100%;
+  box-sizing: border-box;
+  border: 0;
+  margin: 0;
+  padding: 3px 5px;
+  resize: none;
+  background: var(--c-info-field);
+  color: var(--c-info-form-text);
+  font: inherit;
+  font-size: var(--f-size-info);
+  line-height: 16px;
+}
+
+.side { display: flex; flex-direction: column; min-width: 0; }
+/* The right column's rhythm, measured from the capture's label cap tops:
+   Rating 9pt under the play-count box, the first checkbox row 21pt under
+   the stars, the second 17pt under the first. It all ends 4pt above the
+   Comments box's bottom, so the box sets the row's height. */
+.side > .fieldBlock + .fieldBlock { margin-top: 9px; }
+
+.stars {
+  display: flex;
+  align-items: center;
+  /* Five stars of the measured height across 78.5pt of ink. */
+  gap: calc((var(--s-info-stars-w) - 5 * var(--s-info-star-h) * 14 / 13.31) / 4);
+  color: var(--c-info-form-text);
+  height: var(--s-info-star-size);
+  padding: 0 0 0 2px;
+}
+.starIcon { height: var(--s-info-star-h); }
+.star {
+  display: flex;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+.star:not(:disabled):hover { color: var(--c-accent); }
+
+.checkRow {
+  display: grid;
+  grid-template-columns: var(--s-info-check-label-w) 1fr;
+  justify-items: end;
+  column-gap: 8px;
+  align-items: start;
+  margin-top: 21px;
+  padding-right: 6.5px;
+}
+.checkRow + .checkRow { margin-top: 17px; }
+.checkLabel {
+  justify-self: start;
+  font-size: var(--f-size-info-label);
+  line-height: 14px;
+  color: var(--c-info-form-text);
+}
+.check {
+  appearance: none;
+  margin: 4px 0 0;
+  width: var(--s-info-check-size);
+  height: var(--s-info-check-size);
+  background: var(--c-info-check-off);
+  position: relative;
+}
+.check:checked { background: var(--c-info-tab-active); }
+.check:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 3px;
+  height: 7px;
+  border: solid var(--c-icon-on);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Release Date: three boxes and a clear disc, all inert. */
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr var(--s-info-date-clear-w);
+  column-gap: 5.5px;
+  padding-right: 9px;
+  align-items: center;
+}
+.dateBoxes {
+  display: grid;
+  grid-template-columns: 94fr 218fr 122fr;
+  column-gap: 1.5px;
+  height: var(--s-info-field-h);
+}
+.dateBox {
+  position: relative;
+  background: var(--c-info-field);
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  min-width: 0;
+  overflow: hidden;
+}
+.dateText {
+  font-size: var(--f-size-info);
+  color: var(--c-info-form-text);
+  white-space: nowrap;
+}
+.dateClear {
+  width: var(--s-info-date-clear-w);
+  height: var(--s-info-date-clear-w);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-info-form-text);
+  display: flex;
+}
+.dateClearGlyph { width: 100%; height: 100%; }
+
+/* --------------------------------------------------------------- artwork */
+
+.artwork {
+  min-height: 0;
+  padding: var(--s-info-artwork-top) var(--s-info-artwork-inset) var(--s-info-artwork-inset);
+  display: grid;
+}
+
+.artworkArea {
+  background: var(--c-black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-info-artwork-gap);
+  min-height: 0;
+}
+
+.picture {
+  width: var(--s-info-artwork-size);
+  height: var(--s-info-artwork-size);
+  position: relative;
+  overflow: hidden;
+  background: var(--c-info-field);
+  flex: none;
+}
+
+.artworkButtons {
+  display: flex;
+  gap: var(--s-info-artwork-btn-gap);
+}
+
+.artworkButton {
+  width: var(--s-info-artwork-btn-w);
+  height: var(--s-info-artwork-btn-h);
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-info-button);
+  color: var(--c-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.artworkButton:disabled { cursor: default; }
+.artworkGlyph { width: 20px; height: 22px; }
+
+/* My Tag: a row per category, each tag a small toggle in the form's own
+   field colours; on takes the tab's blue, as the panel's selected tab does. */
+.tagRows { display: flex; flex-direction: column; gap: 4px; }
+.tagRow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.tagCategory {
+  min-width: 90px;
+  font-size: var(--f-size-info-label);
+  color: var(--c-info-label);
+}
+.tag {
+  border: 0;
+  border-radius: 2px;
+  padding: 2px 8px;
+  background: var(--c-info-field);
+  color: var(--c-info-form-text);
+  font: inherit;
+  font-size: var(--f-size-info-label);
+  cursor: default;
+}
+.tag[data-on] { background: var(--c-info-tab-active); color: var(--c-info-tab-active-text); }
+.tag:disabled { opacity: 0.6; }

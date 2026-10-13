@@ -1,0 +1,46 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal. */
+
+/* The panel is its own grid of rail-and-tree, splitter, list, at the full
+   height of the browser row it sits in. Its width is set inline, clamped to
+   the window; --sub-tree-w is the tree's, set the same way. */
+.sub {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--sub-tree-w, var(--s-sub-tree-w)) var(--s-tree-gutter-w) 1fr;
+  min-width: 0;
+  min-height: 0;
+  background: var(--c-black);
+}
+
+/* The handle on the panel's left edge. The capture puts the main list and the
+   sub-browser's rail flush against each other, so this takes no column of its
+   own: it sits over the edge, three points into either neighbour, and only
+   shows itself under the pointer. */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -3px;
+  width: 6px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 1;
+}
+.edge:hover { background: var(--c-raised); }
+
+/* Between the tree and the list: the same gutter the main tree has, and the
+   same drag handle. */
+.splitter {
+  position: relative;
+  /* Keep the padded grab area above the browser's rows and sticky header. */
+  z-index: 3;
+  background: var(--c-black);
+  cursor: col-resize;
+  touch-action: none;
+}
+.splitter::after {
+  content: "";
+  position: absolute;
+  inset: 0 -3px;
+}
+.splitter:hover { background: var(--c-raised); }

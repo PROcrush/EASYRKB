@@ -1,0 +1,64 @@
+[workspace]
+members = ["src-tauri", "crates/*"]
+resolver = "2"
+
+[workspace.package]
+version = "1.8.2"
+edition = "2021"
+rust-version = "1.89"
+license = "GPL-2.0-or-later"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = "0.1"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+# Performance is principle #1: these are errors, not suggestions.
+perf = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# Stability is principle #2: nothing may panic across the IPC boundary.
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+await_holding_lock = "deny"
+needless_pass_by_value = "deny"
+large_enum_variant = "deny"
+inefficient_to_string = "deny"
+unnecessary_to_owned = "deny"
+implicit_clone = "deny"
+cloned_instead_of_copied = "deny"
+dbg_macro = "deny"
+print_stdout = "deny"
+# noise from pedantic that does not serve this codebase
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+# `chunks_exact` intentionally exposes/ignores a remainder where relevant;
+# `as_chunks` hides that distinction and adds no safety for these call sites.
+chunks_exact_to_as_chunks = "allow"
+# Existing protocol parsers use the explicit modulo form where it reads best.
+manual_is_multiple_of = "allow"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+# NOT "abort": a panic inside one command is caught at the IPC boundary and
+# returned as an error rather than taking the whole app down.
+panic = "unwind"
+strip = "symbols"
+
+[profile.dev.package."*"]
+# SQLCipher, symphonia and the DSP crates are unusable in a debug build otherwise.
+opt-level = 2
+
+[profile.perf]
+inherits = "release"
+debug = 1
+strip = "none"

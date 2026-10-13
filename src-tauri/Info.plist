@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Merged by Tauri into the bundle's own Info.plist. -->
+<plist version="1.0">
+<dict>
+  <!-- Explain the system prompt shown when library audio is on an NFS or SMB volume. -->
+  <key>NSNetworkVolumesUsageDescription</key>
+  <string>EASYRKB needs access to network volumes to read music files in your rekordbox library.</string>
+
+  <!-- Turn on Cocoa Scripting and point it at the bundled dictionary. -->
+  <key>NSAppleScriptEnabled</key>
+  <true/>
+  <key>OSAScriptingDefinition</key>
+  <string>rbxport.sdef</string>
+</dict>
+</plist>

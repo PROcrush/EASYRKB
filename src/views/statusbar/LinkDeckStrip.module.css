@@ -1,0 +1,387 @@
+/* The Pro DJ LINK strip, measured from docs/screenshots 2026-09-13 11.18.36
+   (off), 11.16.28 (on, decks empty) and 11.16.49 (on, tracks loaded): black
+   above, then a grey band the full width of the window with the LINK button
+   at its left and — once on — the decks and the mixer centred in what is
+   left of it, each the band's full height and cut from it by a black line.
+   The band keeps its height whether or not LINK is on; only what sits beside
+   the button changes, and the band is a lighter grey while it is off. */
+.strip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  height: calc(var(--s-link-strip-h) + var(--s-link-strip-margin));
+  padding: 0 var(--s-link-button-inset);
+  border-top: var(--s-link-strip-margin) solid var(--c-black);
+  background: var(--c-link-strip-off);
+}
+.strip[data-on] { background: var(--c-link-strip); }
+
+/* Off: a band-grey button with a dark rounded line, the glyph over LINK in
+   pale grey. On: a dark button, the glyph white, and LINK on a lighter box
+   set 2pt in from the button's sides and bottom. */
+.linkButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--s-link-button-w);
+  height: var(--s-link-button-h);
+  padding: 4.5px 2px 1.5px;
+  border: 1px solid var(--c-link-button);
+  border-radius: var(--s-link-button-radius);
+  background: var(--c-link-strip-off);
+  color: var(--c-link-ink-off);
+  font: inherit;
+  cursor: pointer;
+}
+.linkButton:hover { border-color: var(--c-accent); }
+.linkButton:disabled { opacity: 0.6; cursor: default; }
+.strip[data-on] .linkButton {
+  border-color: var(--c-link-button);
+  background: var(--c-link-button);
+  color: var(--c-link-ink);
+}
+.strip[data-on] .linkButton:hover { border-color: var(--c-accent); }
+.strip[data-blocked] .linkButton { color: var(--c-error); border-color: var(--c-error); }
+/* Off, the two arrows, wider than tall; on, the square wave glyph. */
+.glyph {
+  flex: none;
+  width: var(--s-link-glyph-off-w);
+  height: var(--s-link-glyph-off-h);
+}
+.strip[data-on] .glyph {
+  width: var(--s-link-glyph);
+  height: var(--s-link-glyph);
+}
+.linkLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  height: var(--s-link-button-label-h);
+  margin-top: auto;
+  /* The face's line box sits a shade high of its cap; this puts LINK's
+     baseline 47.5pt below the button's top, where rekordbox has it. */
+  padding-top: 2px;
+  border-radius: 1px;
+  font-size: var(--f-size-link-label);
+  line-height: 1;
+}
+.strip[data-on] .linkLabel { background: var(--c-link-strip-off); }
+
+/* Off with a reason: said beside the button, explained on click. */
+.warning {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-error);
+  font: inherit;
+  font-size: var(--f-size-xs);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* The decks, centred in the rest of the strip the way rekordbox centres
+   them, each the band's full height. */
+.decks {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: var(--s-link-deck-gap);
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* One player: the number, its lamps, and the track window with what it
+   holds. The black line around it is what cuts it from the band. */
+.deck {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 calc(var(--s-link-deck-w) + 2px);
+  box-sizing: border-box;
+  min-width: 150px;
+  padding: 0;
+  background: var(--c-link-strip);
+  border: 1px solid var(--c-black);
+}
+.deck[data-drop-target] { outline: 2px solid var(--c-accent); outline-offset: -2px; cursor: copy; }
+
+/* The number box flush with the corner, the lamps centred on it. */
+.deckHead {
+  display: flex;
+  align-items: flex-start;
+  flex: none;
+  height: var(--s-link-deck-head-h);
+}
+/* Dark with a pale line while empty; orange once a track is loaded. */
+.deckNo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--s-link-number);
+  height: var(--s-link-number);
+  border: 1px solid var(--c-link-number-edge);
+  background: var(--c-panel);
+  color: var(--c-link-ink);
+  font-size: var(--f-size-link-label);
+  line-height: 1;
+}
+.deck[data-loaded] .deckNo {
+  border-color: var(--c-link-loaded);
+  background: var(--c-link-loaded);
+  color: var(--c-black);
+}
+/* CUE or PLAY: CUE is orange while sitting at the cue point; PLAY is green
+   while playing. The slot stays, so MASTER and SYNC do not move. */
+.lamp {
+  flex: none;
+  box-sizing: border-box;
+  min-width: var(--s-link-lamp-w);
+  margin-left: calc(var(--s-link-lamp-at) - var(--s-link-number));
+  padding-right: 6px;
+  color: var(--c-link-loaded);
+}
+.deck[data-playing] .lamp { color: var(--c-play-ring-on); }
+.lamp,
+.master,
+.sync {
+  height: var(--s-link-number);
+  line-height: var(--s-link-number);
+  font-size: var(--f-size-link-lamp);
+  white-space: nowrap;
+}
+.master,
+.sync { color: var(--c-link-dim); }
+.sync { margin-left: 8px; }
+.master[data-on] { color: var(--c-link-loaded); }
+.sync[data-on] { color: var(--c-link-loaded); }
+
+/* The track window: 6pt in from the box's sides, black; empty, the jog
+   well at its left; loaded, the sleeve in the well and the title. */
+.deckBody {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: var(--s-link-track-h);
+  margin: 0 6px;
+  background: var(--c-black);
+  overflow: hidden;
+}
+/* Decorative: the link reports no playhead, so it never turns. Drawn as the
+   simple player draws its record: a disc with a hole, on a dark well. */
+.jog {
+  flex: none;
+  width: var(--s-link-jog);
+  height: var(--s-link-jog);
+  background:
+    radial-gradient(circle, var(--c-simple-well) 0 4px, var(--c-simple-disc) 4px 14.5px, var(--c-simple-well) 14.5px);
+}
+/* The well again, holding the sleeve's place while it decodes. */
+.sleeveBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--s-link-jog);
+  height: var(--s-link-jog);
+  background: var(--c-simple-well);
+  overflow: hidden;
+}
+.sleeve {
+  display: block;
+  width: var(--s-link-artwork);
+  height: var(--s-link-artwork);
+  object-fit: cover;
+}
+.sleeve[data-state="pending"],
+.sleeve[data-state="failed"] { visibility: hidden; }
+.trackTitle {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  color: var(--c-link-ink);
+  font-size: var(--f-size-link-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.empty {
+  color: var(--c-link-dim);
+  font-size: var(--f-size-link-lamp);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The mixer, between the decks: its name in a box at its top-left corner,
+   and whether it holds the tempo beneath. */
+.mixer {
+  position: relative;
+  flex: 0 1 calc(var(--s-link-mixer-w) + 2px);
+  box-sizing: border-box;
+  min-width: 90px;
+  padding: 0 0 0 1px;
+  background: var(--c-link-strip);
+  border: 1px solid var(--c-black);
+}
+.mixerLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--s-link-mixer-label-w);
+  height: var(--s-link-number);
+  border: 1px solid var(--c-link-mixer-edge);
+  background: var(--c-panel);
+  color: var(--c-link-mixer-text);
+  font-size: var(--f-size-link-label);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mixerLamps {
+  position: absolute;
+  top: var(--s-link-mixer-master-at);
+  left: 10.5px;
+  display: flex;
+  gap: 10px;
+}
+.mixerMaster,
+.mixerLinkCue {
+  color: var(--c-link-dim);
+  font-size: var(--f-size-link-lamp);
+  line-height: 1;
+  white-space: nowrap;
+}
+.mixerMaster[data-on] { color: var(--c-link-loaded); }
+.mixerLinkCue[data-on] { color: var(--c-link-loaded); }
+
+/* Why LINK is unavailable, above the button. */
+.explain {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 12px;
+  z-index: 50;
+  max-width: 280px;
+  padding: 8px 10px;
+  background: var(--c-context-menu);
+  border: 1px solid var(--c-context-menu-border);
+  border-radius: 4px;
+  color: var(--c-context-menu-text);
+  font-size: var(--f-size-xs);
+  line-height: 1.4;
+  box-shadow: 0 4px 12px var(--c-shadow-side);
+}
+
+/* The tempo-master clock at the strip's left, beside the LINK button: a
+   number over two rows — the master BPM with −/+ on top, MASTER and the
+   take-the-tempo ⟳ below. Orange (link-loaded) when we are master, grey
+   when not; the box still shows the tempo we would drive. Measured from a
+   live 2x capture of rekordbox 7.2 as master (2026-09-14). */
+.masterClock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: none;
+  gap: var(--s-link-mc-gap);
+  color: var(--c-link-ink);
+}
+.mcTop,
+.mcBottom {
+  display: flex;
+  align-items: center;
+  gap: var(--s-link-mc-gap);
+}
+/* The BPM box: the tempo, then − and +. Orange outline as master, grey when
+   not; the tempo takes the same colour. */
+.mcBpm {
+  display: flex;
+  align-items: stretch;
+  height: var(--s-link-mc-box-h);
+  width: var(--s-link-mc-bpm-w);
+  box-sizing: border-box;
+  border: 1px solid var(--c-link-dim);
+  border-radius: 2px;
+  background: var(--c-link-button);
+}
+.masterClock[data-master] .mcBpm { border-color: var(--c-link-loaded); }
+.mcBpmValue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  font-size: var(--f-size-link-label);
+  color: var(--c-link-ink-off);
+}
+.masterClock[data-master] .mcBpmValue { color: var(--c-link-loaded); }
+.mcNudge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--s-link-mc-nudge-w);
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--c-link-strip);
+  background: var(--c-link-strip);
+  color: var(--c-link-ink);
+  font: inherit;
+  font-size: var(--f-size-link-label);
+  line-height: 1;
+  cursor: pointer;
+}
+.mcNudge:hover { color: var(--c-accent); }
+/* MASTER: a boxed toggle, orange as master, grey when not. */
+.mcMaster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--s-link-mc-master-w);
+  height: var(--s-link-mc-box-h);
+  box-sizing: border-box;
+  border: 1px solid var(--c-link-dim);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--c-link-dim);
+  font-size: var(--f-size-link-lamp);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.mcMaster:hover { border-color: var(--c-accent); }
+.masterClock[data-master] .mcMaster {
+  border-color: var(--c-link-loaded);
+  color: var(--c-link-loaded);
+}
+/* ⟳ take-the-tempo: a dark square button with the two-arrows glyph. */
+.mcRecycle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--s-link-mc-recycle-w);
+  height: var(--s-link-mc-box-h);
+  box-sizing: border-box;
+  border: 1px solid var(--c-link-number-edge);
+  border-radius: 2px;
+  background: var(--c-link-button);
+  color: var(--c-link-ink-off);
+  cursor: pointer;
+}
+.mcRecycle:hover:not(:disabled) { border-color: var(--c-accent); color: var(--c-link-ink); }
+.mcRecycle:disabled { opacity: 0.4; cursor: default; }
+.mcIcon {
+  width: var(--s-link-mc-icon);
+  height: var(--s-link-mc-icon);
+}

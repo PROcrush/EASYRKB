@@ -1,0 +1,9 @@
+{
+  "project": "EASYRKB",
+  "version": "1.8.2",
+  "upstream": "https://github.com/chrisle/rbxport",
+  "upstream_base": "8a66b49a6700a50f0b4c95e54129350344bfcd01",
+  "local_base": "d05e434759bddfe5c84f03df7043eac89dde2ed4",
+  "license": "GPL-2.0-or-later",
+  "snapshot": "Current working source, excluding local diagnostics and private data"
+}

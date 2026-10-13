@@ -1,0 +1,364 @@
+/* The two-deck layout's rows. Every size is a `--s-player-dual-*` token
+   scanned off the 2 PLAYER capture with both decks loaded; the row heights
+   and their order are Player.module.css's, under `.player[data-dual]`. */
+
+/* ------------------------------------------------------------ title row */
+
+/* The sleeve at the left, the title over the artist beside it, and the two
+   rows of controls pushed to the right. Deck B draws this row at the bottom
+   of its panel: the stylesheet flips which edge the sleeve hangs from and
+   nothing in the row itself changes. */
+.head {
+  display: flex;
+  align-items: flex-start;
+  padding-left: var(--s-player-dual-sleeve-inset);
+  padding-top: var(--s-player-dual-sleeve-top);
+  padding-right: var(--s-player-dual-right-inset);
+  min-width: 0;
+}
+
+/* Deck B's row sits at the bottom of the panel, 5 above its edge, so the
+   row's content hangs from the bottom instead. */
+[data-flipped] .head {
+  align-items: flex-end;
+  padding-top: 0;
+  padding-bottom: var(--s-player-dual-sleeve-bottom);
+}
+
+/* The title's cap top is 2.5 under the sleeve's top and the artist's 20.5
+   under that: a 17px face on a 20px line puts its cap about 5 under the line
+   box, which the negative margin takes back, and a 12px face on a 14px line
+   lands the artist's where it was measured. */
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  margin-left: var(--s-player-dual-title-gap);
+  margin-top: calc(var(--s-player-dual-title-cap-top) - 5px);
+}
+/* Hanging from the bottom, the column's 34px ends 4.5 above the sleeve's
+   bottom for the same cap top. */
+[data-flipped] .text {
+  margin-top: 0;
+  margin-bottom: calc(var(--s-player-dual-sleeve) - 34px + var(--s-player-dual-title-cap-top));
+}
+
+.title {
+  font-size: var(--f-size-title);
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist {
+  font-size: var(--f-size-sm);
+  line-height: 14px;
+  color: var(--c-simple-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Two rows of three columns: the readouts fill the left of the second row,
+   KEY SYNC and BEAT SYNC take the two right columns of the first, and the key
+   shift and MASTER sit under them. */
+.right {
+  display: grid;
+  grid-template-columns: auto var(--s-player-dual-sync-w) var(--s-player-dual-sync-w);
+  grid-template-rows: var(--s-player-dual-sync-h) var(--s-player-dual-sync-h);
+  column-gap: var(--s-player-dual-sync-gap);
+  row-gap: var(--s-player-dual-sync-row-gap);
+  align-items: stretch;
+  flex: none;
+}
+.readouts { grid-row: 2; grid-column: 1; }
+.syncButton:nth-of-type(1) { grid-row: 1; grid-column: 2; }
+.syncButton:nth-of-type(2) { grid-row: 1; grid-column: 3; }
+.keyShift { grid-row: 2; grid-column: 2; }
+.masterButton { grid-row: 2; grid-column: 3; }
+
+/* Hairline-separated cells, each with a hairline at its left and the text
+   padded in from it; the group ends a measured gap short of the key shift. */
+.readouts {
+  display: flex;
+  align-items: center;
+  margin-right: var(--s-player-dual-readout-gap);
+  font-size: var(--f-size-dual-readout);
+  font-variant-numeric: tabular-nums;
+  color: var(--c-text);
+  white-space: nowrap;
+}
+.cell {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--s-player-dual-time-gap);
+  padding: 0 var(--s-player-dual-readout-pad);
+  border-left: 1px solid var(--c-outline);
+}
+.remaining { color: var(--c-text); }
+.elapsed { color: var(--c-simple-dim); }
+/* The tenths are a size down, which is how rekordbox prints them. */
+.tenths { font-size: var(--f-size-xs); font-style: normal; }
+
+.syncButton,
+.masterButton {
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-deck-button);
+  color: var(--c-text);
+  font-size: var(--f-size-dual-button);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: default;
+}
+.syncButton:disabled { color: var(--c-pad-label); }
+/* BEAT SYNC lit while the deck follows the master: the capture has deck A's
+   filled the pad blue, (53,113,227), and deck B's on the button grey. */
+.syncButton[data-on] { background: var(--c-pad-active); color: var(--c-icon-on); }
+
+/* MASTER is an outlined box on the panel until this deck is the master, when
+   it fills the pad blue: the capture has both, one per deck. */
+.masterButton {
+  background: none;
+  box-sizing: border-box;
+  border: 1px solid var(--c-outline);
+}
+.masterButton[data-on] {
+  background: var(--c-pad-active);
+  border-color: var(--c-pad-active);
+  color: var(--c-icon-on);
+}
+
+.keyShift {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--f-size-sm);
+  font-weight: 700;
+  color: var(--c-text);
+}
+.shiftStep {
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  font: inherit;
+  font-size: var(--f-size-ui);
+  line-height: 1;
+  padding: 0;
+  cursor: default;
+}
+.shiftStep:disabled { color: var(--c-text); }
+.shiftKey { min-width: 0; }
+.shiftAmount { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------- control row */
+
+/* The panel-coloured row between the phrase bar and the detail, inset from
+   the deck's edges by the measured black. Its buttons are one height on a
+   measured pitch: a 4.5 gap inside a group and 24.5 between groups. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--s-player-dual-ctrl-group-gap);
+  margin: 0 var(--s-player-dual-control-inset);
+  /* Both insets are measured from the deck's edge, and the panel starts
+     three points inside it. */
+  padding: var(--s-player-dual-control-pad)
+    calc(var(--s-player-dual-right-inset) - var(--s-player-dual-control-inset))
+    var(--s-player-dual-control-pad)
+    calc(var(--s-player-dual-ctrl-inset) - var(--s-player-dual-control-inset));
+  background: var(--c-panel);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--s-player-dual-ctrl-gap);
+  flex: none;
+}
+
+/* AU | MA and the loop length are closer than groups elsewhere. */
+.loopLength {
+  display: flex;
+  align-items: center;
+  gap: var(--s-player-dual-ctrl-gap);
+  flex: none;
+  margin-left: calc(var(--s-player-dual-ctrl-loop-gap) - var(--s-player-dual-ctrl-group-gap));
+}
+
+.loops {
+  display: flex;
+  align-items: center;
+  gap: var(--s-player-dual-loop-icon-gap);
+  flex: none;
+}
+
+.spacer { flex: 1; min-width: 0; }
+
+/* Every button in the row shares a height, a face and a corner. */
+.icon,
+.mark,
+.memory,
+.chip,
+.step,
+.tempoStep,
+.tempoButton,
+.loopField,
+.bpmField {
+  box-sizing: border-box;
+  height: var(--s-player-dual-btn-h);
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-deck-button);
+  color: var(--c-text);
+  font-size: var(--f-size-dual-button);
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: default;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon { width: var(--s-player-dual-icon-w); }
+.mark { width: var(--s-player-dual-mark-w); }
+.memory { width: var(--s-player-dual-memory-w); }
+.memory:disabled { color: var(--c-pad-label); }
+.step { width: var(--s-player-dual-step-w); font-size: var(--f-size-ui); font-weight: 400; }
+.tempoStep { width: var(--s-player-dual-mark-w); font-size: var(--f-size-ui); font-weight: 400; }
+.tempoButton { width: var(--s-player-dual-tempo-btn-w); }
+.tempoButton:disabled { color: var(--c-pad-label); }
+.tempoButton[data-on] { background: var(--c-pad-active); color: var(--c-icon-on); }
+.step:disabled,
+.tempoStep:disabled { color: var(--c-pad-label); }
+
+/* AU, MA and Q: on is the pad blue with white text, off is an outlined box on
+   the panel with the dim text, which is what the capture draws for MA. */
+.chip {
+  width: var(--s-player-dual-icon-w);
+  background: none;
+  border: 1px solid var(--c-outline);
+}
+.chip[data-on] {
+  background: var(--c-pad-active);
+  border-color: var(--c-pad-active);
+  color: var(--c-icon-on);
+}
+.controls button:hover:not(:disabled) { background: #383838; color: #fff; }
+.controls button[data-on]:hover:not(:disabled) { background: #4a82ed; border-color: #4a82ed; }
+
+/* The two fields print their number in a regular face a size up. */
+.loopField,
+.bpmField {
+  font-size: var(--f-size-dual-field);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.loopField { width: var(--s-player-dual-loop-field-w); }
+.bpmField { width: var(--s-player-dual-bpm-field-w); }
+
+/* The grid-shift glyph: three bars with a triangle pointing the way the grid
+   moves, 13pt across and 7 tall, drawn in gradients so it is one element.
+   Its proportions are read off the capture rather than scanned. */
+.gridGlyph {
+  width: 13px;
+  height: 7px;
+  color: var(--c-text);
+  background:
+    linear-gradient(currentColor, currentColor) 4px 0 / 1.5px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 7.25px 0 / 1.5px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 10.5px 0 / 1.5px 100% no-repeat;
+  position: relative;
+}
+.gridGlyph::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: 0;
+  height: 0;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+}
+.gridGlyph[data-dir="back"]::before { left: 0; border-right: 3.5px solid currentColor; }
+.gridGlyph[data-dir="forward"]::before {
+  left: auto;
+  right: 0;
+  border-left: 3.5px solid currentColor;
+  background: none;
+}
+.gridGlyph[data-dir="forward"] {
+  background:
+    linear-gradient(currentColor, currentColor) 1px 0 / 1.5px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 4.25px 0 / 1.5px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 7.5px 0 / 1.5px 100% no-repeat;
+}
+.icon:disabled .gridGlyph { color: var(--c-text); }
+
+/* The downbeat mark: a 2.5x10 bar, white over the downbeat red. */
+.markGlyph {
+  width: 2.5px;
+  height: 10px;
+  background: linear-gradient(var(--c-text) 50%, var(--c-downbeat) 50%);
+}
+
+.loopGlyph { width: 15px; height: 6px; color: var(--c-text); }
+.icon:disabled .loopGlyph { color: var(--c-text); }
+
+/* ------------------------------------------------------------- the zoom */
+
+/* One cluster for the pair, over the centre line: + a measured distance
+   above it, − the same below, RST on the line. Placed by the shell, which
+   owns the line. No scrim: the capture floats the glyphs straight over the
+   waveforms. */
+.zoom {
+  position: absolute;
+  z-index: 3;
+  /* The glass starts a point inside the glyph's box. */
+  left: calc(var(--s-player-dual-zoom-x) - 1px);
+  top: 50%;
+  translate: 0 -50%;
+  height: calc(var(--s-player-dual-zoom-spread) + 14px);
+  display: flex;
+  flex-direction: column;
+  /* Left-aligned, not centred: RST is wider than the glyphs, and the capture
+     has all three starting on the same edge. */
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.zoomButton {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  background: none;
+  color: var(--c-text);
+  padding: 0;
+  cursor: default;
+  display: block;
+  pointer-events: auto;
+}
+.zoomButton:hover { color: var(--c-icon-on); }
+.zoomGlyph { width: 14px; height: 14px; display: block; }
+.zoomReset {
+  font-size: var(--f-size-dual-button);
+  font-weight: 700;
+  color: var(--c-text);
+  line-height: 1;
+}
+
+/* A playing loop, or an IN that waits for its OUT: the pad blue. */
+.loopField[data-on],
+.icon[data-on] { background: var(--c-pad-active); color: var(--c-icon-on); }
+.icon[data-on] .loopGlyph { color: var(--c-icon-on); }
+.loopField:disabled { color: var(--c-pad-label); }

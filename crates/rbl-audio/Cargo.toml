@@ -1,0 +1,21 @@
+[package]
+name = "rbl-audio"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Audio decoding for analysis."
+
+[lints]
+workspace = true
+
+[dependencies]
+thiserror = { workspace = true }
+tracing = { workspace = true }
+symphonia = { version = "0.5", default-features = false, features = ["mp3", "aac", "alac", "isomp4", "flac", "wav", "aiff", "pcm", "adpcm"] }
+rbl-core = { path = "../rbl-core" }
+mp3lame-encoder = "0.2.5"
+rubato = "0.16"
+
+[dev-dependencies]
+tempfile = "3"

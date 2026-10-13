@@ -1,0 +1,227 @@
+/* The window's own title bar, drawn here rather than by macOS.
+   `titleBarStyle: "Overlay"` puts the traffic lights over the top left of the
+   webview and hands us the strip; `hiddenTitle` stops macOS also drawing its
+   own name beside them, which `Overlay` on its own does not. Between them
+   this is the only way to set the name in our face and put it in the middle
+   of the window — the system draws its title beside the buttons, at its size.
+   The strip has to carry `data-tauri-drag-region` or the window cannot be
+   moved at all, because the native bar that used to move it is gone. */
+.titleBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The grey macOS paints rekordbox's title bar, measured from the capture,
+     and its name in it: the system's own face, bold at 13px, in the grey the
+     capture draws it. Not Arial — the title bar is the window's, not the
+     app's, and rekordbox's is drawn by macOS. */
+  background: var(--c-titlebar);
+  font-family: var(--f-window-title);
+  font-size: var(--f-size-window-title);
+  font-weight: 700;
+  color: var(--c-titlebar-text);
+  /* The strip drags the window: `data-tauri-drag-region` on the element is how
+     that is asked for, not the `-webkit-app-region` a Chromium app would use.
+     Room at the left for the traffic lights, which float over the webview
+     under this title bar style. */
+  user-select: none;
+}
+
+/* The cost readout, at the right end of the strip. Absolute, so the name stays
+   on the window's own centre rather than on the centre of whatever is left of
+   it. Not bold: the name is the title, and this is the instrumentation. */
+.cost {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  gap: 12px;
+  color: var(--c-text-dim);
+  font-family: var(--f-ui);
+  font-size: var(--f-size-xs);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.appName { color: var(--c-titlebar-text); }
+
+.window {
+  display: grid;
+  /* One row for the decks, sized to what is in it: the layout switch draws one
+     deck, two, a short one, or none at all. */
+  grid-template-rows:
+    var(--s-title-bar-h)
+    var(--s-top-bar-h)
+    auto
+    1fr
+    auto
+    var(--s-status-bar-h);
+  height: 100%;
+  background: var(--c-black);
+}
+
+/* Linux window managers provide the title bar and its close button. Keeping
+   the macOS-shaped webview strip there puts an overlay over KDE's native
+   controls, which can make the close button ignore its first click. */
+.window[data-platform="linux"] {
+  grid-template-rows:
+    0
+    var(--s-top-bar-h)
+    auto
+    1fr
+    auto
+    var(--s-status-bar-h);
+}
+.window[data-platform="linux"] > .titleBar { display: none; }
+/* Each region on its own row, named rather than taken in turn. Full Browser
+   draws no deck block at all, and auto-placement then slid the body up into
+   the deck row — sized to its content — and the status bar into the body's,
+   leaving a status-bar-high black strip under it. Pinning the rows keeps the
+   deck row empty, and so zero, and the browser takes the whole of `1fr`. */
+.window > .decks { grid-row: 3; }
+.window > .body { grid-row: 4; }
+/* The Pro DJ LINK player strip, when LINK is on: its own row above the status
+   bar, sized to what it holds, and zero when absent. */
+.window > .linkStrip { grid-row: 5; }
+/* The status bar is the last child; Settings between them is fixed, so it
+   takes no row. */
+.window > :last-child { grid-row: 6; }
+
+/* The decks and the measured black gap under them. The gap is real and
+   measured: the pad bar ends at 335pt and the track list starts at 338pt. A
+   border on the player drew a line in the panel colour instead. */
+.decks { display: grid; }
+/* The mixer strip runs down the left of both decks, spanning them: it is one
+   strip for the pair, not one per deck. A measured black column separates it
+   from the transport, and the decks start on its far edge. */
+.decks[data-mixer] {
+  position: relative;
+  grid-template-columns: auto var(--s-mixer-gutter-w) auto 1fr;
+  grid-template-areas: "rail gap mixer a" "rail gap mixer b" "gutter gutter gutter gutter";
+  /* The pair is shorter than two single decks: the capture measures the
+     two-deck band at 420pt against the 279 one deck gets, so each deck here is
+     210 and the waveforms are shorter with it. That is what rekordbox does —
+     the browser takes the vertical slack either way. */
+  grid-template-rows: 1fr 1fr auto;
+  height: calc(var(--s-player-dual-h) + var(--s-player-gutter-h));
+}
+.decks[data-mixer] > :nth-child(1) { grid-area: rail; }
+.decks[data-mixer] > :nth-child(2) { grid-area: mixer; }
+.decks[data-mixer] > :nth-child(3) { grid-area: a; }
+.decks[data-mixer] > :nth-child(4) { grid-area: b; }
+.decks[data-mixer] > .playerGutter { grid-area: gutter; }
+/* The pair's zoom cluster, over the decks' column at its centre line: the
+   slot is the decks' area, and the cluster places itself inside it. */
+.decks[data-mixer] > .zoomSlot {
+  grid-area: a / a / b / b;
+  position: relative;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* The shared transport column: deck A's half above deck B's, each exactly
+   half the pair's height, at the width the two-player capture measures. The
+   halves are placed rather than stacked so DUAL CONTROL between them takes
+   nothing from either — each deck's transport measures its controls from its
+   own outer edge. */
+.deckRail {
+  position: relative;
+  width: var(--s-mixer-transport-w);
+  background: var(--c-panel);
+}
+.transportSlot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  display: grid;
+  min-height: 0;
+}
+.transportSlot:first-child { top: 0; }
+.transportSlot:last-child { bottom: 0; }
+
+/* DUAL CONTROL, on the centre line between the two halves of the column —
+   which is where the two-player capture draws it, at the glyph's measured
+   size. */
+.dual {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: var(--s-mixer-dual-w);
+  height: var(--s-mixer-dual-h);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-icon-off);
+  cursor: pointer;
+  z-index: 1;
+}
+.dual[data-on] { color: var(--c-icon-on); }
+.dualGlyph { width: var(--s-mixer-dual-w); height: var(--s-mixer-dual-h); }
+/* The portalled transport fills its half rather than sitting at its own
+   height, so the two halves meet in the middle. */
+.transportSlot > * { height: 100%; }
+.playerGutter { height: var(--s-player-gutter-h); background: var(--c-black); }
+
+/* With a panel open the browser gives up width to it. The sub-browser sizes
+   itself — it clamps its own width to this row the way the tree splitter
+   does, so its column is `auto` — and the information panel takes the width
+   browseSetting.xml records, capped as a fraction of the window so a narrow
+   one still leaves a usable track list. */
+.body[data-sub] {
+  grid-template-columns:
+    var(--tree-w, var(--s-tree-w)) var(--s-tree-gutter-w) 1fr
+    auto;
+}
+
+.body[data-sub][data-info] {
+  grid-template-columns:
+    var(--tree-w, var(--s-tree-w)) var(--s-tree-gutter-w) 1fr
+    auto
+    min(var(--s-info-w), 25%);
+}
+
+.body[data-info] {
+  grid-template-columns:
+    var(--tree-w, var(--s-tree-w)) var(--s-tree-gutter-w) 1fr
+    min(var(--s-info-w), 33%);
+}
+
+.body {
+  display: grid;
+  /* --tree-w is set by the splitter drag; the token is the starting width. */
+  grid-template-columns: var(--tree-w, var(--s-tree-w)) var(--s-tree-gutter-w) 1fr;
+  /* The icon column at the right edge is placed past the last explicit
+     column whichever panels are open, in an implicit column of its own
+     measured width, rather than each of those rules naming it. */
+  grid-auto-columns: var(--s-right-rail-w);
+  min-width: 0;
+  min-height: 0; /* let the browser scroll instead of the page */
+}
+
+/* Past the explicit columns, on the one row: without this the rail would be
+   auto-placed into a second row under everything else. */
+.rightRail { grid-row: 1; grid-column: -1; }
+
+/* The gutter between the tree and the browser, which is also the drag handle.
+   Black, and narrower than the capture's seven points by request. Painting it
+   the tree's own colour, as it was, left no visible gap at all; the `::after`
+   below keeps the grab target five points wider on each side than the gutter
+   is drawn, so narrowing it does not make it harder to catch. */
+.splitter {
+  position: relative;
+  /* Keep the padded grab area above the browser's rows and sticky header (2). */
+  z-index: 3;
+  background: var(--c-black);
+  cursor: col-resize;
+  touch-action: none;
+}
+.splitter::after {
+  content: "";
+  position: absolute;
+  inset: 0 -5px;
+}
+.splitter:hover { background: var(--c-raised); }

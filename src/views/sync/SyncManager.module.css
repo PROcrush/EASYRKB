@@ -1,0 +1,375 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal colour. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-modal-scrim);
+}
+
+/* rekordbox opens a window; this is that window drawn inside ours, title
+   bar included, clamped to the screen it has. */
+.window {
+  display: flex;
+  flex-direction: column;
+  width: var(--s-sync-w);
+  height: var(--s-sync-h);
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--c-black);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-label);
+}
+/* Focused on open so Escape closes it; a window is not a control, so no ring. */
+.window:focus-visible { outline: none; }
+/* As a window of its own the shell draws the chrome, and this fills it. */
+.window[data-windowed] {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+}
+
+.titlebar {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  height: var(--s-pref-title-h);
+  background: var(--c-titlebar);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-window-title);
+  font-weight: 700;
+  /* The strip drags the window, so a press on it must not take the name. */
+  user-select: none;
+}
+.close {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  height: 100%;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--c-icon-off);
+  font: inherit;
+  font-weight: 400;
+  cursor: default;
+}
+.close:hover { color: var(--c-icon-on); }
+
+/* Three columns — iTunes, rekordbox, Device — each with a SYNC button before
+   it, as rekordbox lays out its manager. */
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-panel);
+  overflow: hidden;
+}
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+}
+.heading {
+  margin: 0;
+  padding: 0;
+  font-size: var(--f-size-pref-sub);
+  font-weight: 700;
+  line-height: 22px;
+}
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 0;
+  border-top: 1px solid var(--c-black);
+}
+.columnNote { margin: 3px 0 0; color: var(--c-text-dim); font-size: var(--f-size-pref-small); }
+.textButton { border: 0; background: none; padding: 4px 0; color: var(--c-accent); font: inherit; font-size: var(--f-size-pref-small); cursor: pointer; }
+.textButton:disabled { color: var(--c-device-disabled); cursor: default; }
+.search { display: flex; align-items: center; gap: 8px; margin: 0 12px 8px; padding: 5px 6px; border: 1px solid var(--c-raised); border-radius: 2px; color: var(--c-text-dim); background: var(--c-top); }
+.search:focus-within { border-color: var(--c-accent); }
+.search input { width: 100%; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: var(--c-text); font: inherit; font-size: var(--f-size-pref-small); }
+.search input::-webkit-search-cancel-button { display: none; }
+.search button { display: flex; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--c-text-dim);
+}
+
+/* A row: twisty, icon, name, and the checkbox at the right edge. */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 12px 0 8px;
+  cursor: default;
+  user-select: none;
+}
+.row:hover { background: var(--c-raised); }
+.row[aria-selected="true"] { background: var(--c-raised); }
+.rowSelection { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; align-self: stretch; cursor: pointer; }
+.rowSelection:has(input:disabled) { cursor: default; }
+.ejectButton { display: grid; place-items: center; flex: none; width: 26px; height: 26px; padding: 6px; border: 0; border-radius: 3px; background: none; color: var(--c-text-dim); cursor: pointer; }
+.ejectButton svg { width: 12px; height: 14px; }
+.ejectButton:hover:not(:disabled) { background: var(--c-raised); color: var(--c-text); }
+.ejectButton:disabled { opacity: .4; cursor: default; }
+.twisty {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.twisty::before { content: ""; width: 0; height: 0; border: 4px solid transparent; border-right: 0; border-left-color: var(--c-text-dim); }
+.twisty[data-open]::before { transform: rotate(90deg); }
+.twisty[data-leaf] { visibility: hidden; }
+.twisty:disabled { cursor: default; }
+.window button:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+.icon { width: 14px; height: 12px; flex: none; color: var(--c-text); }
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The checkbox rekordbox draws: a square that fills blue when ticked, and a
+   dash when a folder is only partly ticked. */
+.tick {
+  appearance: none;
+  margin: 0;
+  flex: none;
+  position: relative;
+  width: var(--s-pref-checkbox);
+  height: var(--s-pref-checkbox);
+  box-sizing: border-box;
+  border: 1px solid var(--c-pref-control-off);
+  background: var(--c-panel);
+  cursor: default;
+}
+.tick:checked,
+.tick:indeterminate { border-color: var(--c-pref-select); background: var(--c-pref-select); }
+.tick:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1.5px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--c-icon-on);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.tick:indeterminate::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 6.5px;
+  height: 2px;
+  background: var(--c-icon-on);
+}
+.tick:disabled { opacity: .4; }
+.tick:focus-visible { outline: 1px solid var(--c-accent); outline-offset: 1px; }
+
+/* The middle: SYNC, centred between the columns. */
+.middle {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 144px;
+  flex-direction: column;
+  gap: 72px;
+}
+/* The iTunes → rekordbox side has one SYNC and nothing under it, so it is
+   narrower than the device side with its import controls. */
+.middleSlim {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 108px;
+}
+.sync {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: var(--s-pref-button-h);
+  padding: 0 14px;
+  border: 1px solid var(--c-pref-select);
+  border-radius: 3px;
+  background: var(--c-pref-select);
+  color: var(--c-icon-on);
+  font: inherit;
+  font-weight: 700;
+  cursor: default;
+}
+.sync:hover:not(:disabled) { border-color: var(--c-icon-on); }
+.sync:disabled {
+  border-color: var(--c-pref-button-border);
+  background: var(--c-pref-button-bottom);
+  color: var(--c-device-disabled);
+}
+.selectionSummary { display: block; font-size: var(--f-size-pref-small); line-height: 1.5; }
+.importActions { display: flex; justify-content: center; }
+.spinner { flex: none; animation: sync-spin 1s linear infinite; }
+@keyframes sync-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+/* Selecting a device and browsing its contents are separate actions. */
+.device { padding: 2px 0; border-bottom: 1px solid var(--c-black); overflow: hidden; }
+.device[data-ticked] { background: var(--c-raised); }
+.library {
+  padding: 4px 12px 8px 30px;
+  font-size: var(--f-size-pref-small);
+}
+.formatButton { margin: 8px 0 4px 12px; }
+.libraryNote { padding-left: 12px; color: var(--c-text-dim); line-height: 20px; }
+.capacity { margin-top: 4px; color: var(--c-text-dim); }
+
+/* Refresh, Close: the Preferences window's grey button. */
+.button,
+.refresh {
+  height: var(--s-pref-button-h);
+  padding: 0 14px;
+  border: 1px solid var(--c-pref-button-border);
+  border-radius: 2px;
+  background: linear-gradient(var(--c-pref-button-top), var(--c-pref-button-bottom));
+  color: var(--c-icon-on);
+  font: inherit;
+  cursor: default;
+}
+.refresh { height: 22px; padding: 0 10px; font-size: var(--f-size-pref-small); }
+.button:hover:not(:disabled),
+.refresh:hover:not(:disabled) { border-color: var(--c-accent); }
+.button:disabled,
+.refresh:disabled { color: var(--c-device-disabled); }
+
+.footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 8px 8px;
+}
+.status {
+  flex: 1;
+  min-width: 0;
+  color: var(--c-text);
+  font-size: var(--f-size-pref-small);
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+.status > div { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status > .statusDetails { overflow: visible; white-space: normal; overflow-wrap: anywhere; }
+.statusList { margin: 4px 0 0; padding-left: 18px; max-height: 120px; overflow-y: auto; }
+.status[data-error] { color: var(--c-error); }
+.detailsButton { flex: none; border: 0; background: none; color: var(--c-accent); font: inherit; cursor: pointer; }
+.idleStatus { color: var(--c-text-dim); }
+/* rekordbox holding the database blocks every sync: the reason reads as a warning. */
+.idleStatus[data-warn] { color: var(--c-error); }
+
+.middle .button { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 8px; font-size: var(--f-size-pref-small); }
+.importActions { display: flex; flex-direction: column; align-items: stretch; gap: 6px; width: 100%; }
+.syncActions { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+.option { display: flex; align-items: center; gap: 6px; font-size: var(--f-size-pref-small); cursor: pointer; }
+.option:has(input:disabled) { color: var(--c-text-dim); cursor: default; }
+.importKinds { display: flex; flex-direction: column; gap: 6px; margin: 0 0 4px; padding: 0; border: 0; min-width: 0; }
+.importLegend { padding: 0; margin-bottom: 6px; color: var(--c-text-dim); font-size: var(--f-size-pref-small); }
+.storage { margin: 2px 12px 8px 30px; }
+.storage .capacity { margin: 0 0 6px; }
+.spaceBar { height: 8px; overflow: hidden; border: 1px solid var(--c-pref-control-off); border-radius: 3px; background: transparent; }
+.spaceBar { display: flex; }
+.spaceBar > span { display: block; height: 100%; flex: none; background: var(--c-accent); }
+.spaceBar > .pending { background: var(--c-sync-pending); }
+.spaceBar > .pending[data-over] { background: var(--c-error); }
+.storageLabels { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 8px; margin-top: 6px; color: var(--c-text-dim); font-size: var(--f-size-pref-small); font-variant-numeric: tabular-nums; }
+.storageLabels span:first-child { display: flex; align-items: center; gap: 5px; }
+.storageLabels i { width: 7px; height: 7px; border-radius: 1px; background: var(--c-accent); }
+.storageLabels .pendingLabel { display: flex; align-items: center; gap: 5px; }
+.storageLabels .pendingLabel i { background: var(--c-sync-pending); }
+.storageLabels .pendingLabel[data-over] { color: var(--c-error); }
+.storageLabels .pendingLabel[data-over] i { background: var(--c-error); }
+.capacity { margin: 2px 12px 8px 26px; font-size: var(--f-size-pref-small); }
+.library details > summary { cursor: pointer; padding: 5px 0; }
+.library [role="group"] { padding-left: 16px; }
+.playlistLeaf { display: flex; align-items: center; gap: 6px; padding: 5px 0; }
+
+.library summary .icon { display: inline-block; vertical-align: middle; }
+
+@media (max-width: 800px) {
+  .middle { width: 136px; }
+  .middleSlim { width: 92px; }
+  .headingRow { flex-wrap: wrap; }
+}
+.exportProgress { display: grid; gap: 6px; margin-top: 10px; font-size: var(--f-size-xs); font-variant-numeric: tabular-nums; }
+.exportProgress > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.exportReport {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 7px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--c-raised) 45%, transparent);
+  color: var(--c-text-dim);
+  font-size: var(--f-size-xs);
+  line-height: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.exportReport span { white-space: nowrap; }
+.exportReport strong { color: var(--c-text); font-weight: 700; }
+.exportReport .exportWarning,
+.exportReport .exportWarning strong { color: var(--c-error); }
+.exportProgress progress {
+  width: 100%;
+  height: 8px;
+  appearance: none;
+  border: 1px solid var(--c-cue-ring);
+  border-radius: 4px;
+  overflow: hidden;
+  background: transparent;
+  accent-color: var(--c-cue-ring);
+}
+.exportProgress progress::-webkit-progress-bar { background: transparent; }
+.exportProgress progress::-webkit-progress-value {
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--c-cue-ring) 65%, transparent) 0 3px, transparent 3px 6px);
+}
+.exportProgress progress[data-state="done"] { border-color: var(--c-meter-green); accent-color: var(--c-meter-green); }
+.exportProgress progress[data-state="done"]::-webkit-progress-value { background: var(--c-meter-green); }
+.exportProgress progress[data-state="failed"] { border-color: var(--c-error); accent-color: var(--c-error); }
+.exportProgress progress[data-state="failed"]::-webkit-progress-value { background: var(--c-error); }
+.exportError { color: var(--c-error); white-space: normal !important; overflow: visible !important; }

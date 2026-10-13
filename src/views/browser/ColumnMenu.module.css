@@ -1,0 +1,49 @@
+/* The playlist header menu in the supplied capture: square grey hairline,
+   dark panel, compact rows and a fixed tick gutter. */
+.menu {
+  position: fixed;
+  z-index: 50;
+  /* Keep hover repaints inside this menu, away from the waveform-heavy table. */
+  contain: layout style paint;
+  isolation: isolate;
+  width: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 3px 0;
+  background: var(--c-context-menu);
+  border: 1px solid var(--c-context-menu-border);
+  box-shadow: inset 0 0 0 0.5px var(--c-context-menu-inner), 0 4px 12px var(--c-shadow-soft);
+  font: 400 var(--f-size-menu) var(--f-ui);
+  color: var(--c-context-menu-text);
+}
+
+/* The column list is long enough to need its own scroll on a short window,
+   while the two auto-size actions stay put at the top. */
+.list { overflow-y: auto; min-height: 0; }
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 20px;
+  padding: 0 7px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+}
+.item:hover:not(:disabled) { background: var(--c-accent); color: var(--c-icon-on); }
+.item:disabled { color: var(--c-context-menu-text-dim); }
+.menu > .item { min-height: 25px; padding-left: 24px; }
+
+.tick { display: inline-block; width: 10px; text-align: center; flex: none; font-size: 16px; line-height: 16px; }
+
+.separator {
+  height: 1px;
+  margin: 5px 8px;
+  background: var(--c-context-menu-separator);
+}

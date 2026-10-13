@@ -1,0 +1,8 @@
+rbxport is licensed under the GNU General Public License, version 2 or (at
+your option) any later version (GPL-2.0-or-later).
+
+Copyright (c) 2026 Chris Le
+
+The complete license text is included at
+`crates/rbl-deck/vendor/rubberband/COPYING`. Distributors must include that
+text and satisfy all corresponding GPL obligations.

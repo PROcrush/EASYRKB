@@ -1,0 +1,18 @@
+{
+  "productName": "EASYRKB",
+  "identifier": "com.procrush.rbxport.zh",
+  "bundle": {
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": false,
+    "useLocalToolsDir": true,
+    "windows": {
+      "nsis": {
+        "installerHooks": null,
+        "languages": ["SimpChinese"],
+        "displayLanguageSelector": false,
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico"
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-modal-scrim);
+}
+.window {
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  padding: 16px 20px 18px;
+  border: 1px solid var(--c-pref-button-border);
+  border-radius: 10px;
+  background: var(--c-black);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-label);
+}
+.title { font-weight: 700; }
+.message { margin: 10px 0 18px; line-height: 1.4; }
+.buttons { display: flex; justify-content: flex-end; gap: var(--s-pref-button-gap); }
+.button {
+  height: var(--s-pref-button-h);
+  min-width: 96px;
+  padding: 0 18px;
+  border: 1px solid var(--c-pref-button-border);
+  border-radius: 2px;
+  background: linear-gradient(var(--c-pref-button-top), var(--c-pref-button-bottom));
+  color: var(--c-icon-on);
+  font: inherit;
+  cursor: default;
+}
+.button:hover:not(:disabled) { border-color: var(--c-accent); }
+.primary { border-color: var(--c-accent); }
+.remember { display: flex; align-items: center; gap: 8px; margin: -6px 0 18px; }

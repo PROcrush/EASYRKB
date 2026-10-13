@@ -1,0 +1,99 @@
+/* The INFO tab beside the deck. The box is the MEMORY list's (measured off
+   the 7.2.11 capture); the stack inside it is the rekordbox 6.0.0 manual's
+   picture of the tab, p.57 — see DeckInfo.tsx for what is assumed. */
+
+.info {
+  overflow: auto;
+  min-height: 0;
+  margin: var(--s-deck-info-inset-top) var(--s-deck-info-inset-x) 0;
+  padding: 0 var(--s-deck-info-pad-x);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--f-ui);
+  font-size: var(--f-size-deck-info);
+  color: var(--c-text-dim);
+}
+
+/* Three blocks of fixed height with a hairline under each, then the file
+   lines: the panel keeps its shape whether or not a comment or colour is
+   set, as the manual's does with its colour line. */
+.rating,
+.color,
+.comment {
+  flex: none;
+  border-bottom: 1px solid var(--c-panel);
+}
+
+.rating {
+  height: var(--s-deck-info-rating-h);
+  display: flex;
+  align-items: center;
+}
+/* Each star in a cell of the measured pitch, its left edge at the cell's. */
+.rating > span {
+  flex: none;
+  width: var(--s-deck-info-star-pitch);
+}
+.starIcon { height: var(--s-deck-info-star-h); }
+
+.color {
+  height: var(--s-deck-info-color-h);
+  display: flex;
+  align-items: center;
+  gap: var(--s-deck-info-dot-gap);
+}
+
+.dot {
+  flex: none;
+  width: var(--s-deck-info-dot);
+  height: var(--s-deck-info-dot);
+  border-radius: 50%;
+}
+.dot[data-color="Pink"] { background: var(--c-comment-pink); }
+.dot[data-color="Red"] { background: var(--c-comment-red); }
+.dot[data-color="Orange"] { background: var(--c-comment-orange); }
+.dot[data-color="Yellow"] { background: var(--c-comment-yellow); }
+.dot[data-color="Green"] { background: var(--c-comment-green); }
+.dot[data-color="Aqua"] { background: var(--c-comment-aqua); }
+.dot[data-color="Blue"] { background: var(--c-comment-blue); }
+.dot[data-color="Purple"] { background: var(--c-comment-purple); }
+
+.comment {
+  height: var(--s-deck-info-comment-h);
+  padding-top: var(--s-deck-info-comment-icon-top);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-deck-info-dot-gap);
+}
+.bubble {
+  flex: none;
+  width: var(--s-deck-info-comment-icon-w);
+  height: auto;
+  color: var(--c-text-dim);
+}
+/* The comment can run to a few lines; past the block it is cut, not
+   scrolled — the block is the manual's fixed height. */
+.commentText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  line-height: var(--s-deck-info-line-h);
+  max-height: calc(var(--s-deck-info-line-h) * 2);
+  /* The first line's centre on the bubble's: the bubble is 10/12 of its
+     width tall, the line box is a full line. */
+  margin-top: calc((var(--s-deck-info-comment-icon-w) * 10 / 12 - var(--s-deck-info-line-h)) / 2);
+}
+
+.file {
+  flex: none;
+  padding-top: var(--s-deck-info-facts-pad-top);
+  display: flex;
+  flex-direction: column;
+}
+
+.line {
+  line-height: var(--s-deck-info-line-h);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

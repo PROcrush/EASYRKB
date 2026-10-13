@@ -1,0 +1,132 @@
+/* Drawn as rekordbox's own, measured from docs/screenshots context-menu-tree@2x
+   and context-menu-track@2x (rekordbox 7.2.11, 2x): a (30,30,30) panel inside
+   a 1pt (151,151,151) hairline with a half-point darker line just inside it,
+   rows on the 25pt pitch in Arial 12.5 regular, white where an entry can be
+   chosen and (97,97,97) where it cannot, a 6x8 arrow 17pt in from the right
+   on the ones that open a submenu, and a 1pt rule between groups with 5pt
+   above and below.
+   The panel is as wide as its longest label plus the arrow column, whether or
+   not that row has an arrow: every row reserves it [OBS]. */
+.menu,
+.submenu {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  padding: var(--s-context-menu-pad) 0;
+  background: var(--c-context-menu);
+  border: 1px solid var(--c-context-menu-border);
+  /* The inner line is half a point at 2x; a 1x screen rounds it away. The
+     drop shadow is soft and faint in the captures — a fade of ten points to
+     the left of the panel — and is not measured beyond that [OBS]. */
+  box-shadow:
+    inset 0 0 0 0.5px var(--c-context-menu-inner),
+    0 4px 12px var(--c-shadow-soft);
+  font-family: var(--f-ui);
+  font-size: var(--f-size-menu);
+  font-weight: 400;
+  color: var(--c-context-menu-text);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--s-menu-row-h);
+  padding: 0
+    calc(var(--s-context-menu-arrow-inset) + var(--s-context-menu-arrow-w) + var(--s-context-menu-arrow-gap))
+    0 var(--s-context-menu-text-inset);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+}
+/* No capture shows a hovered row; the selection blue is the assumption [ASSUME]. */
+.item:hover:not(:disabled) { background: var(--c-accent); color: var(--c-icon-on); }
+.item:disabled { color: var(--c-context-menu-text-dim); }
+
+/* The capitals sit a point above the row's centre in the captures (cap
+   middle 11.25pt down a 25pt row). Chromium puts them there with a 25px line
+   box and WebKit a point lower; a 24px box over a pixel of padding leaves
+   each within half a point of the capture, measured at 2x. The arrow is
+   centred on the row itself. */
+.label {
+  flex: 1;
+  line-height: calc(var(--s-menu-row-h) - 1px);
+  padding-bottom: 1px;
+}
+
+/* Drawn rather than typed: a character renders in the body font and sits off
+   the baseline. */
+.arrow {
+  position: absolute;
+  right: var(--s-context-menu-arrow-inset);
+  /* Centred on the row is 8.5px down a 25px row. Chromium snaps an absolute
+     box's top to a whole CSS pixel, which at 2x lands the arrow a device
+     pixel low; a transform is not snapped, so the half pixel goes there. */
+  top: calc((var(--s-menu-row-h) - var(--s-context-menu-arrow-h) - 1px) / 2);
+  transform: translateY(0.5px);
+  width: 0;
+  height: 0;
+  border-top: calc(var(--s-context-menu-arrow-h) / 2) solid transparent;
+  border-bottom: calc(var(--s-context-menu-arrow-h) / 2) solid transparent;
+  border-left: var(--s-context-menu-arrow-w) solid currentColor;
+}
+
+/* The row is what a submenu hangs off, so the submenu can sit beside its own
+   entry rather than being positioned from the menu's top. */
+.row {
+  position: relative;
+  display: flex;
+}
+
+/* Positioned beside the entry in viewport coordinates, flipping left when
+   the right edge has no room. Tall submenus scroll within the window. */
+.submenu {
+  max-width: calc(100vw - 16px);
+  max-height: calc(100vh - 16px);
+  box-sizing: border-box;
+  overflow: auto;
+}
+.submenu > .item { flex-shrink: 0; }
+
+/* The heading over a menu that has one: rekordbox's "File is Missing" over
+   a missing track's menu. Measured from rekordbox 7.2.14 at 175% (Winrig
+   chris-win11 2026-10-08, issue #201): the text starts 25px inside the
+   hairline (14pt) where the entries start 46px (26pt), and its rule sits 78px
+   (45pt) below the panel's top. The size is read from the heading's width,
+   166px against 137px for 'Auto Relocate' [ASSUME: Arial at 16pt]. */
+.title {
+  display: flex;
+  align-items: center;
+  height: 39px;
+  padding: 0 var(--s-context-menu-arrow-inset) 0 calc(var(--s-context-menu-text-inset) - 11px);
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.separator {
+  height: 1px;
+  margin: var(--s-context-menu-sep-gap) var(--s-context-menu-sep-inset-r)
+    var(--s-context-menu-sep-gap) var(--s-context-menu-sep-inset-l);
+  background: var(--c-context-menu-separator);
+}
+
+/* The tick beside the choice in force, in the gutter the text inset leaves;
+   a submenu of choices is rekordbox's layout menu, whose tick sits there
+   [ASSUME — no capture of an open submenu]. */
+.tick {
+  position: absolute;
+  left: calc(var(--s-context-menu-text-inset) / 2 - 4px);
+  top: calc(var(--s-menu-row-h) / 2 - 5px);
+  width: 4px;
+  height: 8px;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}

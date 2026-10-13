@@ -1,0 +1,55 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal. */
+
+/* Center the two buttons as a group in the full-height browser rail. */
+.rail {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr);
+  width: var(--s-right-rail-w);
+  padding-left: var(--s-right-rail-inset);
+  background: var(--c-panel);
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The boxes, on the measured pitch. */
+.group {
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--s-right-rail-pitch) - var(--s-right-rail-button));
+}
+
+.button {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--s-right-rail-button);
+  height: var(--s-right-rail-button);
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--c-rail-box);
+  border-radius: 1.5px;
+  background: none;
+  color: var(--c-icon-on);
+  cursor: default;
+}
+.button:hover { border-color: var(--c-icon-off); }
+/* Lit: the outline turns white over a blue fill that is not the box's own
+   square. The capture paints it a point above and below the box, two points
+   to its left, and clear through to the column's right edge — a 23 by 20
+   band behind an 18pt box. Two box-shadows of the fill colour, each spread
+   by the vertical padding and shifted sideways, add up to that band; a
+   shadow paints under the border, so the white outline stays visible. */
+.button[aria-pressed="true"] {
+  --lit-right: calc(var(--s-right-rail-w) - var(--s-right-rail-inset) - var(--s-right-rail-button));
+  border-color: var(--c-icon-on);
+  background: var(--c-rail-lit);
+  box-shadow:
+    calc(-1 * (var(--s-right-rail-lit-pad-left) - var(--s-right-rail-lit-pad-y))) 0 0 var(--s-right-rail-lit-pad-y) var(--c-rail-lit),
+    calc(var(--lit-right) - var(--s-right-rail-lit-pad-y)) 0 0 var(--s-right-rail-lit-pad-y) var(--c-rail-lit);
+}
+.button:focus-visible { outline: 1px solid var(--c-accent); outline-offset: 1px; }
+
+/* The glyphs are drawn on the 18pt box, border included, so the icon is the
+   box's size and sits over its own border. */
+.icon { width: var(--s-right-rail-button); height: var(--s-right-rail-button); margin: -1px; }

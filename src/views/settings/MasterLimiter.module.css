@@ -1,0 +1,35 @@
+.panel { border: 1px solid var(--c-raised); border-radius: 4px; padding: 16px; }
+.header, .readout { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.header label { margin: 0; }
+.status { display: inline-flex; align-items: center; gap: 6px; color: var(--c-text-dim); font-size: var(--f-size-sm); }
+.status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status[data-state="Ready"] { color: var(--c-accent); }
+.status[data-state="Limiting"] { color: var(--c-label-yellow); }
+.help, .caption { color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; margin: 8px 0 12px; }
+.caption { margin-bottom: 0; }
+.monitor { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 16px 0; margin: 16px 0; border-top: 1px solid var(--c-raised); border-bottom: 1px solid var(--c-raised); }
+.monitor > div { margin: 0; min-width: 0; }
+.monitor [role="meter"] { max-width: none; }
+.monitor [aria-label="Gain reduction"] { margin-top: 10px; width: 100%; }
+.value { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.controls { display: flex; flex-direction: column; }
+.field { display: grid; grid-template-columns: 112px minmax(0, 1fr) 88px; column-gap: 20px; row-gap: 4px; align-items: start; min-width: 0; padding: 18px 0; }
+.field + .field { border-top: 1px solid var(--c-raised); }
+.field:first-child { padding-top: 0; }
+.field:last-child { padding-bottom: 0; }
+.field .readout { display: contents; }
+.field .readout > strong { grid-column: 1; grid-row: 1; padding-top: 3px; font-weight: 500; }
+.field .value { grid-column: 3; grid-row: 1; padding: 3px 0; text-align: right; }
+.field .help { grid-column: 2 / -1; grid-row: 2; margin: 0; }
+.field > div:last-child { grid-column: 2; grid-row: 1; margin: 0; width: 100%; }
+.field input[type="range"] { width: 100%; }
+.footer { display: flex; justify-content: flex-end; margin-top: 16px; }
+@media (max-width: 640px) { .monitor { grid-template-columns: 1fr; } }
+@media (max-width: 760px) {
+  .field { grid-template-columns: minmax(0, 1fr) auto; row-gap: 10px; }
+  .field .value { grid-column: 2; }
+  .field > div:last-child { grid-column: 1 / -1; grid-row: 2; }
+  .field .help { grid-column: 1 / -1; grid-row: 3; }
+}
+.monitor [aria-label="Gain reduction"] { flex: none; }
+.field > div:last-child > div { margin-left: 0; margin-right: 0; }

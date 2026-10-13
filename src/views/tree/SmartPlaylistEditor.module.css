@@ -1,0 +1,122 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal colour. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-modal-scrim);
+}
+
+/* rekordbox opens a dialog; this is that dialog drawn inside our window. */
+.window {
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--c-black);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-label);
+}
+
+.titlebar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  height: var(--s-pref-title-h);
+  background: var(--c-titlebar);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-window-title);
+  font-weight: 700;
+  user-select: none;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: var(--c-panel);
+}
+
+.nameRow,
+.matchRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nameRow .input { flex: 1; }
+.grow { flex: 1; }
+
+.conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.condition {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.condition .input { flex: 1; min-width: 60px; }
+
+.input {
+  height: var(--s-pref-select-h);
+  box-sizing: border-box;
+  padding: 0 6px;
+  border: 1px solid var(--c-pref-control-off);
+  border-radius: 0;
+  background: var(--c-field);
+  color: var(--c-icon-on);
+  font: inherit;
+}
+.input:focus { outline: none; border-color: var(--c-pref-select); }
+
+.select {
+  appearance: none;
+  height: var(--s-pref-select-h);
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  padding: 0 calc(var(--s-pref-chevron-w) + 8px) 0 var(--s-pref-select-pad);
+  background:
+    linear-gradient(45deg, transparent calc(50% - 1px), var(--c-icon-on) calc(50% - 1px), var(--c-icon-on) calc(50% + 1px), transparent calc(50% + 1px)) no-repeat right 8px top 6px / 8px 8px,
+    linear-gradient(-45deg, transparent calc(50% - 1px), var(--c-icon-on) calc(50% - 1px), var(--c-icon-on) calc(50% + 1px), transparent calc(50% + 1px)) no-repeat right 12px top 6px / 8px 8px,
+    var(--c-raised);
+  color: var(--c-icon-on);
+  font: inherit;
+}
+
+.small,
+.button {
+  height: var(--s-pref-select-h);
+  padding: 0 10px;
+  border: 1px solid var(--c-pref-button-border);
+  border-radius: 2px;
+  background: linear-gradient(var(--c-pref-button-top), var(--c-pref-button-bottom));
+  color: var(--c-icon-on);
+  font: inherit;
+  cursor: default;
+}
+.button { height: var(--s-pref-button-h); padding: 0 14px; }
+.small:hover:not(:disabled),
+.button:hover:not(:disabled) { border-color: var(--c-accent); }
+.small:disabled,
+.button:disabled { color: var(--c-device-disabled); }
+
+/* OK then Cancel, centred, as the capture has them. */
+.footer {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+}

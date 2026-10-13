@@ -1,0 +1,137 @@
+/* Every size and colour is a token measured off the two-player capture by
+   scanning its pixels — see the `mixer*` entries in design/tokens/theme.json,
+   each of which carries the pixel range it came from. */
+
+.strip {
+  position: relative;
+  width: var(--s-mixer-strip-w);
+  flex: none;
+  background: var(--c-panel);
+  color: var(--c-text);
+  font-size: var(--f-size-dual-button);
+  user-select: none;
+}
+
+/* One deck's half: the gain block and the three kill buttons, each at its
+   measured distance from the strip's outer edge — deck A's from the top,
+   deck B's from the bottom — with the crossfader centred between them. The
+   capture mirrors the blocks about the fader, and keeps the gain block's own
+   order (readout, knob, caption) in both. */
+.channel > * {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+}
+.channel .gain { top: var(--s-mixer-gain-inset); }
+.channel .bands { top: var(--s-mixer-bands-inset); }
+.channel[data-flipped] .gain { top: auto; bottom: var(--s-mixer-gain-inset); }
+.channel[data-flipped] .bands { top: auto; bottom: var(--s-mixer-bands-inset); }
+
+.gain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.readout {
+  color: var(--c-mixer-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.caption { color: var(--c-mixer-label); }
+
+/* Barely above the panel it sits on, which is how the capture draws it: the
+   only bright thing in the block is the tick. */
+.knob {
+  position: relative;
+  width: var(--s-mixer-knob-size);
+  height: var(--s-mixer-knob-size);
+  border: 1px solid var(--c-mixer-knob);
+  border-radius: 50%;
+  cursor: ns-resize;
+  touch-action: none;
+}
+.knob:focus-visible { outline: 1px solid var(--c-accent); }
+
+/* Drawn from the knob's centre so rotating the tick sweeps it round the dial
+   rather than moving it off one. */
+.tick {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 1.5px;
+  height: var(--s-mixer-knob-tick-h);
+  margin-left: -0.75px;
+  background: var(--c-mixer-knob-pointer);
+  transform-origin: 50% 100%;
+}
+
+.bands {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-mixer-band-gap);
+}
+
+.band {
+  width: var(--s-mixer-band-w);
+  height: var(--s-mixer-band-h);
+  padding: 0;
+  border: 0;
+  background: var(--c-mixer-band);
+  color: var(--c-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+/* Killed reads as pressed rather than as lit: the band is gone, which is not
+   an achievement to celebrate with a colour. */
+.band[data-killed] {
+  background: var(--c-accent);
+  color: var(--c-icon-on);
+}
+
+.fader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.deckLabel { color: var(--c-mixer-ab); }
+
+.faderTrack {
+  position: relative;
+  width: var(--s-mixer-fader-handle-w);
+  height: var(--s-mixer-fader-h);
+  cursor: ns-resize;
+  touch-action: none;
+}
+.faderTrack:focus-visible { outline: 1px solid var(--c-accent); }
+
+/* The line the handle runs on, drawn down the middle of a target wide enough
+   to grab. */
+.faderTrack::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: var(--s-mixer-fader-track-w);
+  margin-left: calc(var(--s-mixer-fader-track-w) / -2);
+  background: var(--c-raised);
+}
+
+.faderHandle {
+  position: absolute;
+  left: 0;
+  width: var(--s-mixer-fader-handle-w);
+  height: var(--s-mixer-fader-handle-h);
+  margin-top: calc(var(--s-mixer-fader-handle-h) / -2);
+  background: var(--c-outline);
+}

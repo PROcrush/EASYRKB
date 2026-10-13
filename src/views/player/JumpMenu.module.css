@@ -1,0 +1,35 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal. */
+.menu {
+  position: fixed;
+  z-index: 50;
+  width: 132px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  background: var(--c-raised);
+  border: 1px solid var(--c-panel);
+  border-radius: 4px;
+  /* The same drop as the header's menu; not the zoom scrim, which is a
+     ground for the waveform behind it and is tuned separately. */
+  box-shadow: 0 8px 24px var(--c-shadow-panel);
+  font-size: var(--f-size-ui);
+  color: var(--c-text);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 12px 6px 6px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+}
+.item:hover { background: var(--c-accent); color: var(--c-icon-on); }
+
+.tick { display: inline-block; width: 14px; text-align: center; flex: none; }

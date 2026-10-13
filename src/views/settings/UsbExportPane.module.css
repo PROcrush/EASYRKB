@@ -1,0 +1,29 @@
+.intro { margin: 0 0 20px; }
+.option { flex-wrap: nowrap; cursor: pointer; }
+.details { flex: 1; min-width: 0; }
+.details strong { display: block; font-size: inherit; font-weight: 600; }
+.description { display: block; margin-top: 8px; color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; }
+.default { display: block; margin-top: 4px; color: var(--c-text-dim); font-size: var(--f-size-sm); line-height: 1.5; }
+.option input { cursor: pointer; }
+.option input:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 4px; }
+
+.conversion { display: block; }
+.conversionToggle { display: flex; align-items: center; gap: 16px; cursor: pointer; }
+.format { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
+.format select {
+  margin-left: auto;
+  min-width: 210px;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--c-outline);
+  border-radius: 4px;
+  background-color: var(--c-field);
+  color: var(--c-icon-on);
+  color-scheme: dark;
+  font-size: var(--f-size-sm);
+  cursor: pointer;
+}
+.format select:hover:not(:disabled) { border-color: var(--c-icon-on); }
+.format select:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+.format select:disabled { opacity: 0.5; cursor: not-allowed; }
+.conversion > p { margin-bottom: 0; }

@@ -1,0 +1,144 @@
+.tree {
+  /* The source rail beside the node list. The grid rows here were for the
+     Tree View / Column View tabs, which are gone. */
+  display: flex;
+  background: var(--c-panel);
+  min-height: 0;
+  overflow: hidden;
+}
+
+
+
+.nodes { flex: 1; min-width: 0; overflow: auto; }
+/* The tree's scrollbar, as the 2026-09-09 capture (9.10.38 PM) draws it: a
+   12pt black column at the tree's right edge with an 8pt thumb of the
+   divider grey 2pt in, no end buttons, always showing. Beside the 5pt gutter
+   that is the 17pt of black the capture has between the last node and the
+   track list. The tree's nodes clip sideways rather than scroll, so there is
+   no horizontal bar to draw. */
+.nodes::-webkit-scrollbar { width: var(--s-scrollbar-w); height: var(--s-scrollbar-w); }
+.nodes::-webkit-scrollbar-track,
+.nodes::-webkit-scrollbar-corner { background: var(--c-scroll-track); }
+.nodes::-webkit-scrollbar-thumb {
+  background: var(--c-scroll-thumb);
+  border: var(--s-scroll-thumb-inset) solid var(--c-scroll-track);
+  border-radius: calc(var(--s-scroll-thumb-radius) + var(--s-scroll-thumb-inset));
+  background-clip: padding-box;
+}
+.nodes::-webkit-scrollbar-thumb:hover { background-color: var(--c-scrub); }
+.nodes::-webkit-scrollbar-button { display: none; }
+.node {
+  /* So the drop line can be placed against the row's own edges. */
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--s-row-height);
+  font-size: var(--f-size-ui);
+  color: var(--c-text);
+  white-space: nowrap;
+  cursor: default;
+  contain: layout style paint;
+}
+.node[data-selected] { background: var(--c-select); }
+.node:hover:not([data-selected]) { background: var(--c-button); }
+
+.twisty {
+  width: 0;
+  height: 0;
+  flex: none;
+  border: 5px solid transparent;
+  border-left-color: var(--c-text);
+}
+.twisty[data-open] {
+  border-left-color: transparent;
+  border-top-color: var(--c-text);
+  border-bottom: 0;
+  margin-top: 3px;
+}
+.twisty[data-leaf] { border-left-color: transparent; width: 10px; }
+
+.icon { width: 14px; height: 12px; flex: none; color: var(--c-text); }
+/* The Explorer's folders are drawn in the dimmer icon grey [OBS], measured
+   at rgb(160,160,160) in the capture against the row text's white. */
+.node[data-kind="directory"] .icon { color: var(--c-icon-off); }
+/* A line of information under a folder cut at the cap: dimmed, and not lit
+   by the pointer, because there is nothing there to open. */
+.node[data-kind="note"] { color: var(--c-text-dim); }
+.node[data-kind="note"]:hover { background: none; }
+.label { overflow: hidden; text-overflow: ellipsis; }
+.node[data-kind="device"] .label { flex: 1; min-width: 0; }
+.ejectButton {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  margin-right: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--c-text);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+}
+.ejectButton svg { width: 11px; height: 12px; }
+.node[data-kind="device"]:hover .ejectButton,
+.node[data-kind="device"]:focus-within .ejectButton,
+.node[data-ejecting] .ejectButton { opacity: 1; pointer-events: auto; }
+.ejectButton:hover:not(:disabled) { background: var(--c-button); }
+.ejectButton:disabled { cursor: default; opacity: .55; }
+.ejectButton:focus-visible { outline: 1px solid var(--c-text); outline-offset: -2px; }
+
+/* Where a dragged node would land: a line for a place among its siblings, a
+   ring for a folder that would take it inside. */
+.node[data-move="above"]::after,
+.node[data-move="below"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--c-accent);
+  pointer-events: none;
+}
+.node[data-move="above"]::after { top: 0; }
+.node[data-move="below"]::after { bottom: 0; }
+.node[data-move="into"] { box-shadow: inset 0 0 0 1px var(--c-accent); }
+/* The name while it is being typed over: the row's own type and colour, on a
+   field just dark enough to show where the text can be edited. */
+.rename {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 18px;
+  border: 1px solid var(--c-accent);
+  border-radius: 2px;
+  padding: 0 3px;
+  background: var(--c-field);
+  color: var(--c-text);
+  font: inherit;
+}
+.rename:focus { outline: none; }
+/* The track count after a playlist's name, when Preferences asks for it. */
+.count { flex: none; margin-left: 4px; color: var(--c-text-dim); }
+
+/* A section with nothing in it says so, rather than showing a blank panel. */
+.emptyNote {
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--c-text-dim);
+  font-size: var(--f-size-sm);
+}
+
+/* While tracks are being dragged, only the playlist under the pointer says
+   it would take them — the way the selection does. [ASSUME] the colour: no
+   capture holds a drag in progress, and the selection blue is what rekordbox
+   uses for "this row". The other playlists stay as they are. */
+.node[data-over] { background: var(--c-select); }
+
+.content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.search { margin: 4px; flex-shrink: 0; }

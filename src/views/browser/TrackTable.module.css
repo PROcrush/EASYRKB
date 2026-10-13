@@ -1,0 +1,490 @@
+/* Geometry and colour come from design/tokens; nothing here is a literal. */
+.browser {
+  display: grid;
+  /* The column header lives inside the scroller now, so it is not a row here.
+     The middle row is the Track Filter bar, nothing when it is closed. */
+  grid-template-rows: calc(var(--s-browser-head-h) + var(--s-browser-head-gap)) auto 1fr;
+  min-width: 0;
+  /* Without this a grid item floors at its content height, so .scroll would be
+     as tall as the whole list and the virtualizer would render every row. */
+  min-height: 0;
+  background: var(--c-black);
+}
+
+/* A file dragged in from outside the app, hovering the list. */
+.browser[data-file-over] {
+  outline: 2px solid var(--c-select);
+  outline-offset: -2px;
+}
+
+/* The title row: 26pt of panel with a measured point of black under it
+   before the column headings, drawn as a border so the row and its line are
+   one grid track. The search field sits at the right, 20pt short of the
+   pane's edge. */
+.browserHead {
+  display: flex;
+  align-items: center;
+  background: var(--c-panel);
+  border-bottom: var(--s-browser-head-gap) solid var(--c-black);
+  padding: 0 var(--s-search-inset-right) 0 12px;
+  gap: 12px;
+}
+
+.title { margin-right: auto; font-size: var(--f-size-ui); color: var(--c-text); }
+
+/* The Track Filter button: an outlined square that goes blue when the bar is
+   showing, the glyph white either way. The controls sit together to the
+   right of the title, immediately before the search box. */
+/* The Traffic Light's MASTER menu: a 79 by 16pt box on the head's grey with
+   a blue underline, the chevron beside it, and a menu of the three decks.
+   Measured from the 2-player capture; see design/tokens `trafficMaster*`. */
+.trafficBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.trafficMaster {
+  width: var(--s-traffic-master-w);
+  height: var(--s-traffic-master-h);
+  padding: 0 0 1px;
+  border: 0;
+  border-bottom: 1px solid var(--c-pad-active);
+  background: var(--c-traffic-master);
+  color: var(--c-icon-on);
+  font: inherit;
+  font-size: var(--f-size-traffic-master);
+  font-weight: 700;
+  cursor: default;
+}
+.trafficChevron {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: var(--s-traffic-master-h);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-icon-off);
+  cursor: default;
+}
+.trafficChevron > span {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+}
+.trafficMenu {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  padding: 1px 0;
+  border: 1px solid var(--c-menu-border);
+  background: var(--c-menu);
+  box-shadow: 0 6px 18px var(--c-shadow-panel);
+}
+.trafficItem {
+  display: flex;
+  align-items: center;
+  height: var(--s-menu-row-h);
+  padding: 0 14px 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--c-text);
+  font-size: var(--f-size-menu);
+  text-align: left;
+  white-space: nowrap;
+  cursor: default;
+}
+.trafficItem:hover { background: var(--c-raised); }
+.trafficTick { display: grid; place-items: center; width: 26px; flex: none; }
+.trafficTickGlyph { width: 12px; height: 8px; }
+
+.filterToggle {
+  margin-right: 8px;
+  flex: none;
+  width: var(--s-filter-toggle);
+  height: var(--s-filter-toggle);
+  padding: 0;
+  border: 1px solid var(--c-outline);
+  border-radius: 2px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+.filterToggle[data-on] { border-color: var(--c-tab-active); }
+.filterGlyph {
+  width: var(--s-filter-toggle-glyph);
+  height: var(--s-filter-toggle-glyph);
+  color: var(--c-filter-text);
+}
+/* The capture draws it black with no border of its own, sitting in the
+   header row rather than boxed like the tree's own search. */
+.search { flex: 0 1 var(--s-search-w); border: none; }
+
+.colHead {
+  display: grid;
+  grid-template-columns: var(--cols);
+  /* Follows the window down to the sum of the column widths, then stops and
+     lets the scroller take over. */
+  min-width: var(--table-w);
+  width: 100%;
+  background: var(--c-panel);
+  height: var(--s-col-header-h);
+  /* Pinned vertically, but inside the scroller so it moves sideways with the
+     rows. As a sibling above the scroller it stayed put and the columns
+     sheared away from their headings. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.headCell {
+  position: relative;
+  height: var(--s-col-header-h);
+  line-height: var(--s-col-header-h);
+  padding: 0 8px;
+  font-size: var(--f-size-ui);
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 1px solid var(--c-raised);
+  cursor: default;
+}
+.headCell[data-sorted] { color: var(--c-accent); }
+/* A heading being dragged, as rekordbox draws it ([OBS] rekordbox 7.2.14,
+   #207): its place in the row is left blank while a copy of it follows the
+   pointer, and the columns move aside as it passes them. The copy's label
+   measured (198..210) over the header's ground (30) where a resting label is
+   (230): the same heading at about 85% opacity, without its divider. */
+.headCell[data-dragging] { color: transparent; }
+.headCell[data-dragging] > * { visibility: hidden; }
+.headGhost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--c-panel);
+  border-right: 0;
+  opacity: .85;
+  pointer-events: none;
+  will-change: transform;
+}
+.headCell { display: flex; align-items: center; }
+
+/* The resize grip: a few pixels at the right edge of every heading, wider than
+   it looks so it can actually be grabbed. */
+.grip {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 5px;
+  height: 100%;
+  cursor: col-resize;
+}
+.grip:hover { background: var(--c-accent); }
+/* Sized to the column-header cap height so the arrow sits on the text baseline. */
+.sortArrow {
+  margin-left: 4px;
+  width: 9px;
+  height: 9px;
+  flex: none;
+  color: var(--c-accent);
+}
+
+.scroll {
+  overflow: auto;
+  position: relative;
+  background: var(--c-black);
+  min-height: 0;
+  /* Pinned to the `1fr` row. With the Track Filter closed there is nothing
+     in the `auto` row, and auto-placement put the scroller there instead:
+     content-high, its horizontal bar directly under the last row of a short
+     list and empty panel under that. rekordbox runs the bar along the
+     panel's foot whatever the list's length (9.03.41 PM, 18 tracks). */
+  grid-row: 3;
+}
+
+/* Drawn rather than left to the platform. macOS hides its scrollbars until
+   something moves, so a list that is wider and longer than its pane gives no
+   sign of it — and the columns are always wider than the pane. Measured from
+   the 2026-09-09 captures: a 12pt black column with an 8pt thumb of the
+   divider grey set 2pt in, its corners barely rounded, no end buttons, and
+   always showing — the captures have both bars at rest. A styled bar is a
+   classic one, so it takes its 12pt from the pane's width the way the
+   platform's overlay did not; the column grid's `1fr` absorbs that. */
+.scroll::-webkit-scrollbar {
+  width: var(--s-scrollbar-w);
+  height: var(--s-scrollbar-w);
+}
+.scroll::-webkit-scrollbar-track { background: var(--c-scroll-track); }
+/* Where the two bars meet rekordbox draws a square of the thumb grey, a point
+   inside the corner on every side. */
+.scroll::-webkit-scrollbar-corner {
+  background: var(--c-scroll-thumb);
+  border: var(--s-scroll-corner-inset) solid var(--c-scroll-track);
+  background-clip: padding-box;
+}
+.scroll::-webkit-scrollbar-thumb {
+  background: var(--c-scroll-thumb);
+  border: var(--s-scroll-thumb-inset) solid var(--c-scroll-track);
+  border-radius: calc(var(--s-scroll-thumb-radius) + var(--s-scroll-thumb-inset));
+  /* The radius above is the border's outer curve; the thumb's own is inside it. */
+  background-clip: padding-box;
+}
+.scroll::-webkit-scrollbar-thumb:hover { background-color: var(--c-scrub); }
+.scroll::-webkit-scrollbar-button { display: none; }
+
+.inner {
+  position: relative;
+  min-width: var(--table-w);
+  width: 100%;
+  /* Rows are individually composited for smooth scrolling. When a new view is
+     shorter than the one it replaces, WebKit can retain some of those retired
+     layers until another list repaints the same slots. The virtual list's
+     measured height is its hard boundary: clipping here keeps stale layers
+     from ever painting below the final row. */
+  overflow: clip;
+}
+
+.row {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: var(--table-w);
+  width: 100%;
+  height: var(--s-row-height);
+  display: grid;
+  grid-template-columns: var(--cols);
+  background: var(--c-top);
+  /* Isolates each row so a scroll tick repaints only what moved. */
+  contain: layout style paint;
+  /* translate3d, not translateY: the 3d form is what gets the row its own
+     compositor layer. Without it WKWebView scrolls on the compositor thread
+     while these transforms are updated on the main thread, and the rows lag
+     the scroll by a frame. */
+  will-change: transform;
+}
+.row[data-even] { background: var(--c-panel); }
+.row[data-selected] { background: var(--c-select); }
+.row:hover:not([data-selected]) { background: var(--c-button); }
+
+/* Where a dragged row would land: a line on the edge it would go in at,
+   drawn inside the row so it cannot widen the scroller. */
+.row[data-drop]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--c-accent);
+  pointer-events: none;
+}
+.row[data-drop="above"]::after { top: 0; }
+.row[data-drop="below"]::after { bottom: 0; }
+
+.cell,
+.attr,
+.artwork,
+.preview {
+  height: var(--s-row-height);
+  line-height: var(--s-row-height);
+  padding: 0 6px;
+  font-size: var(--f-size-ui);
+  /* Browse › Bold in Preferences; the list sets this, nothing else does. */
+  font-weight: var(--browse-weight, 400);
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 1px solid var(--c-raised);
+}
+/* The Traffic Light: a key that goes with the loaded track's, lit green with
+   the text in black, selected or not. */
+.cell[data-lit],
+.row[data-selected] .cell[data-lit] { background: var(--c-traffic-light); color: var(--c-black); }
+
+.row[data-selected] .cell,
+.row[data-selected] .attr,
+.row[data-selected] .artwork,
+.row[data-selected] .preview { border-right-color: var(--c-black); }
+
+.right { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* The Color column, as rekordbox 7.2.19 paints it
+   (browse::ListViewer::paintColourColumn @0x1003f13cc): an 8px ball at x 5,
+   centred on the row (BrowseHelper::drawColorBall, a filled ellipse), then the
+   colour's name in the row's text colour from x 16. */
+.colorCell {
+  position: relative;
+  padding-left: var(--s-color-col-text-x);
+}
+.colorBall {
+  position: absolute;
+  left: var(--s-color-col-ball-x);
+  top: calc((100% - var(--s-filter-dot)) / 2);
+  width: var(--s-filter-dot);
+  height: var(--s-filter-dot);
+  border-radius: 50%;
+}
+.colorBall[data-color="Pink"] { background: var(--c-comment-pink); }
+.colorBall[data-color="Red"] { background: var(--c-comment-red); }
+.colorBall[data-color="Orange"] { background: var(--c-comment-orange); }
+.colorBall[data-color="Yellow"] { background: var(--c-comment-yellow); }
+.colorBall[data-color="Green"] { background: var(--c-comment-green); }
+.colorBall[data-color="Aqua"] { background: var(--c-comment-aqua); }
+.colorBall[data-color="Blue"] { background: var(--c-comment-blue); }
+.colorBall[data-color="Purple"] { background: var(--c-comment-purple); }
+
+.attr { display: flex; align-items: center; gap: 8px; }
+.analysed {
+  width: 10px;
+  height: 10px;
+  background: var(--c-icon-on);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.cue { font-size: var(--f-size-xs); color: var(--c-text-dim); }
+/* rekordbox's [!] for a track whose file is missing, drawn rather than typed
+   so it matches at any font. Measured from rekordbox 7.2.14 at 175% (Winrig
+   chris-win11 2026-10-08, issue #201): a 3.5px-wide (FF,96,00) stroke, 14px
+   tall, a 3.5px gap and a 3.5px dot, centred on the row; 2 x 8, 2 and 2 CSS px. */
+.missing {
+  flex: none;
+  width: 2px;
+  height: 12px;
+  background: linear-gradient(var(--c-missing) 0 8px, transparent 8px 10px, var(--c-missing) 10px 12px);
+}
+
+.artwork { padding: 0; position: relative; overflow: hidden; background: var(--c-simple-well); }
+/* The record a cell without artwork shows: `design/icons/ui/record.svg`,
+   drawn in a square the column's width and anchored at the row's top. The
+   row crops it — a short row shows the disc's top arc, a tall one the whole
+   record — which is what rekordbox does at every artwork size. */
+.record {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  color: var(--c-simple-disc);
+}
+/* Over the record, so a track without artwork still shows something and a
+   track with it shows nothing else while the image decodes. */
+.artworkImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  /* Hidden until it has decoded. `color: transparent` hides the alt text but
+     not WebKit's broken-file glyph, which is what the first screen was full
+     of while the library was still opening. */
+  visibility: hidden;
+}
+.artworkImage[data-state="shown"] { visibility: visible; }
+/* Nothing at all while it decodes — not a record that is about to be covered
+   by the sleeve anyway. The record comes back only once the image has given
+   up. */
+.artwork:has(.artworkImage[data-state="pending"]) > .record { visibility: hidden; }
+
+/* The waveform sits on a measured band 5pt down the row, not centred in it:
+   rekordbox leaves more room below the baseline than above the badges. */
+.preview {
+  padding: var(--s-preview-band-top) 3px 0;
+  position: relative;
+  background: var(--c-black);
+  display: flex;
+  align-items: flex-start;
+}
+
+/* The row's waveform, and what the preview draws over it while it plays the
+   row's track. [UNKNOWN] rekordbox's own preview playhead and stop button have
+   not been captured; a plain line and a square stand in for them. */
+.previewWave { position: relative; display: block; flex: none; cursor: pointer; }
+.previewWave canvas { display: block; }
+.previewHead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: var(--c-text);
+  pointer-events: none;
+}
+/* rekordbox's preview stop: a grey ring round a small grey square, on the
+   left of the waveform and centred on it ("Click the stop button on the left
+   side of the waveform", rekordbox 7.2.18 manual p. 90; the ring and square
+   sampled grey there). It was a bare white square in the bottom-right corner,
+   easy to miss (#207). */
+.previewStop {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid var(--c-icon-off);
+  border-radius: 50%;
+  background: var(--c-black);
+  cursor: pointer;
+}
+.previewStop::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  transform: translate(-50%, -50%);
+  background: var(--c-icon-off);
+}
+
+/* Stands in for a cell's text while its page loads: a dim bar on the row's
+   ground, so a fast scroll reads as content arriving rather than blank rows. */
+.skeleton {
+  display: inline-block;
+  vertical-align: middle;
+  width: 60%;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--c-raised);
+}
+
+/* rekordbox 7.2.11's track list at 2x (2026-09-25): each star's ink 30 capture
+   px wide and 28 tall on a 32 px pitch, its middle 1.25px above the row's. */
+.stars { color: var(--c-text); display: flex; align-items: center; gap: 1px; height: 100%; }
+.star {
+  display: flex;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+.starIcon {
+  height: 14.26px;
+  transform: translateY(-1.25px);
+}
+.star:hover { color: var(--c-accent); }
+
+/* An inline editor sits flush in the cell: a bordered box would make the row
+   jump by a pixel as it opens. */
+.editor {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: var(--c-field);
+  color: var(--c-text);
+  font: inherit;
+  outline: 1px solid var(--c-accent);
+  outline-offset: -1px;
+}

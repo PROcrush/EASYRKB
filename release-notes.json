@@ -1,0 +1,321 @@
+[
+  {
+    "version": "1.8.2",
+    "date": "2026-10-13",
+    "changes": [
+      "(Fixed) 正式版默认连接本机 rekordbox 数据库；本机接口异常时显示错误，不再退回演示曲库。",
+      "(New) 导出前提示部分老款碟机的 FLAC、ALAC 及其他编码限制，可选择保持原格式或转换兼容副本为 WAV、AIFF、320 kbps MP3。",
+      "(Improved) 曲目、歌单与同步管理器均采用本次导出的格式选择；同步空间估算随选择更新，电脑原文件与保存的偏好设置保持不变。",
+      "(Fixed) 上下轨始终同步缩放：公共按钮及任一轨道滚轮同时缩放两轨，关闭联动或切换主轨也保持一致。",
+      "(Fixed) 双轨波形使用统一的播放时间比例，变速及半速、倍速匹配时保持一致的滚动速度。",
+      "(Improved) Sync 使用当前拍网时间戳和局部 BPM 对拍，修正首拍等待、变速拍网及短循环的相位计算。",
+      "(Improved) 持续 Sync 读取两轨当前拍网与精确播放速度，避免同时跨变速拍时使用旧 BPM；减少无关状态重算和重复速度参数设置。",
+      "(Fixed) BPM Sync 在 Quantize 开启时不再额外纠正播放位置；播放中按 Sync 使用引擎当前位置进行相对移动。",
+      "(Fixed) 导出小歌单时复用 U 盘已有音频和分析文件，仅复制新增曲目。",
+      "(Fixed) 保留已有 ANLZ0001、ANLZ0002 分析文件名及数据库引用。",
+      "(Fixed) 导出进度按后台实际处理总数显示，完成、取消和失败状态正确更新。",
+      "(Fixed) 导出结束或取消后刷新设备剩余空间。",
+      "(Fixed) 导出预览不再把保留的旧曲目计入待删除数量和可释放空间。",
+      "(Improved) 减少旧分析数据的重复复制，以及重复同步时对旧音频的多余读取。"
+    ]
+  },
+  {
+    "version": "1.8.1",
+    "date": "2026-10-13",
+    "changes": [
+      "(New) 导出前提示部分老款碟机的 FLAC、ALAC 及其他编码限制，可选择保持原格式或转换兼容副本为 WAV、AIFF、320 kbps MP3。",
+      "(Improved) 曲目、歌单与同步管理器均采用本次导出的格式选择；同步空间估算随选择更新，电脑原文件与保存的偏好设置保持不变。",
+      "(Fixed) 上下轨始终同步缩放：公共按钮及任一轨道滚轮同时缩放两轨，关闭联动或切换主轨也保持一致。",
+      "(Fixed) 双轨波形使用统一的播放时间比例，变速及半速、倍速匹配时保持一致的滚动速度。",
+      "(Improved) Sync 使用当前拍网时间戳和局部 BPM 对拍，修正首拍等待、变速拍网及短循环的相位计算。",
+      "(Improved) 持续 Sync 读取两轨当前拍网与精确播放速度，避免同时跨变速拍时使用旧 BPM；减少无关状态重算和重复速度参数设置。",
+      "(Fixed) BPM Sync 在 Quantize 开启时不再额外纠正播放位置；播放中按 Sync 使用引擎当前位置进行相对移动。",
+      "(Fixed) 导出小歌单时复用 U 盘已有音频和分析文件，仅复制新增曲目。",
+      "(Fixed) 保留已有 ANLZ0001、ANLZ0002 分析文件名及数据库引用。",
+      "(Fixed) 导出进度按后台实际处理总数显示，完成、取消和失败状态正确更新。",
+      "(Fixed) 导出结束或取消后刷新设备剩余空间。",
+      "(Fixed) 导出预览不再把保留的旧曲目计入待删除数量和可释放空间。",
+      "(Improved) 减少旧分析数据的重复复制，以及重复同步时对旧音频的多余读取。"
+    ]
+  },
+  {
+    "version": "1.6.0",
+    "date": "2026-10-11",
+    "changes": [
+      "(New) Edit a track’s Key directly in the track list by choosing from the library’s keys.",
+      "(Fixed) The first sync of a USB stick exported by rekordbox keeps tracks already on the stick instead of copying them again or requiring space for duplicate copies.",
+      "(Fixed) USB sync preserves tracks it did not export, even when their audio files are missing, and removes deselected tracks it did export once no device playlist or history needs them.",
+      "(Fixed) When a USB stick’s two libraries disagree, sync can update selected tracks and playlists; if another difference blocks the first sync, the message identifies what needs attention.",
+      "(Fixed) My Tags on exported tracks appear in compatible players’ Track Filter.",
+      "(Fixed) USB exports with accented names no longer use the database string layout that caused a CDJ-2000NXS to freeze.",
+      "(Fixed) MP3 playback, analysis, and WAV loop export follow rekordbox’s timeline so cues and beat grids line up with the audio.",
+      "(Fixed) Tracks opened from a USB stick in Devices show their artwork, waveforms, and beat grids.",
+      "(Fixed) USB export folders and playlists follow their order in the library tree.",
+      "(Fixed) A quick flick starts dragging a track on the first try, and editing a track no longer blanks and rebuilds the whole track list.",
+      "(Fixed) The beat-grid TAP button measures each tap when pressed, keeping the tapped tempo and beat position accurate.",
+      "(Fixed) XDJ-700 VBR uploads no longer interrupt browsing on a linked player.",
+      "(Improved) The Color column shows each track’s colour as a coloured circle beside its name."
+    ]
+  },
+  {
+    "version": "1.5.0",
+    "date": "2026-10-10",
+    "changes": [
+      "(New) Add tracks already in a playlist again, choosing whether to skip or add duplicates and remembering your choice in Preferences.",
+      "(New) Import folders and large batches of tracks with progress, faster processing, and a Stop button.",
+      "(New) Confirmation questions now open in rbxport's own dialogs.",
+      "(Fixed) Export Playlist adds or updates the selected playlist without replacing the other playlists on the USB stick, while preserving empty folders and playlists kept from earlier exports.",
+      "(Fixed) A track that cannot be read, converted, or copied no longer stops the rest of a USB sync; Show details lists each track left out and why.",
+      "(Fixed) Save and delete cues made on linked CDJs and XDJs correctly, without stalling the player.",
+      "(Fixed) Linked players can load tracks stored directly on your computer, and repaired previews load correctly on compatible players.",
+      "(Fixed) Export tracks analysed during an active analysis run with their analysis files, and importing cues from a large USB no longer blocks analysis and sync for an extended time.",
+      "(Fixed) USB sync accepts a rekordbox stick's first sync and reads all playlist entries, including entries on larger export database pages.",
+      "(Fixed) RGB waveforms analysed by rbxport now match rekordbox's player height and colour.",
+      "(Fixed) Exporting AAC .m4a tracks with CDJ-compatible conversion no longer fails because of their channel layout.",
+      "(Fixed) Auto Relocate shows its Searching... status and waits correctly before analysis starts.",
+      "(Improved) USB resyncs finish faster by avoiding unnecessary rereads of every track.",
+      "(Improved) rbxport starts with less to load, while the device, Info, and confirmation panels load when first opened.",
+      "(Improved) Linux's window title and Sync Manager layout now fit the platform, without the unavailable iTunes column."
+    ]
+  },
+  {
+    "version": "1.4.0",
+    "date": "2026-10-09",
+    "changes": [
+      "(New) Format a USB stick as FAT32 or HFS+ directly from its expanded row in Sync Manager.",
+      "(New) Preview the space a sync will add or free on each selected USB stick before it starts.",
+      "(New) Review every selected track with missing audio before syncing, then cancel or skip those tracks.",
+      "(New) Rename hot and memory cues, add cue comments from the colour menu, and drag hot cues into a new order.",
+      "(New) Create a new playlist exactly where you right-clicked.",
+      "(New) Remember your last Analyze Track choices.",
+      "(Fixed) Sync continues exporting the other tracks when one track's analysis files are missing.",
+      "(Fixed) Empty hot-cue rows no longer create a cue when clicked.",
+      "(Fixed) Sync Manager shows the underlying reason when a command fails.",
+      "(Fixed) Each mouse-wheel notch moves waveform zoom by exactly one level.",
+      "(Improved) Sync results now report tracks added, removed, and updated.",
+      "(Improved) Analysis preferences keep the first-beat memory-cue setting in one place and present their switches more clearly."
+    ]
+  },
+  {
+    "version": "1.3.0",
+    "date": "2026-10-09",
+    "changes": [
+      "(New) Manage missing tracks in a Missing File Manager: find them, relocate them, or remove them from the collection.",
+      "(New) Browse and edit the playlists stored on a connected USB device from the Devices tree.",
+      "(New) Find rekordbox libraries on connected drives, choose the library drive, and respond when its drive is missing.",
+      "(New) Drop folders onto Playlists to create matching playlist folders and playlists.",
+      "(New) Edit metadata for several selected tracks together from the Information panel.",
+      "(New) List Collection tracks that have never been analysed.",
+      "(New) Show progress while importing rekordbox and iTunes XML files.",
+      "(New) Control loops live on both decks, including resizing them while they play.",
+      "(New) Add a memory cue on the first beat during analysis.",
+      "(Fixed) USB sync now handles drives touched by rekordbox, files newer than your computer clock, interrupted syncs, unplugged devices, and background-agent leftovers more safely.",
+      "(Fixed) Export to exFAT and older-Mac FAT32 sticks, including tracks with accented names.",
+      "(Fixed) Avoid copying music that is already on the USB device and preserve deselected tracks during later syncs.",
+      "(Fixed) XML re-import now asks before replacing same-named playlists and replaces their tracks together without partial writes.",
+      "(Fixed) Relocate all matching missing tracks from the Missing File Manager and follow rekordbox's search folders and file chooser.",
+      "(Fixed) Preview playback stops when another playlist or deck takes over and follows the master volume.",
+      "(Fixed) Quantized hot-cue jumps wait for the beat and leave loops correctly; short loops and loop-length stepping now match rekordbox.",
+      "(Fixed) BPM SYNC starts on the master's beat after loading or restarting, and CUE or PLAY can cancel a pending move.",
+      "(Fixed) Delete removes every selected track once and asks before removing tracks from playlists, history, or the Tag List.",
+      "(Fixed) Import track tags, cues, and history correctly when files or tracks are not already in the library.",
+      "(Fixed) Cloud-synced tracks play and reload tags from their local copy.",
+      "(Fixed) Long tracks draw their waveform and beat grid to the end.",
+      "(Fixed) Beat-grid tempo edits continue to work after tempo changes, and grid shifts are audible immediately.",
+      "(Fixed) Maximum CDJ compatibility also converts low-sample-rate MP3s.",
+      "(Fixed) Export a playlist directly to a connected USB device instead of opening a folder picker.",
+      "(Fixed) Keep USB playlist edits consistent by blocking them while the device is busy and preserving the right track and playlist state.",
+      "(Improved) Browser column dragging shows where a column will land, and column changes persist across restarts.",
+      "(Improved) USB sync reports the specific failure when an export cannot finish.",
+      "(Improved) Device playlist edits and USB import results use the interface's selected language."
+    ]
+  },
+  {
+    "version": "1.2.0",
+    "date": "2026-10-08",
+    "changes": [
+      "(New) Remember the DUAL control across restarts.",
+      "(New) Add keyboard bindings for hot cues D-H and all hot cue clears.",
+      "(New) Preview a track by clicking its waveform in the browser.",
+      "(New) Add AIFF export conversion.",
+      "(New) Add Keyboard pane rows for per-deck low/mid/high EQ kill.",
+      "(New) Hide the missing-file manager from users for now.",
+      "(New) Tell reporters their bug description is posted publicly.",
+      "(New) Show reporters a link to follow their bug report.",
+      "(New) Import every identified column from rekordbox's browser layout.",
+      "(New) Sort tracks by every column rekordbox can sort.",
+      "(Fixed) Match rekordbox's Explorer track menu for imported and loose files.",
+      "(Fixed) Base the track menu in the Explorer on each file's import state.",
+      "(Fixed) Name the refused file handle in stale-handle log lines.",
+      "(Fixed) Match rekordbox's BPM + KEY related tracks, half and double tempo included.",
+      "(Fixed) Analyse every selected track, not only those in the row cache.",
+      "(Fixed) Show the Backups preferences fully in the chosen language.",
+      "(Fixed) Let Windows backups flush the database copy.",
+      "(Fixed) Add files already in the library to the playlist they are dropped on.",
+      "(Fixed) Let beat-grid edits confirm tempo changes on macOS and start at zero.",
+      "(Fixed) Answer intelligent playlists on a My Tag.",
+      "(Fixed) Apply Browse font size and line space to the playlist tree.",
+      "(Fixed) Let mouse wheel notches always step the waveform zoom.",
+      "(Fixed) Slow trackpad waveform zoom and make the sidebar easier to resize.",
+      "(Fixed) Install Windows updates silently at quit.",
+      "(Fixed) Sort tracks by DJ play count.",
+      "(Fixed) Use hidden Pioneer root on HFS exports.",
+      "(Fixed) Register analysis for rekordbox waveforms.",
+      "(Fixed) Localize the native menu at runtime.",
+      "(Fixed) Recognize Linux FAT32 sync devices.",
+      "(Fixed) Include intelligent playlists in Sync Manager."
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "date": "2026-10-07",
+    "changes": [
+      "(New) Warn before unlocking an unbacked library.",
+      "(New) Include complete context in bug reports.",
+      "(Fixed) Default automatic analysis to off.",
+      "(Fixed) Preserve active loop ends on export.",
+      "(Fixed) Tolerate malformed library text."
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "date": "2026-10-06",
+    "changes": [
+      "(New) rbxport 1.0 is now available."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.15",
+    "date": "2026-10-06",
+    "changes": [
+      "(Fixed) Preserve audio extensions on FAT exports."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.14",
+    "date": "2026-10-06",
+    "changes": [
+      "(New) Recognize the paired PRO DJ LINK identities used by compatible all-in-one players.",
+      "(Fixed) Files and folders dropped onto a playlist import correctly on Linux.",
+      "(Fixed) Smart Playlists load more reliably from rekordbox XML and match relative-date, text, and numeric rules correctly.",
+      "(Fixed) LINK key labels and key sorting now follow their separate player settings consistently.",
+      "(Improved) Automatic LINK connections prefer wired adapters and keep player membership and addresses current as devices reconnect or leave the network.",
+      "(Improved) LINK Export file transfers use more player-compatible request sizes and responses, reducing unnecessary network retransmissions during track loads.",
+      "(Improved) LINK browsing and player control handle unsupported requests, load responses, and rejected connections more reliably."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.13",
+    "date": "2026-10-04",
+    "changes": [
+      "(New) Automatically connect to available PRO DJ LINK players and mixers with an opt-in setting.",
+      "(New) USB sync warns when a device is not formatted as FAT32.",
+      "(New) Support rbxport with a donation button in the main window.",
+      "(Fixed) RBX-25: Playlist positions remain correct when sorting or filtering. Dropping files onto a playlist now shows import progress immediately.",
+      "(Fixed) RBX-24: Album artwork keeps its original colors in the info panel.",
+      "(Fixed) RBX-23: Create playlists and folders in an empty library or after deleting the last playlist.",
+      "(Fixed) Smart Playlists work in LINK Export, with corrected text and numeric rule matching.",
+      "(Fixed) LINK browsing uses the player's supported categories, preserves playlist hierarchy order, and handles menu pagination correctly.",
+      "(Fixed) XDJ-RX3 browse rows show the active sort column and configured key notation, while preserving key-matching information.",
+      "(Fixed) LINK history shows the active session and records tracks when the player reports them as played.",
+      "(Fixed) Track titles display correctly for legacy LINK clients.",
+      "(Fixed) USB sync refreshes available destinations before starting and repairs legacy analysis files during export.",
+      "(Improved) LINK library services use the selected network interface.",
+      "(Improved) LINK preview reads use a bounded cache and combine adjacent requests.",
+      "(Improved) Mixer cue indicators and PRO DJ LINK settings use a more consistent layout.",
+      "(Improved) Linux uses native window decorations."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.12",
+    "date": "2026-09-30",
+    "changes": [
+      "(New) Import selected iTunes playlists into your library from the Sync Manager.",
+      "(New) The status bar shows a prompt when an update is ready to install.",
+      "(New) Open rbxport's TikTok from a link in the About pane.",
+      "(New) rbxport reports crashes automatically so failures can be diagnosed and fixed.",
+      "(New) Use LINK with the XDJ-RX3 over rear USB and correctly handle all-in-one players whose decks and mixer share one network address.",
+      "(Improved) Browsing a player's menus over LINK a second time is instant, as the menus are now cached.",
+      "(Improved) LINK browsing, sorting, and export compatibility with the XDJ-RX3 are more complete.",
+      "(Fixed) Key analysis now saves its result in new and sparsely imported libraries.",
+      "(Fixed) USB sync on macOS no longer reports a completed export as failed when an exFAT device does not support directory flushing.",
+      "(Fixed) On Linux, USB drives are detected reliably and diagnostics report the app's thread count."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.7",
+    "date": "2026-09-29",
+    "changes": [
+      "(New) Import selected iTunes playlists into your library from the Sync Manager.",
+      "(New) The status bar shows a prompt when an update is ready to install.",
+      "(New) Open rbxport's TikTok from a link in the About pane.",
+      "(New) rbxport reports crashes automatically so failures can be diagnosed and fixed.",
+      "(Improved) Browsing a player's menus over LINK a second time is instant, as the menus are now cached."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.6",
+    "date": "2026-09-26",
+    "changes": [
+      "(New) Use LINK with the XDJ-RX3 over rear USB and correctly handle all-in-one players whose decks and mixer share one network address.",
+      "(Fixed) USB sync on macOS no longer reports a completed export as failed when an exFAT device does not support directory flushing."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.5",
+    "date": "2026-09-26",
+    "changes": [
+      "(New) Import cues and beat grids, play history, and CDJ/mixer settings from USB devices with one Import button in the Sync Manager, and choose which are ticked when it opens.",
+      "(Fixed) Over LINK, a player's HISTORY shows this session's LINK HISTORY, as with rekordbox, and tracks played on the decks are recorded to it.",
+      "(Fixed) Adding a track to the Tag List, from the menu or a player, no longer reloads the list on screen.",
+      "(Fixed) Recently added text is translated, and several mistranslated labels are corrected."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.4",
+    "date": "2026-09-25",
+    "changes": [
+      "(Fixed) Rating stars are the same size on macOS, Windows and Linux.",
+      "(Fixed) Scrolling the waveform zoom quickly on linked decks moves through every zoom step instead of skipping some.",
+      "(Fixed) Open and closed folders in the library tree are remembered across restarts.",
+      "(Fixed) On macOS, rbxport asks for access when library music is on a network volume."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.3",
+    "date": "2026-09-25",
+    "changes": [
+      "(New) Undo and redo playlist renames, moves, deletions and track removals, plus track metadata, rating, comment, colour and My Tag edits.",
+      "(New) See release notes before updating and get a persistent prompt when a downloaded update is ready to install.",
+      "(Improved) Each deck's waveform zoom is remembered across sessions.",
+      "(Improved) Scrubbing opens to full-frequency audio at normal playback speed.",
+      "(Fixed) A playing deck immediately plays the next loaded track, even when tracks are switched rapidly.",
+      "(Fixed) The inline BPM editor stays the same compact width as its readout.",
+      "(Fixed) Switching to a shorter playlist no longer leaves old track rows painted below the list.",
+      "(Fixed) USB waveform settings such as RGB can be changed while rekordbox is running; the status badge now clarifies that only library editing is read-only."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.2",
+    "date": "2026-09-25",
+    "changes": [
+      "(Fixed) Hot cues without a custom colour use the default green instead of appearing black."
+    ]
+  },
+  {
+    "version": "1.0.0-rc.1",
+    "date": "2026-09-24",
+    "changes": [
+      "(New) Control rbxport from AppleScript on macOS.",
+      "(New) Undo and redo deleting playlists and folders from the Edit menu.",
+      "(New) Create a rekordbox library when none exists instead of opening an empty window with an error.",
+      "(New) Keep the last library screen, artwork, and waveforms visible while the library loads.",
+      "(New) Right-click the version in the status bar to open the current application log.",
+      "(Improved) USB devices and Sync Manager load faster on macOS, and Preferences and bug reporting open faster on every platform.",
+      "(Fixed) Bug reports can be sent again on macOS and Windows.",
+      "(Fixed) Track artwork appears correctly on Windows.",
+      "(Fixed) Zoomed waveforms line up with the playhead and beat grid on tracks with encoder delay.",
+      "(Fixed) Sub-browser track actions, reordering, and Information now act on the playlist open on the right."
+    ]
+  }
+]

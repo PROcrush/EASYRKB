@@ -1,0 +1,630 @@
+/* Shipped CSS token values. Their measured design source is maintained privately. */
+:root {
+  --c-titlebar: #363738; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the window's title bar behind 'rekordbox', (54,55,56) at y 78..131 under the 1pt window-edge highlight; the old #262828 was sampled under a modal's dimming */
+  --c-black: #000000; /* player bg, splitters, status bar */
+  --c-top: #0F0F0F; /* top bar, odd rows */
+  --c-panel: #1E1E1E; /* tree, rails, column header, even rows */
+  --c-button: #2B2B2B; /* player buttons */
+  --c-raised: #323232; /* bottom bar, column dividers, inactive tab */
+  --c-select: #314B67; /* measured, modal over both captures (100% / 86% purity) */
+  --c-accent: #1373EB; /* active tab, sort arrow, MASTER border, Q */
+  --c-field: #000000; /* measured: search field interior is black; the old #4B4B4B was its magnifier glyph */
+  --c-field-placeholder: #4B4B4B; /* measured: search placeholder text and magnifier glyph */
+  --c-text: #E6E6E6;
+  --c-text-dim: #9A9A9A;
+  --c-icon-off: #A0A0A0; /* skins/*_off.svg fill rgb(160,160,160) */
+  --c-icon-on: #F0F0F0; /* skins/*_on.svg fill rgb(240,240,240) */
+  --c-missing: #FF9600; /* measured: the orange [!] rekordbox 7.2.14 draws in the Attribute column for a track whose file is missing (Winrig chris-win11 2026-10-08, issue #201) */
+  --c-missing-manager: #191919; /* measured: rekordbox 7.2.14's Missing File Manager window and every other row of its list, (25,25,25), the rows between them black (Winrig chris-win11 2026-10-08, issue #201) */
+  --c-wave-low: #0055E1; /* rekordbox's 3Band waveform, the low band standing alone; sampled from rekordbox in mixxxdj/mixxx#12326 and the same value our own capture measured */
+  --c-wave-mid: #FFA600; /* rekordbox's 3Band waveform, the mid band standing alone (mixxxdj/mixxx#12326); our overview capture measured #FF8C00 where the mid stood mostly alone */
+  --c-wave-high: #FFFFFF; /* rekordbox's 3Band waveform, the high band standing alone (mixxxdj/mixxx#12326) */
+  --c-wave-low-mid: #B4690A; /* rekordbox's 3Band waveform where the low and mid bands overlap (mixxxdj/mixxx#12326); our detail capture measured #B26505 there */
+  --c-wave-low-high: #D2DCFA; /* rekordbox's 3Band waveform where the low and high bands overlap without the mid (mixxxdj/mixxx#12326) */
+  --c-wave-mid-high: #FFF0D7; /* rekordbox's 3Band waveform where the mid and high bands overlap without the low (mixxxdj/mixxx#12326) */
+  --c-wave-all: #F5EBD7; /* rekordbox's 3Band waveform where all three bands overlap, the cream core (mixxxdj/mixxx#12326); our capture measured #F5EAD6 */
+  --c-scrub: #6B6B6B; /* docs/screenshots at 2x: the unplayed position bar, y 310..315 outline only */
+  --c-scrub-played: #C8C8C8; /* docs/screenshots at 2x: the position bar left of the playhead is solid */
+  --c-cue-hot: #3CEB50; /* rekordbox 7 static getPadColor(21) desktop palette */
+  --c-cue-hot-text: #000000; /* docs/screenshots at 2x: the letter inside that badge, cap height 14px */
+  --c-meter-track: #323232; /* capture of rekordbox's top bar: the unlit part of both meters */
+  --c-error: #E23B2E; /* UNMEASURED — failures in the status bar; the same red the meter's clip band uses, so the app has one alarm colour */
+  --c-on-error: #FFFFFF; /* UNMEASURED — text on a filled alarm band, where the red is the background rather than the ink */
+  --c-sync-pending: #5BC8FF; /* UNMEASURED — a lighter blue than --c-accent, so the space a sync would add reads apart from what the stick already holds */
+  --c-meter-green: #2FBF4E; /* UNMEASURED — the capture's meters are silent, so a level meter's own convention: green below -6 dB */
+  --c-meter-yellow: #E8C020; /* UNMEASURED — the same convention: yellow from -6 dB to -3 */
+  --c-meter-red: #E23B2E; /* UNMEASURED — the same convention: red in the last 3 dB before clipping */
+  --c-meter-fill: #3D72E9; /* capture of rekordbox's top bar: the knob's arc and the CPU meter's lit part */
+  --c-menu: #1A1A1A; /* the layout menu's panel in a capture of rekordbox 7.2.11 */
+  --c-menu-border: #8C8C8C; /* the light hairline around that panel */
+  --c-eject: #CDCDCD; /* sampled from a capture of the sleeve hovered: the eject glyph is a flat (205,205,205) */
+  --c-eject-scrim: #000000; /* INFERRED — the sampled sleeve is uniform there, so the darkening cannot be separated from the artwork; without it the glyph is unreadable over bright art */
+  --c-zoom-scrim: rgb(0 0 0 / 80%); /* INFERRED — the zoom cluster sits over the detail waveform, so it needs a ground the waveform still reads through; 55% left the rings competing with a bright transient behind them */
+  --c-playhead-armed: #EA3323; /* UNMEASURED — the armed playhead's red, described rather than sampled; the value is the cue head's */
+  --c-cue-head: #EA3323; /* docs/screenshots at 2x: the 3x6px head at a cue, left of the hot cue badge sharing its position */
+  --c-downbeat: #FFFFFF; /* measured from docs/screenshots; the detail band runs y 358..650: every fourth marker's line, white where the others are grey */
+  --c-phrase-intro: #B83F1D; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: INTRO */
+  --c-phrase-up: #8138F6; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: UP 1 */
+  --c-phrase-up2: #6B36F6; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: UP 2 — interpolated between UP 1 and UP 3, not sampled */
+  --c-phrase-up3: #5534F5; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: UP 3 */
+  --c-phrase-chorus: #4EA730; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: CHORUS */
+  --c-phrase-down: #95753A; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: DOWN */
+  --c-phrase-outro: #6886AB; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: OUTRO */
+  --c-cue-ring: #EDB751; /* CUE button ring, modal colour over the stroke in playlist-player@2x.png */
+  --c-phrase-verse: #2F6FBF; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: VERSE — not present in the captured track, unmeasured */
+  --c-phrase-bridge: #7A4FA8; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: BRIDGE — not present in the captured track, unmeasured */
+  --c-vocal: #3FA9F5; /* sampled from the phrase bar in a 2x capture of rekordbox 7.2.11: the vocal strip above the overview */
+  --c-play-ring: #36642A; /* sampled from the PLAY circle's stroke in a 2x capture of rekordbox 7.2.11, deck stopped */
+  --c-play-ring-on: #60D330; /* sampled from a capture of the PLAY button with the deck running: the ring lights from the resting green */
+  --c-play-glyph-on: #FFFFFF; /* sampled from the same capture: the triangle is a flat 255,255,255 while the deck runs, against #A0A0A0 at rest */
+  --c-beat: #4C4C4C; /* measured from docs/screenshots; the detail band runs y 358..650: a beat marker's line */
+  --c-pad-active: #3571E3; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: the AU and Q buttons when on */
+  --c-pad-set: #3CEB50; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: the square inside a hot-cue pad that holds a cue */
+  --c-pad-well: #0F0F0F; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: a hot-cue pad's own background */
+  --c-pad-label: #646464; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: the text on an inactive button, e.g. MA */
+  --c-tab-active: #457FE5; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): the selected MEMORY/HOT CUE/INFO tab — a lighter blue than the pad buttons' #3571E3 */
+  --c-outline: #646464; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): the border on an unselected panel tab */
+  --c-beat-head: #7C7C7C; /* measured from docs/screenshots; the detail band runs y 358..650: a beat marker's triangle heads, lighter than its line */
+  --c-downbeat-head: #EA3323; /* measured from docs/screenshots; the detail band runs y 358..650: a downbeat's triangle heads — the red is the head, not the line */
+  --c-bars-label: #367BDA; /* measured from docs/screenshots; the detail band runs y 358..650: the bar count above the playhead */
+  --c-mixer-band: #282828; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the HIGH/MID/LOW buttons */
+  --c-mixer-knob: #1C1C1C; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the A-GAIN ring, barely above the panel it sits on */
+  --c-mixer-knob-pointer: #D0D0D0; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the knob's tick, the one bright thing in the gain block */
+  --c-mixer-label: #414141; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the 0.0dB readout and the A-GAIN caption, both greyed */
+  --c-mixer-ab: #969696; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the A and B letters above and below the crossfader */
+  --c-simple-dim: #878787; /* sampled from the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the artist and the elapsed time, solid (135,135,135) inside the strokes */
+  --c-simple-head: #707070; /* sampled from the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the position marker over the overview, a 1pt (112,112,112) line while the deck sits paused; whether it lights when the deck runs is not captured */
+  --c-play-glyph: #646464; /* sampled from the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the triangle inside the resting PLAY ring, a flat (100,100,100) */
+  --c-cue-point: #F1A84C; /* sampled from the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the triangle under the overview marking the cue point, (241,168,76) */
+  --c-simple-well: #0F0F0F; /* sampled from the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the empty sleeve's ground and the rating box's field, both (15,15,15) */
+  --c-simple-disc: #1E1E1E; /* sampled from the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the record drawn on the empty sleeve, (30,30,30) with a (15,15,15) hole */
+  --c-rail-box: #606060; /* capture 2026-09-09 9.09.26 PM at 2x: the outline of each box in the right-hand icon column reads (96,96,96) across its stroke */
+  --c-filter-label: #969696; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the BPM / KEY / RATING / COLOR / tag headings, MASTER PLAYER, OR and RST */
+  --c-filter-text: #FFFFFF; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): list rows (123, Abm, Pink) and the toggle glyph */
+  --c-filter-accent: #3571E3; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the picked row, the tick boxes and AND; the same value the pads' AU / Q use */
+  --c-filter-strip: #282828; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the MASTER PLAYER strip behind the arrows, x 920..1634 */
+  --c-filter-chip: #040404; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): a My Tag chip's ground */
+  --c-filter-chip-text: #4F4F4F; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): a My Tag chip's text */
+  --c-comment-pink: #F870F8; /* rekordbox::cPink (248,112,248), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 */
+  --c-comment-red: #F80000; /* rekordbox::cRed (248,0,0), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 [OBS Winrig chris-win11 rekordbox 7, issue #312: the Color column's ball reads exactly this] */
+  --c-comment-orange: #F8A030; /* rekordbox::cOrange (248,160,48), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 */
+  --c-comment-yellow: #F8E330; /* rekordbox::cYellow (248,227,48), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 */
+  --c-comment-green: #00E000; /* rekordbox::cGreen (0,224,0), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 [OBS Winrig chris-win11 rekordbox 7, issue #312: the Color column's ball reads exactly this] */
+  --c-comment-aqua: #00C0F8; /* rekordbox::cAqua (0,192,248), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 */
+  --c-comment-blue: #0050F8; /* rekordbox::cBlue (0,80,248), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 */
+  --c-comment-purple: #9808F8; /* rekordbox::cPurple (152,8,248), rekordbox 7.2.19 ColorTheme static init; BrowseHelper::findBallColour gives it to the track list's Color column, the filter's colour list and the deck's info tab. The old value was a macOS capture colour-managed into Display P3 */
+  --c-device-tab-on: #3571E3; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the selected tab of the six on a device, which is not the browser's accent blue */
+  --c-device-label: #969696; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the field captions (Device Name, Waveform color, Inactive Categories) and the space table's left column */
+  --c-device-disabled: #808080; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): a greyed radio label (Half Waveform / Full Waveform) */
+  --c-device-disabled-ring: #4C4C4C; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the ring of a greyed radio */
+  --c-device-list-dim: #646464; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): a fixed item in the Active list (TRACK, PLAYLIST, HISTORY, SEARCH, FOLDER, DEFAULT, ALPHABET) */
+  --c-device-row: #191919; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): a colour-comment row and the three image buttons */
+  --c-device-arrow: #969696; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the two arrows between the Inactive and Active lists */
+  --c-label-pink: #E778F1; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Pink dot on the Color tab */
+  --c-label-red: #E33122; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Red dot */
+  --c-label-orange: #EBA44A; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Orange dot */
+  --c-label-yellow: #F4E458; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Yellow dot */
+  --c-label-green: #66DD42; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Green dot */
+  --c-label-aqua: #56BDF3; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Aqua dot */
+  --c-label-blue: #204FEF; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Blue dot */
+  --c-label-purple: #8B1EEF; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Purple dot */
+  --c-info-tab-active: #3571E3; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the selected tab's fill, (53,113,227) */
+  --c-info-tab-active-text: #000000; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the selected tab's label is black on the blue */
+  --c-info-tab-text: #969696; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): an unselected tab's label, (150,150,150); its fill is the raised #323232 */
+  --c-info-tab-disabled: #242424; /* rekordbox 7 on Windows 11, Information Window with three tracks selected (issue #112 parity capture rekordbox-multi3-info.png): the greyed Summary tab's fill, (36,36,36) */
+  --c-info-tab-disabled-text: #464646; /* same capture: the greyed Summary tab's label, (70,70,70) */
+  --c-info-label: #878787; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Summary tab's field labels, (135,135,135) */
+  --c-info-value: #FFFFFF; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Summary tab's values, a flat (255,255,255) */
+  --c-info-form-text: #969696; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Info tab's labels, field text and empty stars, all (150,150,150) */
+  --c-info-field: #0F0F0F; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Info tab's input boxes and the Summary sleeve's fill, (15,15,15) */
+  --c-info-field-disabled: #191919; /* rekordbox 7 on Windows 11, Information Window with three tracks selected (issue #112 parity capture rekordbox-multi3-info.png): the greyed Track Title box, (25,25,25) against (15,15,15) for the boxes that take an edit */
+  --c-info-sleeve-border: #4B4B4B; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the 1px border of the Summary tab's sleeve, (75,75,75) */
+  --c-info-spinner: #646464; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the up/down chevrons in the Key, Genre, Color and Release Date boxes, (100,100,100) */
+  --c-info-check-off: #282828; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the unticked Publish box, (40,40,40); the ticked one is the active-tab blue with a white tick */
+  --c-info-button: #7D7D7D; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Artwork tab's import and delete buttons, (125,125,125) with a black glyph */
+  --c-cue-row: #0F0F0F; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: each row's box reads (15,15,15) on the (30,30,30) panel; ten boxes whether or not a cue fills them */
+  --c-cue-delete: #969696; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: the ✕ on a row that holds a cue, (150,150,150) at its brightest */
+  --c-cue-delete-empty: #454545; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: the ✕ on an empty row, (69,69,69) at its brightest */
+  --c-titlebar-text: #B2B3B4; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the title bar's 'rekordbox', (178,179,180) across its stems */
+  --c-rail-lit: #3571E3; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the open Information box's fill in the right-hand icon column, (53,113,227) solid across x 3664..3709; the open sub-browser's in 9.09.26 PM is the same */
+  --c-scroll-thumb: #323232; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: the tree's and the list's scrollbar thumbs, (50,50,50) across their width; the horizontal thumb under the list in 9.09.33 PM is the same */
+  --c-scroll-track: #000000; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: the 12pt column each thumb runs in is black, x 3638..3661 beside the list and x 742..765 beside the tree, with no end buttons */
+  --c-search-glyph: #5C5C5C; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the magnifier in the search field peaks at (97,97,97) on a 1pt stroke; the solid triangle beside it is (84,84,84). Between the two, since the stroke's peak is under its true colour */
+  --c-status-text: #969696; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.26 PM: '1 List, 952.2 MB' at the bottom right of the window, (150,150,150) across its stems */
+  --c-context-menu: #1E1E1E; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the panel interior, a flat (30,30,30) in both. The scale: the tree's Latin row under the one menu and the selected track row above the other both read 50px, the 25pt row */
+  --c-context-menu-border: #979797; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the 2px hairline round the panel, (151,151,151), square corners */
+  --c-context-menu-inner: #272727; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the 1px line at 2x just inside the hairline, (39,39,39) on all four sides */
+  --c-context-menu-text: #FFFFFF; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): an enabled entry's ink peaks at (255,255,255); so does its arrow */
+  --c-context-menu-text-dim: #616161; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): a greyed entry's ink peaks at (97,97,97), its arrow at (98,98,98) */
+  --c-context-menu-separator: #191919; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the 2px rule between groups, (25,25,25), a shade darker than the panel */
+  --c-cue-line: #FFFFFF; /* the user's 2x crop of a hot cue on the detail waveform (cue-badge.png, 268x406, rekordbox 7.2.11; the 28px phrase bar at its top is the 14pt one, so 2x): under the badge a 2px line of flat (255,255,255) runs y 126..333, over the waveform. It is the downbeat's white, and that cue sits on a downbeat, so whether a cue off the grid draws one is [ASSUME]d from the user's reading of the crop, not measured */
+  --c-deck-button: #282828; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the control row's buttons and the transport's, a flat (40,40,40) — the same grey the mixer's kill buttons are */
+  --c-pref-select: #3571E3; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the selected sidebar row, the selected tab, a toggle that is on, the ring of a checked radio and the fill of a checked checkbox, (53,113,227); not the browser's accent */
+  --c-pref-text: #AAAAAA; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): an unselected sidebar row's label and an unselected tab's text, (170,170,170) */
+  --c-pref-control-off: #969696; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a toggle that is off and an unchecked radio, (150,150,150) */
+  --c-pref-button-top: #323336; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the top of the Reset to defaults button's gradient, (50,51,54) */
+  --c-pref-button-bottom: #19191C; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the bottom of that gradient, (25,25,28) */
+  --c-pref-button-border: #0B0B0B; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the 1pt edge around that button, (11,11,11) */
+  --c-pref-key-badge: #222222; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the key badge beside a shortcut on the Keyboard pane, (34,34,34) */
+  --c-traffic-master: #282828; /* measured from the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x): the MASTER menu's box above the track list, (40,40,40); its 1pt underline is padActive */
+  --c-traffic-light: #64FF00; /* UNMEASURED - the lit key cell in a capture pasted into chat on 2026-09-10 that is not on disk: a bright green with black text; re-sample when the capture lands in docs/screenshots */
+  --c-link-strip: #282828; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the band behind the LINK button and the decks, (40,40,40); the deck and mixer boxes are the same grey, cut from it by a 1pt black line */
+  --c-link-button: #191919; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the LINK button's fill, (25,25,25); with LINK off it is the 1pt rounded border on a band-grey button */
+  --c-link-strip-off: #323232; /* docs/screenshots 2026-09-13 11.18.36 AM (rekordbox 7.2.11 EXPORT, 2x, LINK off): the band with LINK off, (50,50,50), the LINK button the same */
+  --c-link-ink: #FFFFFF; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the LINK glyph and label, (255,255,255) */
+  --c-link-ink-off: #C8C8C8; /* docs/screenshots 2026-09-13 11.18.36 AM (rekordbox 7.2.11 EXPORT, 2x, LINK off): the LINK glyph and label, (200,200,200) */
+  --c-link-dim: #646464; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): MASTER and SYNC on a player, MASTER on the mixer, (100,100,100) */
+  --c-link-loaded: #DD8C35; /* docs/screenshots 2026-09-13 11.16.49 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, tracks loaded): the player-number box and CUE once a track is loaded, (221,140,53) */
+  --c-link-number-edge: #969696; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the 1pt border of an empty player's number box, (150,150,150), on a (30,30,30) fill */
+  --c-link-mixer-edge: #363636; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the 1pt border of the MIXER box, (54,54,54), on a (30,30,30) fill */
+  --c-link-mixer-text: #4B4B4B; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): MIXER, (75,75,75) */
+  --c-pad-edit-off: #202020; /* docs/screenshots/grid-edit-row-2026-09-18@2x.png (rekordbox 7.2.11, 2x): a grid-edit button that cannot act, (32,32,32) where a live one is (40,40,40) */
+  --c-pad-edit-off-glyph: #606060; /* docs/screenshots/grid-edit-row-2026-09-18@2x.png (rekordbox 7.2.11, 2x): the undo and redo arrows with nothing to undo, (96,96,96) */
+  --c-pad-edit-off-bar: #484848; /* docs/screenshots/grid-edit-row-2026-09-18@2x.png (rekordbox 7.2.11, 2x): the beat lines on a grid-edit button that cannot act, (72,72,72) */
+  --c-pad-edit-faint: #444444; /* docs/screenshots/grid-edit-row-2026-09-18@2x.png (rekordbox 7.2.11, 2x): the beats before the playhead on the adjust-from-here button, (68,68,68) read through the 1.5px lines' anti-aliasing */
+  --c-pad-edit-on: #4294F7; /* docs/screenshots/grid-edit-row-2026-09-18@2x.png (rekordbox 7.2.11, 2x): the metronome's bars while it runs, (66,148,247) on the button's own grey */
+  --c-modal-scrim: rgb(0 0 0 / 55%); /* shared dimming layer behind modal windows */
+  --c-shadow-soft: rgb(0 0 0 / 45%); /* shared shadow under compact menus */
+  --c-shadow-panel: rgb(0 0 0 / 55%); /* shared shadow under floating panels */
+  --c-shadow-side: rgb(0 0 0 / 40%); /* shared shadow beside overlays and link menus */
+  --c-search-focus: #4775FF; /* focus ring around the browser search field */
+  --c-search-menu-inner: #444444; /* inner hairline around the browser search menu */
+  --c-tempo-annotation: #75CBD8; /* tempo-change annotations over the waveform */
+  --c-pcm-blue: #5BA0FF; /* representative PCM trace for the blue waveform palette */
+  --c-pcm3-band: #FFA600; /* representative PCM trace for the 3-band waveform palette */
+  --c-pcm-rgb: #F266DC; /* representative PCM trace for the RGB waveform palette */
+  --c-cue-teal: #10B176; /* rekordbox getPadColor(18) */
+  --c-cue-orange: #FF8C00; /* rekordbox getPadColor(36) */
+  --c-cue-blue: #305AFF; /* rekordbox getPadColor(1) */
+  --c-cue-yellow: #E1AA00; /* rekordbox getPadColor(33) */
+  --c-cue-pink: #F51E8C; /* rekordbox getPadColor(46) */
+  --c-cue-aqua: #50B0F2; /* rekordbox getPadColor(6) */
+  --c-cue-lime: #9BD723; /* rekordbox getPadColor(25) */
+  --c-cue-purple: #AA72FF; /* rekordbox getPadColor(60) */
+
+  --s-row-height: 25px; /* measured row pitch */
+  --s-col-header-h: 24px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the column heading row y 806..853, 48px, under the 1pt black line at 804..805; the same in 9.03.41 PM (y 366..413) */
+  --s-browser-head-h: 26px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the browser's title row y 752..803, 52px, from the player gutter to the black line under it; 9.03.41 PM measures the same (y 312..363) */
+  --s-top-bar-h: 30px;
+  --s-eject-glyph-w: 15px; /* the glyph is 26px of a 79px sleeve in the capture, and the sleeve is 45pt */
+  --s-top-gear-size: 14px; /* capture of rekordbox's top bar at 2x: the gear is 28x28px */
+  --s-top-knob-size: 28px; /* enlarged by request from the 18pt the capture measures — x 100..135, 36px across at 2x */
+  --s-top-vu-w: 80px; /* capture at 2x: the meter runs x 156..315, 160px */
+  --s-top-meter-h: 3px; /* capture at 2x: each meter bar is 6px tall */
+  --s-top-vu-gap: 3px; /* capture at 2x: 6px of black between the two channels */
+  --s-top-cpu-w: 35px; /* capture at 2x: the CPU meter runs x 354..423, 70px */
+  --s-scrollbar-w: 12px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: the list's scrollbar column x 3638..3661 between the last row and the icon column, 24px; the tree's thumb sits 4px in from the tree's edge (742 to 746), the same inset */
+  --s-title-bar-h: 28px; /* the macOS title bar the window's traffic lights sit in */
+  --s-status-bar-h: 27px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.26 PM: the strip under the browser y 2280..2333, 54px, to the window's bottom edge */
+  --s-bottom-bar-h: 72px;
+  --s-tree-w: 305px; /* browseSetting.xml TreeView 319 incl. rail */
+  --s-tree-gutter-w: 1px; /* user adjustment: 1px black divider between the library sidebar and track list */
+  --s-rail-w: 36px;
+  --s-right-rail-w: 24px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: the icon column x 3662..3709 between the list's scrollbar column and the window edge, 48px; 9.09.26 PM measured 56 because the sub-browser's 4pt right margin (x 3654..3661) was counted into it. The boxes sit at x 3668..3703 in every capture */
+  --s-tree-rail-w: 57px; /* browseSetting.xml TreeShortcut w=57 */
+  --s-info-w: 557px; /* browseSetting.xml BrowseLayout ListInfo w=557 */
+  --s-sub-browse-w: 878px; /* capture 2026-09-09 9.09.26 PM at 2x: the sub-browser runs x 1898..3653 of a 1798pt window, 1756px, rail to list edge. browseSetting.xml recorded SubBrowse w=1107 for a different window; the capture is what rekordbox drew */
+  --s-player-h: 279px; /* measured from a 2x capture of rekordbox 7.2.11 running; player spans y 56..335pt */
+  --s-player-gutter-h: 4px; /* user adjustment: increase the black gap below the player by 1px from the measured 3px */
+  --s-player-transport-w: 80px; /* measured from a 2x capture of rekordbox 7.2.11 running; transport column x 0..80pt */
+  --s-player-right-w: 209px; /* measured from a 2x capture of rekordbox 7.2.11 running; memory/hotcue panel x 1711..1920pt */
+  --s-player-margin: 2px; /* black around the deck column, so it reads as a panel rather than as the whole strip */
+  --s-player-inset: 12px; /* the deck's left inset; the rows had 16 on the left, 12 on the right, and the detail none at all */
+  --s-player-zoom-inset: 8px; /* how far the zoom cluster floats in from the left edge of the detail waveform it sits over */
+  --s-player-artwork-gap: 10px; /* between the sleeve and the overview strip beside it */
+  --s-player-title-h: 21px; /* docs/screenshots at 2x: the player spans y 190..746 and the title row y 190..232 */
+  --s-player-overview-h: 49px; /* docs/screenshots at 2x: artwork + vocal + overview + position bar, y 232..330 */
+  --s-player-overview-wave-h: 30px; /* docs/screenshots at 2x: the overview waveform paints y 244..303, its baseline 303 */
+  --s-cue-badge: 11px; /* docs/screenshots at 2x: the hot cue badge is 22x22px, x 1926..1947 y 244..265 */
+  --s-preview-band-top: 5px; /* design/reference/macos/playlist-player@2x.png: in the track list's Preview column the badges and the waveform's peaks both start 10px below the row's top edge (row 1: top 778, badge and wave 788) */
+  --s-preview-band-h: 15px; /* the same capture: the waveform's baseline is 39px below the row's top (row 1: 817, row 3: 917), so the band is 5..19.5pt; the half pixel goes to the baseline */
+  --s-preview-cue-badge: 7px; /* the same capture: a row's hot cue badge is 14x14px, x 926..939 y 788..801, its left edge on the cue */
+  --s-cue-head-w: 13px; /* User reference: standalone overview memory-cue triangle, 26px wide at 2x */
+  --s-cue-head-h: 10px; /* User reference: overview memory-cue triangle, approximately 20px high at 2x */
+  --s-player-scrub-h: 3px; /* docs/screenshots at 2x: the position bar under the overview, y 310..315 */
+  --s-player-vocal-h: 5px; /* measured from a 2x capture of rekordbox 7.2.11 running; vocal strip above the overview */
+  --s-player-phrase-h: 14px; /* measured from a 2x capture of rekordbox 7.2.11 running; phrase bar y 127..141pt */
+  --s-player-detail-h: 146px; /* measured from a 2x capture of rekordbox 7.2.11 running; detail waveform y 141..287pt */
+  --s-wave-inset-top: 20px; /* by request 2026-09-18: the waveform a little shorter than the measured 11px inset drew it, and room for the beat markers to reach 15px above it */
+  --s-wave-inset-bottom: 16px; /* by request 2026-09-18: the waveform a little shorter than the measured 2px inset drew it, and room for the beat markers to reach 15px below it */
+  --s-beat-marker-top: 5px; /* by request 2026-09-18: the waveform's top inset less the 15px a marker reaches above the waveform (measured, rekordbox's own started 26px down the band) */
+  --s-beat-marker-bottom: 1px; /* by request 2026-09-18: the waveform's bottom inset less the 15px a marker reaches below the waveform (measured, rekordbox's own ended 6.5px up the band) */
+  --s-beat-head-h: 4px; /* measured from docs/screenshots; the detail band runs y 358..650: the triangle at each end of a marker, y 410..417 */
+  --s-player-pad-h: 48px; /* measured from a 2x capture of rekordbox 7.2.11 running; hot-cue / memory bar y 287..335pt */
+  --s-pad-tab-w: 80px; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: the CUE/LOOP and GRID tabs, x 83..163pt */
+  --s-pad-tab-h: 24px; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: each tab is half the 48pt row */
+  --s-pad-cue-w: 27px; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: a hot-cue pad, x 611.5..638.5pt */
+  --s-pad-cue-h: 28px; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: a hot-cue pad, y 297..325pt */
+  --s-pad-cue-gap: 5.5px; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: between pads, giving a 33pt pitch */
+  --s-pad-cue-inner: 15px; /* measured from the pad row in a 2x capture of rekordbox 7.2.11: the green square inside a set pad, y 303..318pt */
+  --s-pad-edit-w: 23.5px; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): a grid-edit button, x 89..112.5pt */
+  --s-pad-edit-h: 26px; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): grid-edit buttons sit below the section label */
+  --s-pad-edit-gap: 5px; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): between buttons in a group; 10pt between groups */
+  --s-pad-field-w: 50px; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): the BPM field, x 123..173pt */
+  --s-pad-section-h: 13px; /* measured from docs/screenshots (rekordbox 7.2.11, 2x): the GRID EDIT / PHRASE EDIT label above the buttons */
+  --s-player-artwork-size: 45px; /* measured from a 2x capture of rekordbox 7.2.11 running; artwork square in the overview band */
+  --s-player-btn-w: 26px; /* measured from a 2x capture of rekordbox 7.2.11 running; transport buttons, two per 56pt row */
+  --s-player-btn-h: 22px; /* measured from a 2x capture of rekordbox 7.2.11 running */
+  --s-player-jog-w: 40px; /* measured from a 2x capture of rekordbox 7.2.11 running; CUE and PLAY circles */
+  --s-mixer-strip-w: 48px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the strip x 72.5..120.5pt */
+  --s-mixer-transport-w: 70px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the transport column x 0..70pt — narrower than the 80 of the 1-player layout, because the mixer strip sits beside it */
+  --s-mixer-gutter-w: 3px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black x 70..73 between the transport column and the strip, which starts at 73 */
+  --s-mixer-band-w: 36px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): HIGH/MID/LOW x 78.5..114.5pt, 6pt inside the strip on each side */
+  --s-mixer-band-h: 15px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): HIGH y 158..173pt */
+  --s-mixer-band-gap: 5px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): HIGH ends 173pt, MID starts 178pt */
+  --s-mixer-knob-size: 19px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the A-GAIN ring x 87..106pt */
+  --s-mixer-knob-tick-h: 5px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the knob's tick y 116.5..121pt */
+  --s-mixer-fader-h: 53px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the crossfader track y 240.5..293.5pt */
+  --s-mixer-fader-track-w: 2px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the track line x 95.5..97.5pt */
+  --s-mixer-fader-handle-w: 28px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the handle x 82.5..110.5pt */
+  --s-mixer-fader-handle-h: 3px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the handle y 265..268pt */
+  --s-player-dual-h: 420px; /* measured from the 2-player capture docs/screenshots (rekordbox 7.2.11, 2x): the two-deck band y 56.5..476.5pt, mirrored about its own centre at 266.5 */
+  --s-menu-row-h: 25px; /* the layout menu open in a capture of rekordbox 7.2.11 at 2x: five rows on a 50px pitch inside a 258px panel */
+  --s-player-simple-h: 59px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the strip y 188..306 under the top bar, a 1pt black line and then the 58pt panel row; the 3pt gutter to the browser follows */
+  --s-player-simple-top-gap: 1px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): black y 188..190 between the top bar and the panel row */
+  --s-player-simple-transport-w: 58px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the PLAY column x 0..58pt, the window's own 1pt frame over its first point */
+  --s-player-simple-artwork-gap: 8px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): black x 228..244 between the PLAY column and the sleeve */
+  --s-player-simple-artwork-size: 48px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the sleeve x 244..340, y 200..296 */
+  --s-player-simple-artwork-inset: 5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the sleeve sits 5pt under the panel's top edge and 5pt above its bottom */
+  --s-player-simple-wave-gap: 5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): black x 340..350 between the sleeve and the title/overview column */
+  --s-player-simple-text-top: 7px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the readout row's hairlines start at y 204, 7pt under the panel top at 190 */
+  --s-player-simple-text-h: 16.5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the hairlines between the readouts span y 204..237 */
+  --s-player-simple-wave-top: 30px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): hot cue badge A hangs from y 250, 30pt under the panel top; the overview's band starts there */
+  --s-player-simple-wave-h: 16.5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the overview paints down to its baseline at y 283 from the badge top at 250 */
+  --s-player-simple-scrub-gap: 2.5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): black y 283..288 between the overview's baseline and the position bar */
+  --s-player-simple-head-top: 1px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the position marker starts at y 252, 1pt under the badge top, and runs to the panel's bottom edge */
+  --s-player-simple-cue-point-w: 12px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the cue point triangle x 351..375, its apex on the overview's baseline */
+  --s-player-simple-cue-point-h: 9px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the cue point triangle y 282..300 */
+  --s-player-simple-wave-right-gap: 13px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the overview and the position bar end at x 3268, 13pt short of the rating box at 3294; the readout row above runs on to the box */
+  --s-player-simple-artist-w: 371px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the artist's cell runs from its hairline at x 1968 to the next at 2710. One capture at one window width, so whether the cell is fixed or a fraction of the strip is [ASSUME] fixed */
+  --s-player-simple-artist-inset: 17px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): hairline x 1968, the artist's first letter at 2002 */
+  --s-player-simple-time-w: 157px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the remaining and elapsed times share a cell x 2710..3024, centred in it */
+  --s-player-simple-time-gap: 16.5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the remaining time ends at x 2858, the elapsed time starts at 2891 */
+  --s-player-simple-key-w: 56px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the key's cell x 3024..3136, the key centred */
+  --s-player-simple-bpm-w: 79px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the BPM's cell from its hairline at x 3136 to the rating box at 3294, the number centred */
+  --s-player-simple-right-w: 206px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the rating box x 3294..3706, 3pt narrower than the full deck's 209pt panel */
+  --s-player-simple-right-margin: 3px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): black x 3706..3712 between the rating box and the window's edge */
+  --s-player-simple-field-inset-x: 8px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the dark field inside the rating box starts 8pt in from its left edge, x 3294..3310 */
+  --s-player-simple-field-inset-right: 13px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the field ends at x 3680, 13pt short of the box's right edge, with a 2pt scrollbar track at 3686..3690 in that margin */
+  --s-player-simple-field-inset-y: 5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the field y 200..296 inside the panel row 190..306 */
+  --s-player-simple-field-row-h: 31px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the field's first row, holding the stars, y 200..262; a 1pt panel-coloured line at 262..264 and an empty row under it */
+  --s-player-simple-stars-inset: 10.5px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the first star's left edge at x 3331, 10.5pt in from the field's edge at 3310 */
+  --s-player-simple-star-h: 10px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): a star spans y 220..240; five of them on a 16pt pitch */
+  --s-player-simple-play-glyph: 8px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the triangle in the PLAY ring is 8pt square, x 164..180, y 240..256, smaller than the full deck draws it */
+  --s-player-simple-star-pitch: 16px; /* the simple player capture docs/screenshots (Screenshot 2026-09-09 at 9.03.41 PM, rekordbox 7.2.11, 2x): the five stars' tips at x 3341, 3373, 3405, 3437, 3469 */
+  --s-sub-tree-w: 298px; /* capture 2026-09-09 9.09.26 PM at 2x: the sub-browser's rail and tree run x 1898..2493, 596px, against the main tree's 626 */
+  --s-right-rail-button: 18px; /* capture 2026-09-09 9.09.26 PM at 2x: each outlined box in the right-hand icon column is 36px square, y 1270..1305 for the first */
+  --s-right-rail-pitch: 34px; /* capture 2026-09-09 9.09.26 PM at 2x: the boxes start at y 1270, 1338, 1406, 1474, 1540 — 68px apart */
+  --s-right-rail-inset: 3px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: the boxes start at x 3668 in a column that starts at 3662, 6px in, and end at 3703 with 6px left, centred */
+  --s-right-rail-top: 259px; /* capture 2026-09-09 9.09.26 PM at 2x: the first box starts at y 1270 under a browser that starts at 752, 518px down. One capture, so whether that is a fixed offset or a proportion of the height is not known */
+  --s-filter-head-h: 25px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the tick-box row y 812..862 */
+  --s-filter-list-gap: 4px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): tick-box row to list top, y 862..870 */
+  --s-filter-list-h: 261px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the lists y 870..1392 */
+  --s-filter-foot-h: 5px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the strip under the lists y 1392..1402, before a 1px black line and the column header */
+  --s-filter-row-h: 27px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): list row pitch, digit ink every 54px */
+  --s-filter-col-gap: 3px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the panel-coloured gap between lists, 6px at 2x */
+  --s-filter-bpm-w: 212px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the BPM list x 778..1190 plus its 6pt scrollbar to 1202 */
+  --s-filter-pct-w: 213px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the ± list x 1208..1634 */
+  --s-filter-key-w: 80px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the KEY list x 1640..1788 plus its scrollbar to 1800 */
+  --s-filter-rating-w: 110px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the RATING list x 1806..2026 */
+  --s-filter-color-w: 100px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the COLOR list x 2032..2232 */
+  --s-filter-tag-w: 176px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): one tag column, AND every 352px at 2x */
+  --s-filter-check: 13px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the tick box y 823..849 including its 1px edge */
+  --s-filter-check-inset: 9px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): tick-box left edge 19px at 2x from the column's left */
+  --s-filter-and-or-h: 32px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the AND / OR row y 862..926 under a tag heading */
+  --s-filter-and-x: 51px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): AND's left edge 102px at 2x from the column's left */
+  --s-filter-or-x: 120px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): OR's left edge 240px at 2x from the column's left */
+  --s-filter-strip-label-w: 77px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): MASTER PLAYER between the arrow lines, x 1200..1354 */
+  --s-filter-rst-w: 34px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the RST button x 3580..3648 */
+  --s-filter-rst-h: 20px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the RST button y 820..860 */
+  --s-color-col-ball-x: 5px; /* rekordbox 7.2.19 browse::ListViewer::paintColourColumn @0x1003f13cc: drawColorBall(g, 5, (h - 8) / 2, 8) */
+  --s-color-col-text-x: 16px; /* same function: the colour's name in Rectangle(16, ., width - 21, .), centredLeft */
+  --s-filter-dot: 8px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): a colour dot, 16px across at 2x */
+  --s-filter-toggle: 18px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the header's filter button x 3122..3158, y 760..796 */
+  --s-filter-toggle-glyph: 11px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the glyph inside it, x 3129..3151 */
+  --s-filter-scrollbar-w: 6px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): the list scrollbar column x 1190..1202, with a 4pt thumb */
+  --s-device-strip-h: 33px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the tab strip band y 376..408.5pt, tabs 20pt tall 5pt below its top */
+  --s-device-tab-w: 128px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one tab x 402..529.5pt; six on a 132pt pitch, 14pt in from the panel's left edge */
+  --s-device-tab-h: 20px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one tab y 381..400.5pt */
+  --s-device-tab-gap: 4px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the gap between two tabs, 9 capture px */
+  --s-device-body-pad: 10px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the body's left inset: the Device Name caption starts at x 398pt on a panel edge of 388pt */
+  --s-device-field-w: 657px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Device Name field and both dropdowns, x 398..1054.5pt; the same width as the space table */
+  --s-device-field-h: 22px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Device Name field y 436..457.5pt; the dropdowns and the colour rows are the same height */
+  --s-device-field-pitch: 48px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one captioned field to the next: y 436, 484, 532pt */
+  --s-device-group-pitch: 54px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one radio group's caption to the next: y 570.5, 624.5, 678.5pt */
+  --s-device-radio: 11px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): a radio ring, 22 capture px across */
+  --s-device-radio-dot: 6px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the filled centre of a chosen radio, 13 capture px */
+  --s-device-radio-col: 210px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the three radio columns start at x 399.5, 609.5, 819.5pt */
+  --s-device-disc: 100px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the No image box, 200 capture px square */
+  --s-device-disc-ring: 75px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the disc drawn in it, about 150 capture px across */
+  --s-device-image-btn-w: 35px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): Copy from / Import / Delete image buttons, x 514..548.5pt */
+  --s-device-image-btn-h: 20px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): those buttons' height, 40 capture px */
+  --s-device-image-btn-pitch: 34.5px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): those buttons' pitch: text centres at y 903.5, 938, 972pt */
+  --s-device-table-col: 156px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the space table's divider at x 554pt on a table starting at 398pt */
+  --s-device-list-w: 305px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): each of the Inactive and Active lists, 610 capture px */
+  --s-device-list-h: 267px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Inactive list y 436..702.5pt */
+  --s-device-active-list-h: 227px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Active list y 436..662.5pt, shorter to leave room for Up and Down */
+  --s-device-list-gap: 47.5px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): between the two lists, 95 capture px, with the arrows centred in it */
+  --s-device-list-inset: 60px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Inactive list's left edge at x 448pt on a panel edge of 388pt */
+  --s-device-list-row-h: 20px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one list row, 40 capture px pitch */
+  --s-device-arrow-w: 16px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one arrow glyph, 32 capture px; the two sit 37.5pt apart */
+  --s-device-move-btn-w: 95px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Up and Down buttons, 190 capture px each with 6pt between */
+  --s-device-move-btn-h: 30px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Up and Down buttons, y 673..702.5pt */
+  --s-device-color-row-w: 650px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): a colour-comment row, x 398..1047.5pt */
+  --s-device-color-row-pitch: 27px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): one colour row to the next, 54 capture px */
+  --s-device-color-dot: 8px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the colour dot, 16 capture px, 5pt in from the row's edge */
+  --s-device-column-w: 261px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the Default right column dropdown, x 398..658.5pt */
+  --s-info-tab-h: 20px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the tab strip is 40px tall at 2x, y 13..52 below the panel's top */
+  --s-info-tab-top: 6.5px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 13px at 2x between the panel's top and the tabs */
+  --s-info-tab-inset: 14px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the first tab starts 28px at 2x from the panel's left edge */
+  --s-info-tab-gap: 4px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 8px at 2x between tabs; each of the three is 332px wide in a 1114px panel */
+  --s-info-reload-w: 12px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the circular-arrows glyph right of the tabs, 24x30px at 2x, its right edge 22px from the panel's */
+  --s-info-reload-h: 15px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): as above */
+  --s-info-inset: 9px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the sleeve and the Summary table's labels start 18px at 2x from the panel's left edge */
+  --s-info-sleeve: 111px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Summary sleeve is 222px square at 2x, 26px below the tabs */
+  --s-info-sleeve-top: 13px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): as above */
+  --s-info-value-x: 174px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Summary tab's title/artist/album text and every table value start 348px at 2x from the panel's left; the table's divider is 10px before that */
+  --s-info-head-row-h: 39px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): Track Title, Artist and Album repeat on a 78px pitch at 2x — label, value 34px lower, a 2px rule 67px down */
+  --s-info-row-h: 24px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Summary table's rows are 48px apart at 2x, each closed by a 2px rule */
+  --s-info-form-top: 17px; /* docs/screenshots 9.09.36 PM (rekordbox 7.2.11, 2x, the Information Window's Info tab): the first box's top is 121px at 2x below the panel's top, which after the 13px above the tabs, the 40px tabs and the 34px label line leaves 34px */
+  --s-info-form-inset: 12px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Info form starts 24px at 2x from the panel's left edge and ends 18px from its right */
+  --s-info-form-inset-right: 9px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): as above */
+  --s-info-form-gap: 10.5px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 21px at 2x between boxes on one row, every row */
+  --s-info-form-row-h: 48px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Info form's rows are 96px apart at 2x */
+  --s-info-field-h: 22px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): each input box is 44px tall at 2x */
+  --s-info-comments-h: 150px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Comments box is 300px tall at 2x */
+  --s-info-star-size: 18px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Rating stars are 26px tall at 2x, 157px across the five */
+  --s-info-star-h: 13px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): each Rating star's ink is 26px tall at 2x */
+  --s-info-stars-w: 78.5px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the five Rating stars' ink spans 157px at 2x */
+  --s-info-check-size: 13px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the two checkboxes are 26px square at 2x */
+  --s-info-artwork-inset: 3px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Artwork tab's black area sits 5-6px at 2x inside the panel's sides */
+  --s-info-artwork-top: 7px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the black area starts 14px at 2x below the tabs */
+  --s-info-artwork-size: 200px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the picture is 400px square at 2x, centred; picture, gap and buttons are centred as a group in the black area */
+  --s-info-artwork-gap: 20.5px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 41px at 2x between the picture and the buttons */
+  --s-info-artwork-btn-w: 40px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): each button is 80x68px at 2x */
+  --s-info-artwork-btn-h: 34px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): as above */
+  --s-info-artwork-btn-gap: 52.5px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 105px at 2x between the two buttons */
+  --s-info-label-h: 17px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 28px at 2x from a label's cap top to its box, i.e. a 14px line plus 3px; the row's 48px pitch is that, the 22px box and 9px to the next label */
+  --s-info-date-clear-w: 11px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Release Date's clear disc is 21px at 2x across, 11px right of the boxes and 18px short of the form's right edge */
+  --s-info-spinner-right: 8px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the chevrons' right edge is 16px at 2x inside the box */
+  --s-info-check-label-w: 165px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 'Allow to auto load HotCue on' wraps after 'on' at 322px at 2x, with the box 62pt further right */
+  --s-deck-info-inset-x: 8px; /* docs/screenshots 9.08.22 PM (rekordbox 7.2.11, 2x): the MEMORY rows sit x 3310..3689 inside the side panel's 3294..3705, 8pt in from each side; the INFO tab fills the same box */
+  --s-deck-info-inset-top: 5px; /* docs/screenshots 9.08.22 PM (rekordbox 7.2.11, 2x): the first MEMORY row starts y 200 in a panel that starts at 190 */
+  --s-deck-info-pad-x: 9px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (485px standing for the 209pt panel, 2.32px/pt): text and hairlines start 21px inside the list box. No 7.2.11 capture shows the tab; the manual is the only picture of it */
+  --s-deck-info-rating-h: 29px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the stars' block, list top to the first hairline, 68px */
+  --s-deck-info-color-h: 30px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the colour block between the first and second hairlines, 69px */
+  --s-deck-info-comment-h: 46px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the comment block between the second and third hairlines, 106px */
+  --s-deck-info-line-h: 15.5px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the four file lines' centres 36px apart */
+  --s-deck-info-facts-pad-top: 9px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the first file line's centre 39.5px under the third hairline, less half a line */
+  --s-deck-info-star-pitch: 15.3px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the five stars' left edges at x 654, 689, 725, 760, 796 */
+  --s-deck-info-star-h: 9.5px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): a star spans 22px */
+  --s-deck-info-dot: 7px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the Aqua dot is 16px across, its name 19px to its right */
+  --s-deck-info-dot-gap: 8px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): from the dot's right edge to the colour's name */
+  --s-deck-info-comment-icon-w: 12px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the speech bubble is 28px wide and 23px tall, the 12x10 of Pioneer's own comment.svg; ours is redrawn at that size */
+  --s-deck-info-comment-icon-top: 9px; /* the rekordbox 6.0.0 manual, p.57, the [INFO] panel graphic (2.32px/pt): the bubble's top 21px under the second hairline */
+  --s-cue-row-h: 23px; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: each box spans 46px at 2x (y 200..245 for the first) */
+  --s-cue-row-gap: 1px; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: 2px of panel between boxes at 2x (y 246..247) */
+  --s-cue-list-inset: 5px; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: 10px of panel above the first box at 2x (y 190..199) */
+  --s-cue-list-inset-x: 8px; /* capture docs/screenshots 2026-09-09 at 9.08.22 PM (rekordbox 7.2.11, 2x), the MEMORY list beside the deck: 16px of panel left of the boxes (x 3294..3309) and 17px right of them at 2x */
+  --s-row-disc-d: 86%; /* a 1x screenshot of rekordbox 7.2.11's track list with the artwork size raised, pasted on 2026-09-10: the record drawn in a cell without artwork spans 86px of the 98px cell; in docs/screenshots 9.03.41 PM (2x, small rows) the same record reads 161px across a 170px column and only its top arc shows, 5pt under the row's top — the disc is inscribed in a square the column's width, anchored at the row's top, and the row crops it */
+  --s-row-disc-hole-d: 24%; /* the same pasted screenshot: the hole spans 24px of the 98px cell */
+  --s-browser-head-gap: 1px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the black line between the title row and the column headings, y 804..805 */
+  --s-scroll-thumb-inset: 2px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: the thumb x 3642..3657 in a column x 3638..3661, 4px either side; the horizontal thumb y 2260..2275 in a band y 2256..2279 */
+  --s-scroll-thumb-radius: 1px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: one pixel at each corner of a thumb is dimmed (7,7,7) and the next (34,34,34), a 2px corner at 2x */
+  --s-scroll-corner-inset: 1px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.10.38 PM: where the list's two scrollbars meet, a 20px square of the thumb grey at x 3640..3659, y 2258..2277, one point inside the 12pt corner on every side */
+  --s-status-inset-right: 34.5px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.26 PM: '1 List, 952.2 MB' ends at x 3640 in a window whose content ends at 3709, 69px */
+  --s-right-rail-info-top: 361px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the Information box starts at y 1474 under a browser that starts at 752, 722px down: the top box's 259pt plus three 34pt pitches, which is where it stays with the three above it gone */
+  --s-right-rail-lit-pad-y: 1px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the lit fill y 1472..1511 around a box y 1474..1509, 2px above and below */
+  --s-right-rail-lit-pad-left: 2px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the lit fill starts at x 3664, 4px left of the box's 3668, and runs right to the column's edge at 3709 */
+  --s-search-w: 212px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.03.41 PM: the search field x 3198..3621 in the full-width header, 424px; 9.09.33 PM, with the Information panel open, draws it 398px (x 2100..2497) */
+  --s-search-h: 24px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the field y 754..801, 48px, one point inside the 26pt header row top and bottom; 9.03.41 PM the same (y 314..361) */
+  --s-search-inset-right: 20px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the field ends at x 2497 and the list pane at 2537, 40px; 9.03.41 PM the same (3621 to 3661) */
+  --s-search-glyph-left: 9px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the magnifier's ink starts at x 2118 in a field that starts at 2100, 18px */
+  --s-search-glyph-top: 5px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the magnifier's ink starts at y 764 in a field that starts at 754, 10px */
+  --s-search-glyph-size: 13px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the magnifier's ink x 2118..2142 and y 764..789, 25 by 26px, handle included */
+  --s-search-text-left: 37px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the placeholder's 'S' starts at x 2175 in a field that starts at 2100, 75px, with the search-mode triangle (x 2154..2165, absent here) between it and the magnifier */
+  --s-context-menu-text-inset: 25px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): 'Analyze Track' starts 52px in from the panel's outer edge at 2x, 25pt past the 1pt hairline */
+  --s-context-menu-arrow-w: 6px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the submenu arrow is 12px wide at 2x on every row that has one */
+  --s-context-menu-arrow-h: 8px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the submenu arrow is 16px tall at 2x, centred on the row */
+  --s-context-menu-arrow-inset: 17px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the arrow's right edge is 34px at 2x from the inside of the hairline in both menus */
+  --s-context-menu-arrow-gap: 9px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the longest label ends 18px (tree) and 20px (track) at 2x before the arrow column; the panel is as wide as that label plus this gap, the arrow and its inset */
+  --s-context-menu-sep-inset-l: 4px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the rule starts 8px at 2x inside the hairline */
+  --s-context-menu-sep-inset-r: 16px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the rule ends 32px at 2x inside the hairline, 1pt past the arrow's right edge */
+  --s-context-menu-sep-gap: 5px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): a row and its rule are 72px at 2x, 50 for the row and 22 for the 2px rule with 10px above and below */
+  --s-context-menu-pad: 1px; /* docs/screenshots context-menu-tree@2x / context-menu-track@2x (rekordbox 7.2.11, 2x): the first row starts 2px at 2x inside the hairline and the last ends 2px above it; the inner line is drawn in that point */
+  --s-cue-marker-w: 16px; /* the user's 2x crop of a hot cue on the detail waveform (cue-badge.png, 268x406, rekordbox 7.2.11): the red triangle over the badge is 32px across its top edge (x 121.3..153.7 by coverage), centred on the cue's line */
+  --s-cue-marker-h: 11px; /* the same crop: the triangle narrows 1.46px a row from 31.1px at y 81; the badge covers it from y 94, and the slope reaches its point at y 102.2, 21.7px below the top edge at y 80.5 */
+  --s-cue-marker-top: 8.25px; /* the same crop: the triangle's top edge is at y 80.5 (row 80 is half covered) under a band that starts at y 64 where the phrase bar ends, 16.5px; the beat heads in the same crop start at y 116, the 26pt the beatMarkerTop token measures, so the band's top is the same one */
+  --s-cue-badge-top: 15px; /* the same crop: the badge is 22x22px at x 128..149 y 94..115, 30px under the band's top and centred on the cue's line (x 138..139), where the overview hangs its badge from the top with its left edge on the cue; the beat head under it starts at y 116, the row after the badge's last */
+  --s-cue-line-w: 1px; /* the same crop: the line under the badge is 2px wide at 2x, x 138..139, the width of a downbeat's */
+  --s-mixer-jog-w: 32px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the CUE and PLAY rings in the two-deck column, y 111..143 and 149..181 for deck A — 32pt across against the 40 the one-deck column draws */
+  --s-mixer-btn-w: 24.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the beat-jump buttons x 8..32.5 and 37..61.5 in the 70pt column */
+  --s-mixer-btn-h: 22px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the beat-jump buttons y 191..213 */
+  --s-mixer-btn-gap: 4.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black x 32.5..37 between the two beat-jump buttons */
+  --s-mixer-size-w: 54px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the beat-jump size box x 8..62 */
+  --s-mixer-size-h: 27px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the beat-jump size box y 217..244 */
+  --s-mixer-cue-top: 55px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's CUE ring starts at y 111, 55pt under the pair's top at 56 */
+  --s-mixer-play-top: 93px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's PLAY ring starts at y 149 */
+  --s-mixer-jump-top: 135px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's beat-jump buttons start at y 191 */
+  --s-mixer-size-top: 161px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's size box starts at y 217 */
+  --s-mixer-play-bottom: 54px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck B's PLAY ring ends at y 423, 54pt above the pair's bottom at 477: deck B's groups mirror deck A's, rings outside and jump controls towards the middle, but the order inside each group is kept — CUE above PLAY, the jumps above the size box */
+  --s-mixer-cue-bottom: 92px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck B's CUE ring ends at y 385 */
+  --s-mixer-size-bottom: 134px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck B's size box ends at y 343 */
+  --s-mixer-jump-bottom: 165px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck B's beat-jump buttons end at y 312 */
+  --s-mixer-dual-w: 26px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the DUAL CONTROL glyph x 22..48 */
+  --s-mixer-dual-h: 22px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the DUAL CONTROL glyph y 256..278, centred on the pair's centre line */
+  --s-mixer-gain-inset: 48px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's gain block: the 0.0dB readout's cap top at y 106.5 and the knob's tick at 117, 50.5 and 61 under the strip's top; a 9px line box over the knob's 3pt gap puts the block's top at 48. Deck B's block ends the same distance above the bottom (A-GAIN's baseline at 427, 50 above 477) */
+  --s-mixer-bands-inset: 102px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): HIGH starts at y 158 for deck A, 102 under the strip's top; deck B's LOW ends at 375, 102 above its bottom */
+  --s-player-dual-title-h: 42px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's title row y 56..98: the sleeve, the title and artist beside it, the sync buttons and readouts at the right */
+  --s-player-dual-title-hb: 41px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck B's title row y 436..477, a point shorter than deck A's; the sleeve sits 5 above the bottom edge where deck A's sits 6 under the top */
+  --s-player-dual-sleeve: 36px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the sleeve x 129..165, y 62..98 (deck A) and y 436..472 (deck B) */
+  --s-player-dual-sleeve-inset: 8px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black x 121..129 between the deck's edge and the sleeve */
+  --s-player-dual-sleeve-top: 6px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 56..62 over deck A's sleeve */
+  --s-player-dual-sleeve-bottom: 5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 472..477 under deck B's sleeve, a point less than deck A has over its own */
+  --s-player-dual-title-gap: 8.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the sleeve ends at x 165 and the title's first letter starts at 173.5 */
+  --s-player-dual-title-cap-top: 2.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the title's cap top at y 64.5, 2.5 under the sleeve's top; the artist's cap top at 85, 20.5 further down. Deck B has the same offsets from its own sleeve */
+  --s-player-dual-sync-w: 69px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): KEY SYNC x 1549.5..1618.5, BEAT SYNC 1633.5..1702.5, MASTER under BEAT SYNC the same width */
+  --s-player-dual-sync-h: 16px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): KEY SYNC and BEAT SYNC y 62..78; MASTER and the readout hairlines y 82..98 */
+  --s-player-dual-sync-gap: 15px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black x 1618.5..1633.5 between KEY SYNC and BEAT SYNC */
+  --s-player-dual-sync-row-gap: 4px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 78..82 between the sync row and the MASTER row */
+  --s-player-dual-right-inset: 8.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): BEAT SYNC ends at x 1702.5, 8.5 short of the panel at 1711; the Q button in the control row ends there too */
+  --s-player-dual-readout-pad: 20px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): between a readout and the hairline either side of it: 22.5, 20, 19, 19 and 21 measured, the same cell at five widths */
+  --s-player-dual-readout-gap: 9px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the BPM readout ends at x 1505.5 and the key-shift block starts at 1549.5: 44, less the cell's 20 and the 15 column gap */
+  --s-player-dual-time-gap: 12px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the remaining time ends at x 1319 and the elapsed time starts at 1331 */
+  --s-player-dual-overview-h: 51px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck A's overview band y 98..149, from the title row to the phrase bar */
+  --s-player-dual-overview-hb: 46px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): deck B's overview band y 370..416, from the control row to the phrase bar: 5 shorter than deck A's, the difference going under the phrase bar instead */
+  --s-player-dual-overview-top: 6.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 98..104.5 over deck A's vocal strip */
+  --s-player-dual-overview-top-b: 1.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 370..371.5 over deck B's vocal strip */
+  --s-player-dual-overview-wave-h: 27px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the overview waveform's band y 109.5..136.5 (deck A) and 376.5..403.5 (deck B), the vocal strip directly over it */
+  --s-player-dual-scrub-gap: 2.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 136.5..139 between the waveform's baseline and the position bar */
+  --s-player-dual-phrase-gap: 1px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 163..164 between deck A's phrase bar and its control row */
+  --s-player-dual-phrase-gap-b: 6px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black y 430..436 between deck B's phrase bar and its title row */
+  --s-player-dual-control-h: 26px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the control row y 164..190 (deck A) and 344..370 (deck B), in the panel grey */
+  --s-player-dual-control-inset: 3px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black x 121..124 and 1708..1711 either side of the control row's panel */
+  --s-player-dual-control-pad: 4px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): panel y 164..168 over the buttons, and 186..190 under them */
+  --s-player-dual-btn-h: 18px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): every button in the control row, y 168..186 */
+  --s-player-dual-ctrl-inset: 8px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the first grid button starts at x 129, 8 in from the deck's edge */
+  --s-player-dual-ctrl-gap: 4.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): between buttons of one group: 168.5..173, 404.5..409, 478.5..483 */
+  --s-player-dual-ctrl-group-gap: 24.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): between groups: 246.5..271, 340.5..365, 572.5..597, 729.5..754, 1638.5..1663 */
+  --s-player-dual-ctrl-loop-gap: 10.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): MA ends at x 448.5 and the loop length's ‹ starts at 459 */
+  --s-player-dual-icon-w: 40px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the grid-shift buttons x 129..168.5 and 207..246.5, the loop buttons 754..793.5 and 799..838.5, AU 365..404.5, MA 409..448.5 and Q 1663..1702.5 */
+  --s-player-dual-mark-w: 30px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the downbeat-mark button x 173..202.5, and the tempo's − and + at 597..626.5 and 700..729.5 */
+  --s-player-dual-memory-w: 70px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): MEMORY x 271..340.5 */
+  --s-player-dual-step-w: 20px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the loop length's ‹ and › x 459..478.5 and 553..572.5 */
+  --s-player-dual-loop-field-w: 66px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the loop length field x 483..548.5 */
+  --s-player-dual-bpm-field-w: 65px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the tempo field x 631..696 */
+  --s-player-dual-tempo-btn-w: 60px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): MT x 1515..1574.5 and RST 1579..1638.5 */
+  --s-player-dual-loop-icon-gap: 5.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): black x 793.5..799 between the two loop buttons */
+  --s-player-dual-zoom-x: 7.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the zoom cluster's glyphs x 128.5..142, 7.5 in from the deck's edge, floating over the two detail waveforms where they meet */
+  --s-player-dual-zoom-spread: 50px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the + glyph centred on y 240.5 and the − on 290.5, RST between them on the centre line at 266.5: one cluster for the pair, not one per deck */
+  --s-pref-w: 798px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the window's content x 114..1709 at 2x */
+  --s-pref-h: 828px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the window y 76..1731 at 2x, title bar included */
+  --s-sync-w: 1440px; /* rekordbox 7.2.11's Sync Manager dialog is 1146 by 666pt with its iTunes column; ours carries the same three columns and opens wider so each has room to read */
+  --s-sync-h: 620px; /* rekordbox 7.2.11's Sync Manager dialog is 1146 by 666pt, title bar included; ours is a little shorter */
+  --s-pref-title-h: 28px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the title bar y 76..131 */
+  --s-pref-sidebar-w: 159px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the sidebar x 114..431 */
+  --s-pref-sidebar-inset: 7px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the search box and the rows start 14 capture px in from the sidebar's edge */
+  --s-pref-search-h: 24px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the search box y 164..211 */
+  --s-pref-search-top: 16px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the search box's top, 32 capture px below the title bar */
+  --s-pref-item-h: 30px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the selected row y 376..435 */
+  --s-pref-item-pitch: 33px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): PLAN, CLOUD and View centred at y 275, 341, 407 */
+  --s-pref-items-top: 56.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the first row's top, y 245, below the title bar's bottom at 132 */
+  --s-pref-item-icon-x: 14.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the icon's centre from the row's left edge */
+  --s-pref-item-label-x: 40px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the label's left from the row's left edge, x 208 on a row at 128 */
+  --s-pref-item-icon: 15px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the PLAN glyph 30 capture px square; the eye is 36 by 26 */
+  --s-pref-tab-h: 30px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the tab strip y 140..199 */
+  --s-pref-tab-top: 4px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the strip's top, 8 capture px below the title bar */
+  --s-pref-tab-gap: 4px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): between two tabs, 8 capture px */
+  --s-pref-tab-pad: 4.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a tab's text is 9 capture px in from either end */
+  --s-pref-section-gap: 4px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the black gap between sections, 8 capture px, and between the strip and the first */
+  --s-pref-section-w: 624px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a section x 440..1687 */
+  --s-pref-scrollbar-w: 6px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the scrollbar track x 1690..1701 */
+  --s-pref-section-pad-x: 26px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a section title starts at x 492 on a section edge of 440 */
+  --s-pref-section-pad-top: 22px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a section's top to its title's cap top is 24pt; 2pt of that is the line's own lead */
+  --s-pref-section-pad-bottom: 20px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the Tooltips toggle's bottom at y 556 to the section's bottom at 595 */
+  --s-pref-sub-inset: 57px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a sub-heading (FontSize) starts at x 554 */
+  --s-pref-control-inset: 52px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a toggle, radio or dropdown starts at x 544 */
+  --s-pref-nest-inset: 84px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a radio under a sub-heading starts at x 608; the Bold toggle at 609 */
+  --s-pref-slider-inset: 94px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the slider track starts at x 628 */
+  --s-pref-row-pitch: 26px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): Classic, Alphanumeric and the toggle under them centred at y 312, 364, 416 */
+  --s-pref-sep-inset: 21px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a separator line runs from x 482 to 1652 inside a section 440..1687 */
+  --s-pref-toggle-w: 32px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a toggle x 544..608 */
+  --s-pref-toggle-h: 16px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a toggle y 524..556 */
+  --s-pref-toggle-knob: 12.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the knob x 612..636 */
+  --s-pref-radio: 16.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a radio x 544..576 */
+  --s-pref-radio-dot: 7px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the white dot of a checked radio, estimated from its 14 capture px width */
+  --s-pref-checkbox: 17px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a checkbox x 608..641 */
+  --s-pref-select-w: 520px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a dropdown x 544..1583 */
+  --s-pref-select-h: 22px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a dropdown y 320..363 */
+  --s-pref-select-pad: 7px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the dropdown's text starts 14 capture px in */
+  --s-pref-chevron-w: 15px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the dropdown's chevron x 1549..1578 */
+  --s-pref-chevron-h: 6.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the chevron y 337..349 */
+  --s-pref-slider-w: 504px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the slider track x 628..1635 */
+  --s-pref-slider-track-h: 4px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the track y 800..807 */
+  --s-pref-slider-thumb-w: 5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the thumb x 1060..1069 */
+  --s-pref-slider-thumb-h: 20px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the thumb y 784..823 */
+  --s-pref-button-w: 249px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): Reset to defaults x 441..938 */
+  --s-pref-button-h: 30px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): Reset to defaults y 1661..1720 */
+  --s-pref-button-gap: 5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the sections' bottom at 1651 to the button's top at 1661 */
+  --s-pref-bottom-pad: 5.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the button's bottom at 1720 to the window's at 1731 */
+  --s-pref-key-row-h: 20px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): Play/Pause and Quantize centred at y 339 and 379 on the Keyboard pane */
+  --s-pref-key-list-inset: 20px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the Keyboard pane's list x 436..1611 inside a section 396..1651 */
+  --s-pref-key-list-top: 58px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the list's top at y 232 under a section top of 116 */
+  --s-pref-key-badge-w: 72px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the spacebar badge x 1398..1541 */
+  --s-pref-key-badge-h: 21px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the badge y 322..364 */
+  --s-traffic-master-w: 79px; /* measured from the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x): the MASTER box x 2894..3051 */
+  --s-traffic-master-h: 16px; /* measured from the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x): the MASTER box y 1046..1077, the last point of it the blue underline */
+  --s-link-strip-margin: 12px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): black between the browser and the band, y 1996..2019, 24px */
+  --s-link-strip-h: 68px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the band, y 2020..2155, 136px; the same in the off capture */
+  --s-link-button-w: 58px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the LINK button, x 124..239, 116px */
+  --s-link-button-h: 56px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the LINK button, y 2032..2143, 112px, centred in the band */
+  --s-link-button-inset: 5px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the band's left edge at x 114 to the button at 124 */
+  --s-link-button-label-h: 23.5px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the LINK label's box, y 2092..2139, 47px, 2pt in from the button's sides and 1.5pt above its bottom line; LINK's baseline sits 47.5pt below the button's top in both captures */
+  --s-link-glyph: 22px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the on glyph's ink, x 160..203 by y 2043..2087, 44px square, 5.5pt below the button's top */
+  --s-link-deck-w: 228px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): a player's box inside its black line, x 1424..1879, 456px; 230 with the line */
+  --s-link-mixer-w: 147px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the mixer's box inside its black line, x 1964..2257, 294px */
+  --s-link-deck-gap: 40px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): a player's black line to the mixer's, x 1882..1961, 80px */
+  --s-link-number: 22px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the player-number box, x 1424..1467 by y 2022..2065, 44px square, flush with the box's corner */
+  --s-link-deck-head-h: 26px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the box's top to the track window, y 2022..2073, 52px */
+  --s-link-track-h: 35px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the track window, y 2074..2143, 70px, 6pt in from the box's sides, 5pt above its bottom */
+  --s-link-jog: 35px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the jog well at the window's left, x 1436..1505, 70px square; its disc 58px, its hole 16px */
+  --s-link-artwork: 32px; /* docs/screenshots 2026-09-13 11.16.49 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, tracks loaded): the sleeve in the well, 64px square */
+  --s-link-lamp-at: 30px; /* docs/screenshots 2026-09-13 11.16.49 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, tracks loaded): CUE's ink starts at x 1483, 59px from the box's left */
+  --s-link-lamp-w: 33px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): MASTER's ink starts at x 1551, 63pt from the box's left, whether or not CUE is lit before it */
+  --s-link-mixer-label-w: 62px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the MIXER box, x 1966..2089, 124px, 1pt in from the mixer box's left; 22pt tall like the player number */
+  --s-link-mixer-master-at: 39px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): the mixer's MASTER, cap top at y 2100, 78px below the box's top, ink 10.5pt in from its left */
+  --s-link-glyph-off-w: 28.5px; /* docs/screenshots 2026-09-13 11.18.36 AM (rekordbox 7.2.11 EXPORT, 2x, LINK off): the off glyph's ink (the two arrows), x 154..209 by y 2043..2087, 57px wide */
+  --s-link-glyph-off-h: 22.5px; /* docs/screenshots 2026-09-13 11.18.36 AM (rekordbox 7.2.11 EXPORT, 2x, LINK off): the off glyph's ink, 45px tall; each arrow's shaft 7.5px, its head 19px, 14px between them */
+  --s-link-button-radius: 3px; /* docs/screenshots 2026-09-13 11.18.36 AM (rekordbox 7.2.11 EXPORT, 2x, LINK off): the button's rounded line, 3px outer and 5px inner at 2x */
+  --s-link-mc-box-h: 20px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — the BPM and MASTER boxes are 41px tall at 2x */
+  --s-link-mc-bpm-w: 116px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — the BPM box (130.00 with − and +), x 138..371 at 2x, 233px */
+  --s-link-mc-master-w: 74px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — the MASTER box, x 138..287 at 2x, 149px */
+  --s-link-mc-nudge-w: 18px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — each − / + button inside the right of the BPM box */
+  --s-link-mc-recycle-w: 30px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — the recycle (take-the-master's-tempo) button, its two-arrows icon 16px wide */
+  --s-link-mc-icon: 16px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — the recycle two-arrows and the MASTER gear, ~33px at 2x */
+  --s-link-mc-gap: 4px; /* measured from a live 2x capture of rekordbox 7.2 in EXPORT as tempo master (2026-09-14): the master-clock cluster at the strip's left — the gap between the boxes and rows */
+
+  --f-ui: Arial, "Helvetica Neue", Helvetica, sans-serif; /* identified by ink-extent fit (0.70% RMS error) and corroborated by rekordbox3.settings MenuFontName=Arial; see design/measure/font-report.json */
+  --f-size-ui: 16.5px; /* best aggregate fit over four measured strings */
+  --f-size-sm: 12px; /* status bar 'Analyzing: 8319 Tracks', 128pt wide, bold */
+  --f-size-bars: 14px; /* docs/screenshots at 2x: the bar count reads 20px tall over the detail band, which is a 14px face */
+  --f-size-xs: 10px; /* top-bar 'EXPORT' label, 42pt wide, bold */
+  --f-size-cue-tempo: 14px; /* User-requested smaller detail waveform BPM labels after reviewing the 20px size */
+  --f-size-preview-cue: 6px; /* design/reference/macos/playlist-player@2x.png: the letter in a row's hot cue badge is 8px tall at 2x, a 4pt cap, which against Arial's 0.716 em cap is a 6px face; bold, centred in the 7pt badge */
+  --f-size-title: 17px; /* the player's track title, measured from the same capture; bold */
+  --f-size-menu: 12.5px; /* the layout menu's 'SIMPLE PLAYER' in the same 2x capture: 194px wide with an 18px cap height, which Arial gives at 12.5px */
+  --f-size-filter-strip: 11px; /* measured from the track-filter capture docs/screenshots (rekordbox 7.2.11, 2x, 9.10.17 PM): MASTER PLAYER, two lines with 15px cap height at 2x on a 25px pitch */
+  --f-size-device: 14px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the device tabs' captions, values and list items: Device Name reads a 20 capture px cap height, which Arial gives at 14px */
+  --f-size-device-radio: 11px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the radio labels (BLUE, CENTER, TIMESCALE): a 16 capture px cap height */
+  --f-size-device-tab: 10.5px; /* measured from the device-panel captures docs/screenshots (rekordbox 7.2.11, 2x, 9.08.22 to 9.08.41 PM): the tab labels (General, Category): 15 capture px tall */
+  --f-size-info: 14px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 'Summary' 120px wide and 'Age of Love' 151px at 2x, which Arial gives at 14px; the Summary values, the tab labels and the Info tab's field text all fit it */
+  --f-size-info-label: 12px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): 'Date Created' 144px and 'Release Date' 148px wide at 2x, Arial at 12px; every label on both tabs fits it */
+  --f-size-info-title: 12.5px; /* docs/screenshots 9.09.33/36/45 PM (rekordbox 7.2.11, 2x, the Information Window's Summary, Info and Artwork tabs): the Summary tab's Track Title value is 551px wide at 2x where 14px would give 618 — a smaller face than the artist beneath it, Arial at 12.5px */
+  --f-size-deck-info: 11px; /* docs/screenshots 9.08.22 PM (rekordbox 7.2.11, 2x): the MEMORY list beside the deck, whose face the INFO tab is assumed to share since no capture shows it: '00:00:434' is 94px wide with a 16px digit height at 2x, Arial at 11px. The 6.0.0 manual's graphic of the tab fits 10px */
+  --f-size-search: 12.5px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the placeholder 'Search within this track list' has an 18px cap height at 2x, which Arial gives at 12.5px. Its ink is 254px wide where Arial 12.5 gives 294: rekordbox draws it condensed, and 9.03.41 PM draws the same string 280px wide in a wider field, so the width is not the face's */
+  --f-size-status: 11.5px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.26 PM: '1 List, 952.2 MB' at the bottom right: a 17px cap height and 3px stems at 2x, 170px wide. Arial Bold 11.5px gives 17px caps, 3px stems and 172px; Regular 11.5 gives 2px stems. Bold, measured, not assumed */
+  --f-window-title: -apple-system, system-ui, "Segoe UI", sans-serif; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: the window's name in the title bar is drawn by macOS in the system face, not the app's Arial: 'rekordbox' is 129px wide with a 20px ascender and 14px x-height at 2x, which the system font gives bold at 13px (65.7pt) where Arial Bold 13px is a narrower letterform */
+  --f-size-window-title: 13px; /* docs/screenshots (rekordbox 7.2.11, 2x) 9.09.33 PM: 'rekordbox' in the title bar, 129px wide at 2x, the system font's bold at 13px */
+  --f-size-dual-button: 9px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the control row's and title row's buttons: MEMORY's cap height 6.5 (y 173.5..180) and KEY SYNC's the same, which Arial gives at 9px; bold, MEMORY 39.5 wide where Arial Bold 9px gives 40.5 */
+  --f-size-dual-field: 11px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the loop length and tempo fields: '2' and '128.00' with an 8pt digit height (y 172.5..180.5), Arial at 11px */
+  --f-size-dual-readout: 12.5px; /* the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x, both decks loaded; window x 0..1920pt, the pair y 56..477): the title row's times, key and BPM: a 9.5pt digit height says 13px and '128.00' at 36.5 wide says 12px; the times are narrower still than Arial at either. Between the two, and [OBS] the face may not be Arial */
+  --f-size-pref-window-title: 14px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): 'Preferences' in the title bar: a 20 capture px cap; bold */
+  --f-size-pref-title: 18px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a section title (Language): a 25 capture px cap; bold */
+  --f-size-pref-sub: 16px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a sub-heading (FontSize): a 23 capture px cap; bold */
+  --f-size-pref-label: 14.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a control's label (Show Tooltips, Classic): a 21 capture px cap */
+  --f-size-pref-small: 13px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the slider's Small and Large: a 19 capture px cap */
+  --f-size-pref-side: 14px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a sidebar row (View): a 20 capture px cap */
+  --f-size-pref-tab: 12.5px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): a tab (Display Type): cap top to descender 23 capture px */
+  --f-size-pref-badge: 11px; /* measured from the Preferences captures docs/screenshots (rekordbox 7.2.11, 2x, 9.46.53 to 9.49.51 PM): the key badge's text (spacebar): an 18 capture px x-height-to-ascender span */
+  --f-size-traffic-master: 10px; /* measured from the 2-player capture docs/screenshots (Screenshot 2026-09-08 at 3.00.12 PM, rekordbox 7.2.11, 2x): 'MASTER' in the box, a 14 capture px cap; bold */
+  --f-size-link-label: 16px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): LINK, the player number, MIXER and a loaded title: a 23 capture px cap (11.5pt), Arial at 16px; LINK 68px wide at 2x, Arial 16 gives 72 */
+  --f-size-link-lamp: 12.5px; /* docs/screenshots 2026-09-13 11.16.28 AM (rekordbox 7.2.11 EXPORT, 2x, LINK on, both decks empty): MASTER SYNC: an 18 capture px cap (9pt), Arial at 12.5px; 'MASTER SYNC' 184px wide at 2x */
+}
+
+/* rekordbox export mode is a single dark design; we commit to it rather than
+   deriving a light theme, but every color is set explicitly so the page never
+   borrows the host's ground.
+
+   No per-OS font override: the face was measured as Arial (see
+   design/measure/font-report.json) and Arial ships on both macOS and Windows,
+   so the same stack reproduces the app on both targets. */

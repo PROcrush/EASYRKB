@@ -1,0 +1,179 @@
+/* The Update Manager, drawn with the Preferences window's own chrome tokens
+   so the two read as windows of one app. Its width is its own: rekordbox's
+   Update Manager was not captured, so nothing here claims to be measured. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-modal-scrim);
+}
+.window {
+  display: flex;
+  flex-direction: column;
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--c-black);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-pref-label);
+}
+.window:focus-visible { outline: 1px solid var(--c-accent); outline-offset: -1px; }
+
+.titlebar {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  height: var(--s-pref-title-h);
+  background: var(--c-titlebar);
+  font-size: var(--f-size-pref-window-title);
+  font-weight: 700;
+}
+.close {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  height: 100%;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--c-icon-off);
+  font: inherit;
+  font-weight: 400;
+  cursor: default;
+}
+.close:hover { color: var(--c-icon-on); }
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px var(--s-pref-section-pad-x) 0;
+}
+
+.versions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 0 0 12px;
+}
+.versions dt { color: var(--c-device-label); }
+.versions dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.status { margin: 0 0 12px; }
+.failed { color: var(--c-error); }
+.detail {
+  display: block;
+  margin-top: 4px;
+  color: var(--c-text-dim);
+  font-size: var(--f-size-pref-small);
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+}
+.progress {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--c-meter-track);
+}
+.progressFill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--c-accent);
+  transition: width 120ms linear;
+}
+/* No total to measure against: a third of the bar slides back and forth. */
+.progress[data-indeterminate] .progressFill {
+  position: absolute;
+  width: 33%;
+  animation: slide 1.2s ease-in-out infinite alternate;
+}
+@keyframes slide {
+  from { left: 0; }
+  to { left: 67%; }
+}
+.progressText {
+  flex: none;
+  min-width: 10em;
+  text-align: right;
+  color: var(--c-text-dim);
+  font-size: var(--f-size-pref-small);
+  font-variant-numeric: tabular-nums;
+}
+
+/* What changed: scrolls on its own, the buttons stay put. */
+.changes {
+  flex: 1;
+  min-height: 120px;
+  max-height: 340px;
+  overflow-y: auto;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-raised);
+  border-radius: 3px;
+  background: var(--c-panel);
+  font-size: var(--f-size-pref-small);
+  line-height: 1.45;
+}
+.release {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 4px;
+  font-size: var(--f-size-pref-label);
+  font-weight: 700;
+}
+.release:first-child { margin-top: 0; }
+.date { color: var(--c-text-dim); font-weight: 400; font-size: var(--f-size-pref-small); }
+.heading {
+  margin: 8px 0 2px;
+  color: var(--c-text-dim);
+  font-size: var(--f-size-pref-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.paragraph { margin: 4px 0; }
+.list { margin: 2px 0 6px; padding-left: 18px; }
+.list li { margin: 2px 0; }
+.changes code {
+  padding: 0 3px;
+  border-radius: 2px;
+  background: var(--c-raised);
+  font-size: 0.95em;
+}
+
+.buttons {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-pref-button-gap);
+  padding: 4px var(--s-pref-section-pad-x) var(--s-pref-bottom-pad);
+}
+.button {
+  height: var(--s-pref-button-h);
+  min-width: 96px;
+  padding: 0 18px;
+  border: 1px solid var(--c-pref-button-border);
+  border-radius: 2px;
+  background: linear-gradient(var(--c-pref-button-top), var(--c-pref-button-bottom));
+  color: var(--c-icon-on);
+  font: inherit;
+  cursor: default;
+}
+.button:hover:not(:disabled) { border-color: var(--c-accent); }
+.primary { border-color: var(--c-accent); }

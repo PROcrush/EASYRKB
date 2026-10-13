@@ -1,0 +1,84 @@
+{
+  "$schemaVersion": 2,
+  "$comment": "Gates are consumed by the named build and test checks. Manual targets are documented separately because ordinary CI cannot measure them reproducibly.",
+  "baseline": {
+    "date": "2026-10-04",
+    "sourceCommit": "29dc378",
+    "environment": "Production Vite build on Apple Silicon macOS; fresh contexts per browser; 1800x1130 viewport at 2x DPR; continuous bidirectional hard scrolling.",
+    "bundle": {
+      "initialChunkKbGz": 132.4,
+      "totalKbGz": 289.8
+    },
+    "browser": {
+      "chromium": {
+        "firstRowsMedianMs": 120.9,
+        "firstRowsMaxMs": 146.3,
+        "deckFrameCostMaxMs": 0,
+        "scrollFrameCostMaxMs": 0
+      },
+      "webkit": {
+        "firstRowsMedianMs": 138,
+        "firstRowsMaxMs": 274,
+        "deckFrameCostMaxMs": 0,
+        "scrollFrameCostMaxMs": 17
+      }
+    }
+  },
+  "gates": {
+    "bundle": {
+      "initialChunkKbGz": 150,
+      "totalKbGz": 325
+    },
+    "browser": {
+      "firstRowsMs": {
+        "chromium": 300,
+        "webkit": 400
+      },
+      "deckFrameCostMs": {
+        "chromium": 3,
+        "webkit": 3
+      },
+      "scrollFrameCostMs": {
+        "chromium": 3,
+        "webkit": 20
+      }
+    },
+    "ipc": {
+      "responseKb": 64
+    }
+  },
+  "manualTargets": {
+    "nativeStartup": {
+      "chromePaintedMsMac": 400,
+      "chromePaintedMsWin": 700
+    },
+    "interaction": {
+      "sortRepaintMs": 50,
+      "searchKeystrokeP95Ms": 50,
+      "fetchRowsMs": 5
+    },
+    "idle": {
+      "cpuPercent": 0.5,
+      "rustRssMb": 120,
+      "webviewRssMb": 150
+    },
+    "player": {
+      "deckLoadToAudioMs": 200,
+      "scrubToVisibleMs": 30,
+      "deckTickHz": 10,
+      "waveformRedrawsPerSecond": 2
+    }
+  },
+  "enforcement": {
+    "ci": {
+      "bundle": "scripts/check-bundle-size.ts",
+      "firstRows": "e2e/performance.spec.ts",
+      "ipcResponse": "src-tauri/tests/commands.rs"
+    },
+    "local": {
+      "deckFrames": "npm run perf:gate",
+      "scrollFrames": "npm run perf:gate"
+    },
+    "measurement": "npm run perf:measure"
+  }
+}

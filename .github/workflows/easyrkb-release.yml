@@ -1,0 +1,88 @@
+name: EASYRKB native packages
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    name: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-arm64
+            runner: macos-15
+            config: src-tauri/tauri.zh.conf.json
+            bundles: app
+          - platform: windows-x64
+            runner: windows-2022
+            config: src-tauri/tauri.windows.zh.conf.json
+            bundles: nsis
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.99.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Windows build prerequisites
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          "CARGO_TARGET_DIR=C:/easyrkb-target" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding ascii
+          "OPENSSL_SRC_PERL=C:/Strawberry/perl/bin/perl.exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding ascii
+          "C:/Strawberry/perl/bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding ascii
+          if (-not (Test-Path C:/Strawberry/perl/bin/perl.exe)) { choco install strawberryperl -y --no-progress }
+      - name: Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Frontend and startup regression checks
+        run: pnpm exec vitest run src/ipc/client.startup.test.ts src/app/App.zoom.test.tsx src/app/App.export.test.tsx src/views/player/Player.sync.test.tsx src/lib/sync.test.ts src/lib/player.test.ts src/components/ExportTargetDialog.test.tsx src/views/settings/UsbExportPane.test.tsx src/views/sync/SyncManager.test.tsx src/lib/bugReport.test.ts
+      - name: Chinese and release notes
+        shell: bash
+        run: |
+          pnpm exec vitest run src/i18n/chinese.test.ts
+          node scripts/release-notes.mjs validate release-notes.json 1.8.2
+      - name: Native production build
+        run: pnpm tauri build --bundles ${{ matrix.bundles }} --config ${{ matrix.config }} -- --locked
+      - name: Inspect and package
+        run: python scripts/package-easyrkb.py
+      - name: Native engine regression checks
+        env:
+          RBXPORT_TEST: "1"
+        run: cargo test --release --locked -p rbl-deck --lib
+      - name: Native USB repair regression checks
+        env:
+          RBXPORT_TEST: "1"
+        run: cargo test --release --locked -p rbl-export --test usb_recovery --test estimate
+      - name: Windows installation and startup smoke check
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $installer = (Get-ChildItem out/*setup.exe).FullName
+          $destination = "$env:RUNNER_TEMP\EASYRKB-installed"
+          $setup = Start-Process -FilePath $installer -ArgumentList "/S /D=$destination" -Wait -PassThru
+          if ($setup.ExitCode -ne 0) { throw "Installer exit $($setup.ExitCode)" }
+          $binary = Join-Path $destination "rbxport.exe"
+          if (-not (Test-Path $binary)) { throw "Installed binary missing" }
+          $env:RBXPORT_LOG_DIR = "$env:RUNNER_TEMP\EASYRKB-runtime-logs"
+          $app = Start-Process -FilePath $binary -PassThru
+          Start-Sleep -Seconds 8
+          if ($app.HasExited) { throw "App exited unexpectedly: $($app.ExitCode)" }
+          Stop-Process -Id $app.Id
+          $report = Get-Content out/windows-x64-validation.json -Raw | ConvertFrom-Json
+          $report | Add-Member installed_startup_smoke "passed on Windows runner; no user library or playback"
+          $report | ConvertTo-Json -Depth 8 | Set-Content out/windows-x64-validation.json -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EASYRKB-${{ matrix.platform }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 30

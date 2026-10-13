@@ -1,0 +1,260 @@
+/* Content-sized value columns leave the remaining width for tag filters. */
+
+.bar {
+  position: relative;
+  background: var(--c-panel);
+
+  overflow: hidden;
+  border-bottom: 1px solid var(--c-black);
+}
+
+.columns {
+  display: flex;
+  gap: var(--s-filter-col-gap);
+  /* The first list starts a point in from the pane's edge. */
+  padding-left: 1px;
+  height: calc(var(--s-filter-head-h) + var(--s-filter-list-gap) + var(--s-filter-list-h));
+}
+
+/* The three heading kinds share one row of tick box and label. */
+.head {
+  display: flex;
+  align-items: center;
+  height: var(--s-filter-head-h);
+  padding-left: var(--s-filter-check-inset);
+  gap: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.label {
+  font-size: var(--f-size-ui);
+  color: var(--c-filter-label);
+  flex: none;
+}
+
+.check {
+  flex: none;
+  width: var(--s-filter-check);
+  height: var(--s-filter-check);
+  padding: 0;
+  border: 1px solid var(--c-outline);
+  border-radius: 2px;
+  background: var(--c-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+.check[data-checked] {
+  background: var(--c-filter-accent);
+  border-color: var(--c-filter-accent);
+}
+.tick {
+  width: 9px;
+  height: 6px;
+  color: var(--c-filter-text);
+}
+
+/* --- BPM and its ± list ------------------------------------------------- */
+
+.bpmGroup {
+  flex: none;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.strip {
+  flex: 1;
+  min-width: calc(var(--s-filter-strip-label-w) + 20px);
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  background: var(--c-filter-strip);
+  padding: 0 4px;
+  margin-left: 6px;
+}
+.arrowLeft,
+.arrowRight {
+  flex: 1;
+  height: 1px;
+  background: var(--c-filter-text);
+  position: relative;
+}
+/* The heads, drawn as small triangles at the outer ends. */
+.arrowLeft::before,
+.arrowRight::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  border: 3px solid transparent;
+}
+.arrowLeft::before { left: 0; border-right: 5px solid var(--c-filter-text); }
+.arrowRight::after { right: 0; border-left: 5px solid var(--c-filter-text); }
+.stripLabel {
+  flex: none;
+  width: var(--s-filter-strip-label-w);
+  text-align: center;
+  font-size: var(--f-size-filter-strip);
+  line-height: 12.5px;
+  color: var(--c-filter-label);
+  letter-spacing: 0.5px;
+}
+
+.bpmLists {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) minmax(max-content, 1fr);
+  gap: var(--s-filter-col-gap);
+  margin-top: var(--s-filter-list-gap);
+}
+.bpmList,
+.pctList { width: auto; }
+.pctList .row { padding-left: 10px; }
+
+/* --- The other fixed columns -------------------------------------------- */
+
+.keyCol,
+.ratingCol,
+.colorCol,
+.tagCol {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+}
+.keyCol,
+.ratingCol,
+.colorCol { width: max-content; }
+.tagCol { flex: 1 1 0; min-width: 0; }
+.tagCol .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.tagCol:last-child .head { padding-right: calc(var(--s-filter-rst-w) + 14px); }
+.keyCol > .head,
+.ratingCol > .head,
+.colorCol > .head { padding-right: 8px; }
+.keyCol > .list,
+.ratingCol > .list,
+.colorCol > .list { margin-top: var(--s-filter-list-gap); }
+
+/* --- Lists -------------------------------------------------------------- */
+
+.list {
+  height: var(--s-filter-list-h);
+  background: var(--c-black);
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Drawn, not the platform's: macOS hides its scrollbars until something
+     moves, and the BPM list is always longer than its box. */
+  scrollbar-width: thin;
+}
+.list::-webkit-scrollbar { width: var(--s-filter-scrollbar-w); }
+.list::-webkit-scrollbar-track { background: var(--c-black); }
+.list::-webkit-scrollbar-thumb {
+  background: var(--c-raised);
+  border: 1px solid var(--c-black);
+  border-radius: 2px;
+}
+
+.row {
+  height: var(--s-filter-row-h);
+  line-height: var(--s-filter-row-h);
+  padding-left: 6px;
+  padding-right: 8px;
+  /* The picked band stops short of the scrollbar column. */
+  margin-right: var(--s-filter-col-gap);
+  font-size: var(--f-size-ui);
+  color: var(--c-filter-text);
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: default;
+  display: flex;
+  align-items: center;
+}
+.row[data-picked] { background: var(--c-filter-accent); }
+.list[data-inert] .row { color: var(--c-filter-chip-text); }
+.list[data-inert] .row[data-picked] { background: var(--c-raised); }
+
+.ratingList .row { padding-left: 7px; }
+.stars { display: flex; align-items: center; gap: 2px; }
+/* The track list's star, one pixel further apart as the text was. */
+.starIcon { height: 14.26px; }
+
+.colorList .row { padding-left: 7px; gap: 6px; }
+.dot {
+  flex: none;
+  width: var(--s-filter-dot);
+  height: var(--s-filter-dot);
+  border-radius: 50%;
+}
+.dot[data-color="Pink"] { background: var(--c-comment-pink); }
+.dot[data-color="Red"] { background: var(--c-comment-red); }
+.dot[data-color="Orange"] { background: var(--c-comment-orange); }
+.dot[data-color="Yellow"] { background: var(--c-comment-yellow); }
+.dot[data-color="Green"] { background: var(--c-comment-green); }
+.dot[data-color="Aqua"] { background: var(--c-comment-aqua); }
+.dot[data-color="Blue"] { background: var(--c-comment-blue); }
+.dot[data-color="Purple"] { background: var(--c-comment-purple); }
+
+/* --- Tag columns: drawn, inert ------------------------------------------ */
+
+.andOr {
+  display: flex;
+  justify-content: space-evenly;
+  height: var(--s-filter-and-or-h);
+  flex: none;
+}
+.and,
+.or {
+  height: 26px;
+  line-height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--f-size-menu);
+  color: var(--c-filter-label);
+  cursor: default;
+}
+.and[data-on],
+.or[data-on] { color: var(--c-filter-accent); }
+
+/* The AND / OR row takes the list gap and some of the list's own height:
+   the chips start 926 at 2x where the other lists start 870. */
+.tagList {
+  height: calc(var(--s-filter-list-h) + var(--s-filter-list-gap) - var(--s-filter-and-or-h));
+  /* The four tag lists sit on one black ground with no gap between them. */
+  margin-right: calc(-1 * var(--s-filter-col-gap));
+}
+.chip {
+  height: calc(var(--s-filter-row-h) - 2px);
+  line-height: calc(var(--s-filter-row-h) - 2px);
+  margin: 0 1px 2px 0;
+  padding-left: 12px;
+  border-radius: 2px;
+  background: var(--c-filter-chip);
+  color: var(--c-filter-chip-text);
+  font-size: var(--f-size-ui);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* --- RST and the foot --------------------------------------------------- */
+
+.rst {
+  position: absolute;
+  /* y 820 at 2x: 4pt below the bar's top, centred on nothing in particular. */
+  top: 4px;
+  right: 7px;
+  width: var(--s-filter-rst-w);
+  height: var(--s-filter-rst-h);
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-raised);
+  color: var(--c-filter-label);
+  font-size: var(--f-size-xs);
+  cursor: default;
+}
+
+.foot {
+  height: var(--s-filter-foot-h);
+  background: var(--c-top);
+}

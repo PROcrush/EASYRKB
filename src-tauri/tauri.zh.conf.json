@@ -1,0 +1,10 @@
+{
+  "productName": "EASYRKB",
+  "identifier": "com.procrush.rbxport.zh",
+  "bundle": {
+    "targets": [
+      "app"
+    ],
+    "createUpdaterArtifacts": false
+  }
+}

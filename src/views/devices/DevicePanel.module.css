@@ -1,0 +1,388 @@
+/* The panel a selected device opens. Every colour and size is a token
+   measured from the captures 9.08.22 to 9.08.41 PM; see design/tokens. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--c-black);
+  color: var(--c-text);
+  font-size: var(--f-size-device);
+}
+
+/* The strip: a band the colour of the tree, six tabs 5pt below its top. */
+.strip {
+  display: flex;
+  gap: var(--s-device-tab-gap);
+  flex: none;
+  height: var(--s-device-strip-h);
+  padding: 5px 0 0 14px;
+  box-sizing: border-box;
+  background: var(--c-panel);
+}
+.tab {
+  width: var(--s-device-tab-w);
+  height: var(--s-device-tab-h);
+  border: 0;
+  border-radius: 0;
+  background: var(--c-raised);
+  color: var(--c-icon-on);
+  font: inherit;
+  font-size: var(--f-size-device-tab);
+  cursor: default;
+}
+.tab[data-on] { background: var(--c-device-tab-on); }
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 6px var(--s-device-body-pad) 16px;
+}
+
+/* Captions: the field labels, the radio-group titles, the list headings. */
+.caption {
+  display: block;
+  color: var(--c-device-label);
+  line-height: 20px;
+}
+
+/* ---- General ---- */
+.general { display: flex; flex-direction: column; }
+
+/* A captioned field: 48pt from one to the next, the field itself 22pt. */
+.field {
+  display: block;
+  width: var(--s-device-field-w);
+  max-width: 100%;
+  margin-bottom: calc(var(--s-device-field-pitch) - 20px - var(--s-device-field-h));
+}
+.text,
+.select {
+  display: block;
+  width: 100%;
+  height: var(--s-device-field-h);
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  padding: 0 6px;
+  background: var(--c-top);
+  color: var(--c-icon-on);
+  font: inherit;
+}
+.select { font-weight: 700; }
+.text:disabled,
+.select:disabled { color: var(--c-device-disabled); opacity: 1; }
+
+/* A radio group: caption, then a row of rings, 54pt to the next caption. */
+.group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+  height: var(--s-device-group-pitch);
+  box-sizing: border-box;
+}
+.general .field + .group { margin-top: 17px; }
+.radios {
+  display: grid;
+  grid-template-columns: repeat(3, var(--s-device-radio-col));
+  align-items: center;
+  height: 24px;
+  margin-top: 4px;
+}
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.5px;
+  font-size: var(--f-size-device-radio);
+  color: var(--c-icon-on);
+  cursor: default;
+}
+.radio input {
+  appearance: none;
+  margin: 0;
+  width: var(--s-device-radio);
+  height: var(--s-device-radio);
+  box-sizing: border-box;
+  border: 1px solid var(--c-icon-on);
+  border-radius: 50%;
+  background: var(--c-black);
+  position: relative;
+  flex: none;
+}
+.radio input:checked::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--s-device-radio-dot);
+  height: var(--s-device-radio-dot);
+  border-radius: 50%;
+  background: var(--c-icon-on);
+}
+.group:disabled .radio,
+.radio[data-dim] { color: var(--c-device-disabled); }
+.group:disabled .radio input,
+.radio[data-dim] input { border-color: var(--c-device-disabled-ring); }
+.group:disabled .radio input:checked::after,
+.radio[data-dim] input:checked::after { background: var(--c-device-disabled-ring); }
+
+/* Image On-Jog Display: the group grows to hold the disc. */
+.group:has(.jog) { height: auto; }
+.jog {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+}
+.disc {
+  position: relative;
+  width: var(--s-device-disc);
+  height: var(--s-device-disc);
+  flex: none;
+  background: var(--c-top);
+  display: grid;
+  place-items: center;
+}
+.discRing {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--s-device-disc-ring);
+  height: var(--s-device-disc-ring);
+  border-radius: 50%;
+  background: var(--c-raised);
+  /* The spindle hole. */
+  mask: radial-gradient(circle, transparent 5px, black 5.5px);
+}
+.discText {
+  position: relative;
+  color: var(--c-icon-on);
+  font-weight: 700;
+}
+.imageActions {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--s-device-image-btn-pitch) - var(--s-device-image-btn-h));
+  padding-top: 2px;
+}
+.imageButton {
+  display: flex;
+  align-items: center;
+  gap: 12.5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c-icon-on);
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+.imageButton:disabled { color: var(--c-device-disabled); }
+.imageGlyph {
+  display: inline-block;
+  width: var(--s-device-image-btn-w);
+  height: var(--s-device-image-btn-h);
+  background: var(--c-device-row);
+}
+
+/* Total Space / Available Space / Device Library. */
+.space {
+  width: var(--s-device-field-w);
+  max-width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+  border-top: 1px solid var(--c-raised);
+}
+.space th,
+.space td {
+  height: var(--s-row-height);
+  box-sizing: border-box;
+  padding: 0;
+  border-bottom: 1px solid var(--c-raised);
+  font-weight: 400;
+  text-align: left;
+  vertical-align: middle;
+}
+.space th {
+  width: var(--s-device-table-col);
+  color: var(--c-device-label);
+}
+.space td {
+  padding-left: 6px;
+  border-left: 1px solid var(--c-raised);
+  color: var(--c-icon-on);
+}
+
+/* The sync control, ours, below what the capture shows. */
+.sync {
+  width: var(--s-device-field-w);
+  max-width: 100%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.contents { margin: 0; color: var(--c-text-dim); font-size: var(--f-size-sm); }
+.actions { display: flex; align-items: center; gap: 8px; }
+.actions .select { flex: 1; width: auto; min-width: 0; font-weight: 400; }
+.button {
+  border: 1px solid var(--c-raised);
+  border-radius: 2px;
+  background: var(--c-button);
+  color: var(--c-text);
+  font: inherit;
+  padding: 2px 10px;
+  cursor: default;
+}
+.button:hover:not(:disabled) { border-color: var(--c-accent); }
+.button:disabled { color: var(--c-text-dim); }
+
+/* ---- Category / Sort ---- */
+.pair {
+  display: flex;
+  align-items: flex-start;
+  padding-left: calc(var(--s-device-list-inset) - var(--s-device-body-pad));
+}
+.listColumn { display: flex; flex-direction: column; width: var(--s-device-list-w); }
+.list {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  height: var(--s-device-active-list-h);
+  box-sizing: border-box;
+  overflow: auto;
+  background: var(--c-panel);
+}
+.list[data-tall] { height: var(--s-device-list-h); }
+.item {
+  height: var(--s-device-list-row-h);
+  line-height: var(--s-device-list-row-h);
+  padding: 0 7px;
+  color: var(--c-icon-on);
+  white-space: nowrap;
+  cursor: default;
+}
+.item[data-fixed] { color: var(--c-device-list-dim); }
+.item[data-on] { background: var(--c-select); }
+.list[aria-disabled] .item { color: var(--c-device-list-dim); }
+
+/* The arrows sit in the gap, centred, the top one 40pt below the lists' top. */
+.arrows {
+  width: var(--s-device-list-gap);
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 21px;
+  padding-top: 80px;
+}
+.arrow {
+  width: var(--s-device-arrow-w);
+  height: var(--s-device-arrow-w);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+}
+.arrowRight,
+.arrowLeft {
+  display: block;
+  width: var(--s-device-arrow-w);
+  height: 12px;
+  background: var(--c-device-arrow);
+  clip-path: polygon(0 30%, 55% 30%, 55% 0, 100% 50%, 55% 100%, 55% 70%, 0 70%);
+}
+.arrowLeft { transform: scaleX(-1); }
+.arrow:disabled .arrowRight,
+.arrow:disabled .arrowLeft { background: var(--c-device-disabled-ring); }
+
+.moves {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.move {
+  width: var(--s-device-move-btn-w);
+  height: var(--s-device-move-btn-h);
+  border: 0;
+  border-radius: 0;
+  background: var(--c-raised);
+  color: var(--c-icon-on);
+  font: inherit;
+  cursor: default;
+}
+.move:disabled { color: var(--c-device-disabled); }
+
+/* ---- Column ---- */
+.column { display: flex; flex-direction: column; }
+.columnHint {
+  margin: 0;
+  width: var(--s-device-field-w);
+  max-width: 100%;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--c-raised);
+  color: var(--c-icon-on);
+}
+.columnSelect {
+  margin-top: 10px;
+  width: var(--s-device-column-w);
+  height: var(--s-device-field-h);
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  padding: 0 6px;
+  background: var(--c-raised);
+  color: var(--c-icon-on);
+  font: inherit;
+  font-weight: 700;
+}
+.columnSelect:disabled { color: var(--c-device-disabled); opacity: 1; }
+
+/* ---- Color ---- */
+.colors {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--s-device-color-row-pitch) - var(--s-device-field-h));
+}
+.colorRow {
+  display: flex;
+  align-items: center;
+  width: var(--s-device-color-row-w);
+  max-width: 100%;
+  height: var(--s-device-field-h);
+  box-sizing: border-box;
+  padding-left: 5px;
+  gap: 8px;
+  background: var(--c-device-row);
+}
+.colorDot {
+  width: var(--s-device-color-dot);
+  height: var(--s-device-color-dot);
+  border-radius: 50%;
+  flex: none;
+}
+.colorDot[data-color="pink"] { background: var(--c-label-pink); }
+.colorDot[data-color="red"] { background: var(--c-label-red); }
+.colorDot[data-color="orange"] { background: var(--c-label-orange); }
+.colorDot[data-color="yellow"] { background: var(--c-label-yellow); }
+.colorDot[data-color="green"] { background: var(--c-label-green); }
+.colorDot[data-color="aqua"] { background: var(--c-label-aqua); }
+.colorDot[data-color="blue"] { background: var(--c-label-blue); }
+.colorDot[data-color="purple"] { background: var(--c-label-purple); }
+.colorName {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--c-icon-on);
+  font: inherit;
+}
+.colorName:disabled { color: var(--c-device-disabled); opacity: 1; }
+
+/* ---- My Settings ---- */
+.mySettings { padding-top: 20px; }
+.mySettingsNote { margin: 0; color: var(--c-icon-on); }

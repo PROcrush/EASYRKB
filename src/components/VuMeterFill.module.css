@@ -1,0 +1,17 @@
+.well { display: block; position: relative; height: 100%; width: 100%; overflow: hidden; }
+.peak, .rms {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right,
+    var(--c-meter-green) 0%, var(--c-meter-green) 70%,
+    var(--c-meter-yellow) 70%, var(--c-meter-yellow) 90%, var(--c-meter-red) 90%);
+}
+.well[data-mode="fabulous"] .peak { opacity: 0.35; }
+.marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-1px);
+  background: var(--c-icon-on);
+}

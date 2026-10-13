@@ -1,0 +1,150 @@
+/* The strip under the browser, measured from the 2026-09-09 capture: 27pt of
+   black, and its text — '1 List, 952.2 MB' at the right — the grey and the
+   11.5px bold Arial the capture's stems and cap height fit, ending 34.5pt
+   short of the window's edge. */
+.statusBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: var(--s-status-bar-h);
+  padding: 0 var(--s-status-inset-right) 0 12px;
+  background: var(--c-black);
+  font-size: var(--f-size-status);
+  font-weight: 700;
+  color: var(--c-status-text);
+}
+.logo { flex: none; color: var(--c-text); white-space: nowrap; }
+.logLink { cursor: context-menu; }
+.version {
+  margin-left: 3px;
+  color: var(--c-status-text);
+  font-size: var(--f-size-xs);
+  font-weight: 400;
+}
+/* Clicking the library state explains the lock in the status message. */
+.readOnly {
+  flex: none;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--c-meter-yellow);
+  color: var(--c-black);
+  font: inherit;
+  font-size: var(--f-size-xs);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.readOnly:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+/* LINK on, drawn as the read-only pill is: a state of the library, said once. */
+.link {
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: var(--c-raised);
+  color: var(--c-icon-on);
+  font-size: var(--f-size-xs);
+  white-space: nowrap;
+}
+/* Failures, in the one place the eye already goes for what the app is doing. */
+.error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: calc(100% - 24px);
+  padding: 2px 8px;
+  background: var(--c-black);
+  color: var(--c-error);
+  font-size: var(--f-size-bars);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: warningFlash 300ms ease-in-out 2;
+}
+
+@keyframes warningFlash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .error { animation: none; }
+}
+
+.selection { margin-left: auto; }
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-right: calc(12px - var(--s-status-inset-right));
+}
+
+.reportBug {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--c-raised);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--c-text);
+  font: inherit;
+  font-size: var(--f-size-xs);
+  cursor: pointer;
+}
+.reportBug:hover { background: var(--c-raised); }
+.report:hover svg { color: var(--c-meter-green); }
+
+.warningAction {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border: 1px solid var(--c-raised);
+  border-radius: 3px;
+  background: var(--c-button);
+  color: var(--c-text);
+  font: inherit;
+  cursor: pointer;
+}
+.warningAction:hover { border-color: var(--c-accent); }
+
+/* Shown only while analysis runs. The track already being analysed finishes:
+   it is most of a second's work already spent. */
+.stop {
+  margin-right: 8px;
+  flex: none;
+  padding: 1px 8px;
+  border: 1px solid var(--c-raised);
+  border-radius: 3px;
+  background: var(--c-button);
+  color: var(--c-text);
+  font: inherit;
+  font-size: var(--f-size-sm);
+  cursor: default;
+}
+.stop:hover { border-color: var(--c-accent); }
+
+.failures { margin-left: 8px; flex: none; color: var(--c-text-dim); font-size: var(--f-size-sm); }
+
+/* The progress readout changes width as it counts; giving it the slack keeps
+   everything around it still. */
+.activity { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.backupActivity { margin-right: 8px; min-width: 0; max-width: 50vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.backupProgress { width: 160px; height: 6px; margin: 0; border: 0; border-radius: 3px; overflow: hidden; appearance: none; background: var(--c-raised); accent-color: var(--c-accent); }
+.backupProgress::-webkit-progress-bar { background: var(--c-raised); }
+.backupProgress::-webkit-progress-value { background: var(--c-accent); }
+.backupProgress:indeterminate { opacity: .65; background: var(--c-accent); }
+.backupProgress:indeterminate::-webkit-progress-bar { background: transparent; }
+
+.backupMeter { display: inline-flex; align-items: center; gap: 8px; margin-right: 12px; flex-shrink: 0; white-space: nowrap; }
+.analysisMeter { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.backupPercent { min-width: 5ch; font-variant-numeric: tabular-nums; }
+
+/* A queued or running library operation. The Stop button leads, as the
+   analysis one does, so it does not slide as the percentage changes width. */
+.jobMeter { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; white-space: nowrap; }
+.jobMeter .stop { margin-right: 0; }
+.jobMeter[data-state="queued"] .jobLabel { color: var(--c-text-dim); }
+.jobQueued { color: var(--c-text-dim); font-weight: 400; }

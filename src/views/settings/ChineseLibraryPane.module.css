@@ -1,0 +1,31 @@
+.pane {
+  flex: 1;
+  min-width: 0;
+  background: var(--c-panel);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 720px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.paragraphs {
+  display: grid;
+  gap: 10px;
+}
+
+.content p { margin: 0; }
+
+.generator button {
+  justify-self: start;
+  max-width: 100%;
+}
+
+.help {
+  color: var(--c-text-dim);
+  font-size: var(--f-size-pref-small);
+}

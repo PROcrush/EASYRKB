@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "EASYRKB",
+  "version": "1.8.2",
+  "identifier": "com.rbxport.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev:web",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "EASYRKB",
+        "width": 1800,
+        "height": 1130,
+        "minWidth": 1100,
+        "minHeight": 700,
+        "resizable": true,
+        "center": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "acceptFirstMouse": true,
+        "visible": false,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: rbl: asset: http://rbl.localhost http://asset.localhost; media-src 'self' blob: rbl: asset: http://rbl.localhost http://asset.localhost; font-src 'self'; connect-src 'self' ipc: http://ipc.localhost; frame-src 'none'; object-src 'none'; base-uri 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "dmg",
+      "nsis",
+      "appimage",
+      "deb"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Music",
+    "shortDescription": "简体中文 DJ 曲库、U 盘导出与诊断修复工具",
+    "longDescription": "读取本机 rekordbox 曲库，整理歌单，进行双轨预听与拍网编辑，导出 U 盘，并提供只读诊断、备份后数据库修复和恢复 XML。",
+    "copyright": "GPL-2.0-or-later",
+    "macOS": {
+      "entitlements": "entitlements.plist",
+      "minimumSystemVersion": "11.0",
+      "files": {
+        "Resources/rbxport.sdef": "rbxport.sdef"
+      }
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "perMachine",
+        "installerHooks": "windows/hooks.nsh"
+      }
+    },
+    "resources": {
+      "windows/install-update-task.ps1": "install-update-task.ps1",
+      "../LICENSE": "LICENSE",
+      "../LICENSING.md": "LICENSING.md",
+      "../crates/rbl-index/data/phrase-pinyin-LICENSE": "phrase-pinyin-LICENSE",
+      "../crates/rbl-deck/vendor/rubberband/COPYING": "GPL-2.0.txt"
+    },
+    "createUpdaterArtifacts": false
+  },
+  "plugins": {}
+}

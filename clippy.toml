@@ -1,0 +1,6 @@
+# Keep the complexity lint useful without rejecting cohesive functions for
+# crossing Clippy's relatively small default of 100 lines.
+too-many-lines-threshold = 150
+
+# The product name, as the docs spell it; ".." keeps Clippy's own list.
+doc-valid-idents = ["RBXport", "AppleScript", "AppKit", ".."]

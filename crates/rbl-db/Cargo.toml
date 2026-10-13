@@ -1,0 +1,41 @@
+[package]
+name = "rbl-db"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Read access to rekordbox's SQLCipher master.db."
+
+[lints]
+workspace = true
+
+[dependencies]
+tempfile = "3"
+rbl-core = { path = "../rbl-core" }
+# For the BPM override, which retimes the track's beat grid in its analysis file.
+rbl-anlz = { path = "../rbl-anlz" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"] }
+blowfish = "0.9"
+byteorder = "1"
+cipher = "0.4"
+base64 = "0.22"
+dirs = "5"
+sysinfo = { version = "0.32", default-features = false, features = ["system"] }
+# Tag reading for import. Default features pull in every format; the library
+# holds mp3, m4a, flac, wav and aiff, so only those are enabled.
+lofty = { version = "0.22", default-features = false }
+# Artwork: the library keeps every image at three sizes (the original, a
+# 240×240 and an 80×80), and a stick takes the two small ones.
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+
+[dev-dependencies]
+# The cue-colour probe reads an export's analysis files beside the library.
+rbl-anlz = { path = "../rbl-anlz" }
+tempfile = "3"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png"] }
+# Writing tags into a test file, so Reload Tag has something to read.
+lofty = { version = "0.22", default-features = false }

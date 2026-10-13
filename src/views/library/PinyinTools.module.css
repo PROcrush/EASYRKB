@@ -1,0 +1,11 @@
+.tools { display: grid; gap: 10px; font-size: 13px; line-height: 1.6; }
+.tools label { display: grid; gap: 6px; }
+.tools input { padding: 8px; background: #111; color: inherit; border: 1px solid #666; border-radius: 3px; }
+.tools button, .dialog header button { padding: 7px 12px; color: inherit; background: #303030; border: 1px solid #666; border-radius: 3px; cursor: pointer; }
+.tools button:disabled, .dialog header button:disabled { opacity: .45; cursor: default; }
+.tools p { margin: 0; }
+.actions { display: flex; gap: 10px; }
+.dialog { width: min(640px, calc(100vw - 48px)); max-height: calc(100vh - 48px); overflow: auto; padding: 20px; border: 1px solid #666; border-radius: 8px; background: #1b1b1b; color: var(--c-icon-on); }
+.dialog::backdrop { background: rgba(0, 0, 0, .65); }
+.dialog header { display: flex; justify-content: space-between; align-items: center; }
+.dialog h2 { font-size: 16px; }

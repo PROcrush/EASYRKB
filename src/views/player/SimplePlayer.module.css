@@ -1,0 +1,358 @@
+/* The simple player strip. Every size and colour is a token measured off the
+   SIMPLE PLAYER capture (docs/screenshots, 2026-09-09 9.03.41 PM, 2x); see the
+   `source` on each `--s-player-simple-*` and the sampled colours beside them
+   in design/tokens/theme.json. */
+
+/* Five columns: the PLAY column, the sleeve, the title-and-overview column,
+   the rating box, and the 3pt of black before the window's edge. The gaps
+   between them are measured black, not a shared `gap`. One row, 58pt, under
+   the 1pt of black that separates it from the top bar. */
+.strip {
+  display: grid;
+  grid-template-columns:
+    var(--s-player-simple-transport-w)
+    var(--s-player-simple-artwork-gap)
+    var(--s-player-simple-artwork-size)
+    var(--s-player-simple-wave-gap)
+    1fr
+    var(--s-player-simple-right-w)
+    var(--s-player-simple-right-margin);
+  grid-template-rows: 1fr;
+  height: var(--s-player-simple-h);
+  padding-top: var(--s-player-simple-top-gap);
+  box-sizing: border-box;
+  background: var(--c-black);
+  overflow: hidden;
+}
+.strip > .transport { grid-column: 1; }
+.strip > .artwork { grid-column: 3; }
+.strip > .main { grid-column: 5; }
+.strip > .rating { grid-column: 6; }
+
+/* Nothing loaded: no head, no position bar, no cue point. */
+.strip[data-empty] .playhead,
+.strip[data-empty] .scrub { display: none; }
+
+/* ------------------------------------------------------------- transport */
+
+.transport {
+  display: grid;
+  place-items: center;
+  background: var(--c-panel);
+}
+
+/* The ring is the full deck's 40pt, the stroke measured here at 1.5pt (x
+   130..133 at 2x), and the triangle 8pt square against the full deck's 11 by
+   14: the same button, drawn smaller inside. */
+.play {
+  width: var(--s-player-jog-w);
+  height: var(--s-player-jog-w);
+  border-radius: 50%;
+  border: 1.5px solid var(--c-play-ring);
+  background: none;
+  color: var(--c-play-glyph);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  padding: 0;
+}
+.play[data-on] {
+  border-color: var(--c-play-ring-on);
+  color: var(--c-play-glyph-on);
+}
+.play:disabled { opacity: .55; }
+
+/* An 8pt triangle: its left edge is the full height and it comes to a point
+   8pt to the right, so the borders are half the height each and the width
+   the whole of it. Measured x 164..180, y 240..256, i.e. 2pt right of the
+   ring's centre, which the margin below reproduces. */
+.playGlyph {
+  width: 0;
+  height: 0;
+  border-left: var(--s-player-simple-play-glyph) solid currentColor;
+  border-top: calc(var(--s-player-simple-play-glyph) / 2) solid transparent;
+  border-bottom: calc(var(--s-player-simple-play-glyph) / 2) solid transparent;
+  margin-left: 2px;
+}
+
+/* Hovering a running deck shows what the press will do, as on the full deck.
+   The pause bars are scaled to the triangle rather than measured: the capture
+   has the deck stopped. */
+.pauseGlyph {
+  display: none;
+  width: calc(var(--s-player-simple-play-glyph) * 0.75);
+  height: var(--s-player-simple-play-glyph);
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  box-sizing: border-box;
+}
+.play[data-on]:hover:not(:disabled) .playGlyph { display: none; }
+.play[data-on]:hover:not(:disabled) .pauseGlyph { display: block; }
+
+/* ---------------------------------------------------------------- sleeve */
+
+/* Centred in the row: 48pt in 58, 5pt above and below. */
+.artwork {
+  position: relative;
+  align-self: center;
+  width: var(--s-player-simple-artwork-size);
+  height: var(--s-player-simple-artwork-size);
+  padding: 0;
+  border: 0;
+  background: var(--c-simple-well);
+  overflow: hidden;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.artwork:disabled { cursor: default; }
+
+/* A track being dragged over the strip is not marked on the sleeve, as on the
+   full deck: the row travelling with the hand is the feedback. */
+
+/* The record on the empty sleeve: `design/icons/ui/record.svg` filling the
+   48pt square, which puts its disc at 41pt and its hole at 11.5 against the
+   43 and 11 measured off the capture — the track list's proportions, kept so
+   one record looks the same everywhere. Under the artwork, which covers it
+   once decoded; hidden while it is decoding, as the list does. */
+.disc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--c-simple-disc);
+}
+.artwork:has(.sleeve[data-state="pending"]) > .disc { visibility: hidden; }
+
+.sleeve {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  visibility: hidden;
+}
+.sleeve[data-state="shown"] { visibility: visible; }
+
+/* The hover scrim and the eject glyph, as the full deck draws them. */
+.artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--c-eject-scrim);
+  opacity: 0;
+  transition: opacity 90ms linear;
+}
+.eject {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: var(--s-eject-glyph-w);
+  color: var(--c-eject);
+  opacity: 0;
+  transition: opacity 90ms linear;
+  z-index: 1;
+}
+.artwork:hover:not(:disabled)::after { opacity: 0.45; }
+.artwork:hover:not(:disabled) .eject { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .artwork::after,
+  .eject { transition: none; }
+}
+
+/* ---------------------------------------------------- readouts and band */
+
+/* Two things stacked at measured heights from the panel's top: the readout
+   row at 7pt and the overview at 30pt. Absolute rather than grid rows, because
+   neither is the height of the other's gap and the band runs to the bottom. */
+.main {
+  position: relative;
+  min-width: 0;
+}
+
+.readouts {
+  position: absolute;
+  top: var(--s-player-simple-text-top);
+  left: 0;
+  right: 0;
+  height: var(--s-player-simple-text-h);
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* The title takes what the cells beside it leave. */
+.title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--f-size-title);
+  font-weight: 700;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Every cell after the title is a fixed width behind a 1pt hairline that
+   spans the row's whole height. The hairline is (100,100,100), the outline
+   grey the tokens already hold. */
+.artist,
+.times,
+.key,
+.bpm {
+  flex: none;
+  box-sizing: border-box;
+  height: 100%;
+  border-left: 1px solid var(--c-outline);
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.artist {
+  width: var(--s-player-simple-artist-w);
+  padding-left: var(--s-player-simple-artist-inset);
+  color: var(--c-simple-dim);
+  font-size: var(--f-size-ui);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* `display: flex` swallows the ellipsis; a block does not. */
+  display: block;
+  line-height: var(--s-player-simple-text-h);
+}
+
+/* The two times, centred as a pair. */
+.times {
+  width: var(--s-player-simple-time-w);
+  justify-content: center;
+  gap: var(--s-player-simple-time-gap);
+  font-size: var(--f-size-ui);
+  font-variant-numeric: tabular-nums;
+}
+.remaining { color: var(--c-text); }
+.elapsed { color: var(--c-simple-dim); }
+/* The tenths are a size down, as the full deck prints them. */
+.tenths { font-size: var(--f-size-sm); font-style: normal; }
+
+/* The key and the BPM are the small face, not the readout one: their caps
+   measure 9pt against the times' 11. */
+.key,
+.bpm {
+  justify-content: center;
+  color: var(--c-text);
+  font-size: var(--f-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+.key { width: var(--s-player-simple-key-w); }
+.bpm { width: var(--s-player-simple-bpm-w); }
+
+/* From the badges' top to the panel's bottom, stopping 13pt short of the
+   rating box while the readouts above run on to it. */
+.band {
+  position: absolute;
+  top: var(--s-player-simple-wave-top);
+  left: 0;
+  right: var(--s-player-simple-wave-right-gap);
+  bottom: 0;
+  cursor: pointer;
+}
+
+.overview {
+  position: relative;
+  height: var(--s-player-simple-wave-h);
+  min-width: 0;
+  /* Clipped: a cue at the very end of the track is drawn at 100% and its
+     badge would otherwise sit over the rating box. */
+  overflow: hidden;
+}
+.overview canvas { width: 100%; height: 100%; display: block; }
+
+/* Hollow while unplayed, solid behind the head, as under the full deck's
+   overview; 2.5pt under the baseline here rather than that one's 3.5. */
+.scrub {
+  box-sizing: border-box;
+  margin-top: var(--s-player-simple-scrub-gap);
+  height: var(--s-player-scrub-h);
+  border-top: 1px solid var(--c-scrub);
+  border-bottom: 1px solid var(--c-scrub);
+}
+.scrubFill {
+  width: 100%;
+  height: 100%;
+  background: var(--c-scrub-played);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* Moved by a transform from the frame loop, never by `left`. A 1pt grey line
+   from a point under the badge top to the panel's bottom edge, through the
+   position bar — grey in the capture, where the deck sits paused; whether it
+   lights when the deck runs is not captured, so it does not here either. */
+.playhead {
+  position: absolute;
+  top: var(--s-player-simple-head-top);
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--c-simple-head);
+  pointer-events: none;
+  will-change: transform;
+}
+.strip[data-armed] .playhead { background: var(--c-playhead-armed); }
+
+/* The cue point: an amber triangle pointing up, its apex on the overview's
+   baseline, centred on the point. */
+.cuePoint {
+  position: absolute;
+  top: var(--s-player-simple-wave-h);
+  width: var(--s-player-simple-cue-point-w);
+  height: var(--s-player-simple-cue-point-h);
+  translate: -50% 0;
+  background: var(--c-cue-point);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- rating */
+
+.rating {
+  box-sizing: border-box;
+  background: var(--c-panel);
+  padding:
+    var(--s-player-simple-field-inset-y)
+    var(--s-player-simple-field-inset-right)
+    var(--s-player-simple-field-inset-y)
+    var(--s-player-simple-field-inset-x);
+  min-width: 0;
+}
+
+/* The dark field: the stars in a 31pt first row, a panel-coloured hairline,
+   and an empty row under it. What the second row holds, and the 2pt scrollbar
+   track the capture draws in the right margin, are not understood and are
+   not drawn. */
+.field {
+  height: 100%;
+  background: var(--c-simple-well);
+  display: flex;
+  flex-direction: column;
+}
+.stars {
+  box-sizing: border-box;
+  height: var(--s-player-simple-field-row-h);
+  padding-left: var(--s-player-simple-stars-inset);
+  display: flex;
+  align-items: center;
+  color: var(--c-text-dim);
+}
+/* 10pt of ink on a 16pt pitch: each star at the left of a cell of the pitch,
+   so the first one's edge is the measured inset. */
+.stars > span {
+  flex: none;
+  width: var(--s-player-simple-star-pitch);
+}
+.starIcon { height: var(--s-player-simple-star-h); }
+.fieldRow { height: 1px; background: var(--c-panel); }

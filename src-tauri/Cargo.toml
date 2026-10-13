@@ -1,0 +1,102 @@
+[package]
+name = "rbxport"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Rekordbox-compatible export-mode library manager."
+
+[lib]
+name = "rbxport_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[lints]
+workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+# Remembers the window's size, position and maximised state across runs.
+tauri-plugin-window-state = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# The daily log file (`logging.rs`), written off the calling thread.
+tracing-appender = "0.2"
+rbl-core = { path = "../crates/rbl-core" }
+rbl-db = { path = "../crates/rbl-db" }
+rbl-index = { path = "../crates/rbl-index" }
+rbl-anlz = { path = "../crates/rbl-anlz" }
+rbl-analysis = { path = "../crates/rbl-analysis" }
+rbl-audio = { path = "../crates/rbl-audio" }
+rbl-deck = { path = "../crates/rbl-deck" }
+rbl-prolink = { path = "../crates/rbl-prolink" }
+rbl-link = { path = "../crates/rbl-link" }
+rbl-export = { path = "../crates/rbl-export" }
+rbl-devices = { path = "../crates/rbl-devices" }
+rbl-pdb = { path = "../crates/rbl-pdb" }
+rbl-onelibrary = { path = "../crates/rbl-onelibrary" }
+# Backup archives' manifest, summary and sizes, and the restore journal
+# RBXport Restore shares.
+rbl-backup = { path = "../crates/rbl-backup" }
+# The diagnostics readout in the title bar: this process's CPU and memory.
+sysinfo = { version = "0.32", default-features = false, features = ["system"] }
+parking_lot = "0.12"
+dirs = "5"
+tauri-plugin-updater = "2"
+base64 = "0.22"
+minisign-verify = "0.2"
+uuid = { version = "1", features = ["v4"] }
+semver = "1"
+time = { version = "0.3", features = ["formatting"] }
+# Error and panic reporting only.  Keep optional telemetry features off.
+# rustls, not native-tls: the default `transport` feature pulls in openssl on
+# Linux, which collides with rusqlite's bundled-sqlcipher-vendored-openssl and
+# breaks SQLCipher key handling in the Linux test/build jobs.
+sentry = { version = "0.46", default-features = false, features = ["backtrace", "panic", "reqwest", "rustls"] }
+
+zip = { version = "4.6.1", default-features = false, features = ["deflate"] }
+tempfile = "3"
+
+[dev-dependencies]
+# `test` gives a mock app, so the native menu can be built and inspected
+# without opening a window — which cannot be screenshotted on this machine.
+tauri = { version = "2", features = ["test"] }
+# The database server's side of a link test: what a player is answered.
+rbl-dbserver = { path = "../crates/rbl-dbserver" }
+
+# macOS builds menu items on the main thread only, and the test harness runs
+# every test on a spawned one. Without a harness, `main` is the main thread.
+[[test]]
+name = "menu"
+harness = false
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# 2.1.1's objc2 binding assumes AppKit always returns a non-null
+# NSDraggingSession. WKWebView can return nil while still completing the drag,
+# which turns a successful in-app drop into a caught panic.
+drag = "=2.1.0"
+libc = "0.2"
+midir = "0.11"
+# AppleScript (`scripting/`): the scriptable classes are Objective-C classes
+# defined from Rust, and Cocoa Scripting's commands and specifiers are
+# Foundation's.
+# `exception`: an Objective-C exception Cocoa throws while a command is
+# resumed is caught and logged, instead of aborting the process.
+objc2 = { version = "0.6", features = ["exception"] }
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSApplication", "NSPasteboard", "NSPasteboardItem", "NSResponder"] }
+objc2-foundation = { version = "0.3", default-features = false, features = [
+  "std", "NSAppleEventDescriptor", "NSArray", "NSClassDescription", "NSDictionary", "NSEnumerator", "NSObjCRuntime", "NSScriptClassDescription",
+  "NSScriptCommand", "NSScriptCommandDescription", "NSScriptObjectSpecifiers", "NSScriptStandardSuiteCommands",
+  "NSString", "NSURL", "NSValue",
+] }
+
+[target.'cfg(windows)'.dependencies]
+midir = "0.11"
+windows-sys = { version = "0.61", features = ["Win32_Storage_FileSystem", "Win32_Storage_Packaging_Appx", "Win32_Foundation"] }
