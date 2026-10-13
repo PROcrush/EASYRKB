@@ -1,0 +1,34 @@
+{
+  "product": "EASYRKB",
+  "version": "1.8.2",
+  "captured_on": "2026-10-13",
+  "platform": "native macOS arm64",
+  "binary_sha256": "f6fe0c061f040ba452c0d8f73414893adc570fba68679cd8922592501c010737",
+  "backend": "real local rekordbox database",
+  "capture": "Original app window screenshot bytes; no AI-generated or redrawn UI",
+  "privacy": "Private playlists collapsed; only public song metadata selected; no personal paths or contact information in published images",
+  "operation": "Loaded two tracks and kept both paused; no export or USB writes",
+  "images": [
+    {
+      "file": "01-dual-deck.jpg",
+      "width": 2992,
+      "height": 1760,
+      "bytes": 618865,
+      "sha256": "75054950cbb2cbf16f18b3b95a93effb7728e117462f50b447b881429ba4029c"
+    },
+    {
+      "file": "02-export-formats.jpg",
+      "width": 1596,
+      "height": 1600,
+      "bytes": 265427,
+      "sha256": "54308b3bb48555daf10fcb5945bbd614e52fb8a7360274bf5693cbeb288f9019"
+    },
+    {
+      "file": "03-chinese-search.jpg",
+      "width": 1596,
+      "height": 1600,
+      "bytes": 181766,
+      "sha256": "10e4b36140def4e1f2d69caf30e5ae8fc4e4ea5cfc63d4e63c795a95f61a8462"
+    }
+  ]
+}

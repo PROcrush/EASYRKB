@@ -14,6 +14,21 @@ EASYRKB 基于开源 [rbxport](https://github.com/chrisle/rbxport) 二次开发�
 
 rekordbox 或其后台代理仍在运行时，EASYRKB 可能将曲库设为只读。需要编辑时，先正常退出 rekordbox 及其代理，再重新启动 EASYRKB。
 
+## 界面与功能展示
+
+以下为原生 macOS 1.8.2 的实际截屏。曲库来自本机真实数据库；截图时筛选公开歌曲并收起私人歌单，安装包不附带截图中的音乐。
+
+**双轨波形、拍网、Cue／循环与曲库搜索**
+
+![EASYRKB 1.8.2 双播放器、共享缩放与真实曲库搜索](docs/screenshots/01-dual-deck.jpg)
+
+| 导出格式选择 | 中文曲库搜索 |
+| --- | --- |
+| ![USB 导出可选择 WAV、AIFF、320 kbps MP3](docs/screenshots/02-export-formats.jpg) | ![中文曲名保留原文，支持全拼、首字母和读音修正](docs/screenshots/03-chinese-search.jpg) |
+| 为旧设备选择兼容副本格式，保留电脑上的原文件。 | 使用离线拼音索引，保留原有中文曲名与表演者。 |
+
+[查看完整截图与功能说明](docs/界面展示.zh-CN.md) · [U 盘诊断与修复流程](docs/USB修复.zh-CN.md)
+
 ## 功能
 
 | 功能 | 用途 |
