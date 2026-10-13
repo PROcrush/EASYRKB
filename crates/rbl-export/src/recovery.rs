@@ -1085,7 +1085,9 @@ impl Session {
                     if &hash_file(&copied, cancel)? != hash {
                         return Err(RecoveryError::Verification("Backup hash mismatch".into()));
                     }
-                    File::open(&copied)?.sync_all()?;
+                    // Windows FlushFileBuffers requires a writable handle.
+                    // This is the local backup copy, never the source USB.
+                    File::options().write(true).open(&copied)?.sync_all()?;
                     if let Some(parent) = copied.parent() {
                         rbl_core::durable::sync_dir(parent)?;
                     }
@@ -1098,7 +1100,7 @@ impl Session {
         validate_files(&self.root, &fingerprints, cancel)?;
         let manifest_path = backup.path().join("backup.json");
         fs::write(&manifest_path, serde_json::to_vec_pretty(&serde_json::json!({"app":"EASYRKB","source":self.report,"selectedSource":id,"changes":changed,"files":manifest})).map_err(|e| std::io::Error::other(e.to_string()))?)?;
-        File::open(manifest_path)?.sync_all()?;
+        File::options().write(true).open(manifest_path)?.sync_all()?;
         rbl_core::durable::sync_dir(&backup.path().join(root_name))?;
         rbl_core::durable::sync_dir(backup.path())?;
         let backup_path = backup.keep();
