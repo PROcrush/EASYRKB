@@ -1,25 +1,45 @@
 name: EASYRKB native packages
 on:
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Platforms to build
+        type: choice
+        options: [both, macos-arm64, windows-x64]
+        default: both
 
 permissions:
   contents: read
 
 jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - id: matrix
+        env:
+          PLATFORM: ${{ inputs.platform }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          rows = [
+            dict(platform='macos-arm64', runner='macos-15', config='src-tauri/tauri.zh.conf.json', bundles='app'),
+            dict(platform='windows-x64', runner='windows-2022', config='src-tauri/tauri.windows.zh.conf.json', bundles='nsis'),
+          ]
+          selected = os.environ['PLATFORM']
+          if selected != 'both':
+            rows = [row for row in rows if row['platform'] == selected]
+          assert rows
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+            output.write('matrix=' + json.dumps({'include': rows}) + '\n')
+          PY
   packages:
+    needs: resolve
     name: ${{ matrix.platform }}
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - platform: macos-arm64
-            runner: macos-15
-            config: src-tauri/tauri.zh.conf.json
-            bundles: app
-          - platform: windows-x64
-            runner: windows-2022
-            config: src-tauri/tauri.windows.zh.conf.json
-            bundles: nsis
+      matrix: ${{ fromJSON(needs.resolve.outputs.matrix) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     steps:
@@ -32,7 +52,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.99.0
-      - uses: Swatinem/rust-cache@v2
       - name: Windows build prerequisites
         if: runner.os == 'Windows'
         shell: pwsh
@@ -41,6 +60,10 @@ jobs:
           "OPENSSL_SRC_PERL=C:/Strawberry/perl/bin/perl.exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding ascii
           "C:/Strawberry/perl/bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding ascii
           if (-not (Test-Path C:/Strawberry/perl/bin/perl.exe)) { choco install strawberryperl -y --no-progress }
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+          workspaces: ${{ runner.os == 'Windows' && '. -> C:/easyrkb-target' || '. -> target' }}
       - name: Dependencies
         run: pnpm install --frozen-lockfile
       - name: Frontend and startup regression checks
@@ -81,6 +104,7 @@ jobs:
           $report | Add-Member installed_startup_smoke "passed on Windows runner; no user library or playback"
           $report | ConvertTo-Json -Depth 8 | Set-Content out/windows-x64-validation.json -Encoding utf8
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: EASYRKB-${{ matrix.platform }}
           path: out/

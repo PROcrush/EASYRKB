@@ -32,13 +32,13 @@ def inspect_payload(path):
         assert any(file.name == name for file in files), name
 
 
-def pe(path):
+def pe(path, application=True):
     data = path.read_bytes()
     assert data[:2] == b"MZ"
     offset = struct.unpack_from("<I", data, 0x3C)[0]
     assert data[offset:offset + 4] == b"PE\0\0"
     machine = struct.unpack_from("<H", data, offset + 4)[0]
-    assert machine == 0x8664
+    assert machine in ({0x8664} if application else {0x14C, 0x8664})
     versions = []
     cursor = 0
     while True:
@@ -49,7 +49,7 @@ def pe(path):
         versions.append(f"{high >> 16}.{high & 65535}.{low >> 16}.{low & 65535}")
         cursor = position + 4
     assert VERSION + ".0" in versions, versions
-    return {"machine": "x64", "versions": versions}
+    return {"machine": "x64" if machine == 0x8664 else "x86", "versions": versions}
 
 
 assert not list((ROOT / "dist").rglob("*backend-mock*")), "Demo backend in production build"
@@ -101,7 +101,7 @@ else:
     original = (TARGET / "rbxport.exe").read_bytes()
     assert binary.read_bytes() in (original, original.replace(b"__TAURI_BUNDLE_TYPE_VAR_UNK", b"__TAURI_BUNDLE_TYPE_VAR_NSS"))
     report.update({"platform": "windows-x64", "binary_sha256": digest(binary), "binary_identity": pe(binary),
-                   "installer_identity": pe(installer), "nsis_archive_integrity": "passed",
+                   "installer_identity": pe(installer, application=False), "nsis_archive_integrity": "passed",
                    "installer_language": "SimpChinese", "signing": "unsigned",
                    "real_library_and_audio_playback": "not tested on Windows"})
 
