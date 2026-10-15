@@ -96,6 +96,7 @@ const AnalysisDialog = lazy(() => import("@/views/analysis/AnalysisDialog").then
 const NewLibraryDialog = lazy(() => import("@/views/library/NewLibraryDialog").then(m => ({ default: m.NewLibraryDialog })));
 const DevicePanel = lazy(() => import("@/views/devices/DevicePanel").then(m => ({ default: m.DevicePanel })));
 const UsbRecoveryDialog = lazy(() => import("@/views/devices/UsbRecovery").then(m => ({ default: m.UsbRecoveryDialog })));
+const NcmConverter = lazy(() => import("@/views/ncm/NcmConverter").then(m => ({ default: m.NcmConverter })));
 const ReportBug = lazy(() => import("@/views/report/ReportBug").then(m => ({ default: m.ReportBug })));
 const Preferences = lazy(() => import("@/views/settings/Preferences").then(m => ({ default: m.Preferences })));
 const SyncManager = lazy(() => import("@/views/sync/SyncManager").then(m => ({ default: m.SyncManager })));
@@ -402,6 +403,7 @@ function AppBody() {
   }, []);
   const [reportOpen, setReportOpen] = useState(false);
   const [recoveryPath, setRecoveryPath] = useState<string | null>(null);
+  const [ncmOpen, setNcmOpen] = useState(false);
   const openReport = useCallback(() => {
     void getBackend().then(backend => backend.openReportWindow()).then(opened => { if (!opened) setReportOpen(true); });
   }, []);
@@ -2675,6 +2677,7 @@ function AppBody() {
       <ConnectedTopBar
         clock={clock}
         onOpenSettings={openViewSettings}
+        onOpenNcm={() => setNcmOpen(true)}
         layout={layout}
         onLayoutChange={setLayout}
       />
@@ -3028,6 +3031,7 @@ function AppBody() {
       ) : null}
       {reportOpen ? <ReportBug onClose={() => setReportOpen(false)} /> : null}
       {recoveryPath ? <Suspense fallback={null}><UsbRecoveryDialog path={recoveryPath} onClose={() => { setRecoveryPath(null); refreshDevices(); }} /></Suspense> : null}
+      {ncmOpen ? <Suspense fallback={null}><NcmConverter onClose={() => setNcmOpen(false)} /></Suspense> : null}
       {smartEditor ? (
         <SmartPlaylistEditor
           title={smartEditor.mode === "create" ? "Create New Intelligent Playlist" : "Edit the Intelligent Playlist"}

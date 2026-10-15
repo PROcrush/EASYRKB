@@ -264,7 +264,13 @@ export interface PinyinReading {
 export interface PinyinProgress { jobId: string; done: number; total: number }
 export interface PinyinGenerated { processed: number; chinese: number; skipped: number }
 
+export interface NcmConverted { outputPath: string; format: "mp3" | "flac"; bytes: number }
+
 export interface Backend {
+  ncmSelectFiles(): Promise<string[] | null>;
+  ncmSelectOutput(): Promise<string | null>;
+  ncmConvertFile(source: string, directory: string): Promise<NcmConverted>;
+  ncmOpenOutput(directory: string): Promise<void>;
   pinyinReading(id: string): Promise<PinyinReading>;
   pinyinSave(id: string, originalTitle: string, originalArtist: string, title: string, artist: string): Promise<PinyinReading>;
   pinyinGenerate(tracks: readonly string[] | null, jobId: string): Promise<PinyinGenerated>;

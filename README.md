@@ -6,7 +6,7 @@
 
 EASYRKB 基于开源 [rbxport](https://github.com/chrisle/rbxport) 二次开发，使用 Rust + Tauri + React，提供简体中文界面。重点放在本地曲库、双轨预听、U 盘导出和数据库诊断修复。
 
-[下载安装包](https://github.com/PROcrush/EASYRKB/releases/latest) · [U 盘修复说明](docs/USB修复.zh-CN.md) · [中文拼音搜索](docs/中文曲库拼音.zh-CN.md) · [更新记录](release-notes.json)
+[下载安装包](https://github.com/PROcrush/EASYRKB/releases/latest) · [U 盘修复说明](docs/USB修复.zh-CN.md) · [中文拼音搜索](docs/中文曲库拼音.zh-CN.md) · [NCM 格式转换](docs/user/ncm-conversion.zh-CN.md) · [更新记录](release-notes.json)
 
 ## 默认打开你的数据库
 
@@ -39,8 +39,11 @@ rekordbox 或其后台代理仍在运行时，EASYRKB 可能将曲库设为只�
 | U 盘导出 | 导出所选曲目、歌单或同步范围；选择 Device Library、OneLibrary 或双库，复用已有音频和分析文件。 |
 | 老设备音频兼容 | 导出前选择保持原格式，或生成 WAV、AIFF、320 kbps MP3 兼容副本；电脑原文件保留。实际支持取决于目标播放器。 |
 | U 盘诊断和修复 | 独立只读检查两份库，预览可读曲目、歌单、Cue、拍网及缺失音频；备份后重建另一份数据库，或恢复到新空 U 盘、导出恢复 XML。 |
+| NCM 格式转换（源码新增） | 在软件顶部批量选择本地 NCM 文件，还原为原始 MP3／FLAC，指定输出位置、查看结果和重试；保留原文件，同名自动避让。 |
 | 本地诊断与备份 | 诊断报告保存在本机，诊断缓存上限可调整和清理；修复前备份保留。 |
 | 本地网络 LINK | 继承 rbxport 的 LINK 库服务功能，具体设备须单独验收。 |
+
+NCM 格式转换已加入最新源码，当前已发布的 1.8.2 安装包尚不包含此功能，需从源码构建使用。转换完全在本机完成，不重新编码；详细操作见 [NCM 格式转换说明](docs/user/ncm-conversion.zh-CN.md)。
 
 U 盘修复针对可读来源下的数据库重建，不能恢复丢失音乐，也不能维修闪存或控制器故障。两份数据库均不可读时，需要可读备份。本项目不承诺所有 rekordbox 版本或所有 DJ 播放器兼容。
 

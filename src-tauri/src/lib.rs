@@ -31,6 +31,7 @@ mod device_library;
 mod usb_recovery;
 mod usb_recovery_cache;
 mod pinyin;
+mod ncm;
 mod link;
 mod rx3_link;
 mod network_labels;
@@ -665,6 +666,8 @@ pub fn run() {
             pinyin::pinyin_reading,
             pinyin::pinyin_save,
             pinyin::pinyin_generate,
+            ncm::ncm_convert_file,
+            ncm::ncm_open_output,
             usb_recovery::usb_recovery_cache_info,
             usb_recovery::usb_recovery_clear_cache,
             device_library::device_playlist_edit,

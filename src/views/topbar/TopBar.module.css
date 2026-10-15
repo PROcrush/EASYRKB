@@ -7,6 +7,9 @@
   background: var(--c-top);
 }
 .spacer { flex: 1; }
+.ncm { flex: none; padding: 5px 11px; border: 1px solid #555; border-radius: 4px; background: #303030; color: var(--c-icon-on); font: inherit; cursor: pointer; }
+.ncm:hover { background: #404040; }
+.ncm:focus-visible { outline: 2px solid #70baff; outline-offset: 2px; }
 
 .clock { font-size: var(--f-size-sm); font-weight: 700; color: var(--c-icon-on); font-variant-numeric: tabular-nums; }
 

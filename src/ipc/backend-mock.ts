@@ -1750,6 +1750,10 @@ export function createMockBackend(options: MockOptions = {}): Backend {
   return {
     ...createUsbRecoveryMock(),
     ...pinyinMock.backend,
+    ncmSelectFiles: () => Promise.resolve(null),
+    ncmSelectOutput: () => Promise.resolve(null),
+    ncmConvertFile: () => Promise.reject(new Error("NCM conversion is available in the desktop app.")),
+    ncmOpenOutput: () => Promise.resolve(),
     rekordboxBrowseSettings: () => Promise.resolve(null),
     librarySummary: () =>
       ready

@@ -1,0 +1,34 @@
+.dialog { width: min(820px, calc(100vw - 48px)); max-height: calc(100vh - 48px); padding: 24px; overflow: auto; border: 1px solid #555; border-radius: 10px; background: #1b1b1b; color: var(--c-icon-on); font-size: 13px; line-height: 1.6; }
+.dialog::backdrop { background: rgb(0 0 0 / 65%); }
+.header, .controls, .actions, .footer { display: flex; align-items: center; gap: 10px; }
+.header, .footer { justify-content: space-between; }
+.header h2 { margin: 5px 0 0; font-size: 20px; }
+.badge { color: #70baff; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+.description { margin: 16px 0 20px; color: #bbb; }
+.dialog button { padding: 7px 13px; border: 1px solid #626262; border-radius: 4px; background: #303030; color: inherit; font: inherit; cursor: pointer; white-space: nowrap; }
+.dialog button:hover:enabled { background: #3d3d3d; }
+.dialog button:disabled { opacity: .45; cursor: default; }
+.dialog button:focus-visible, .output input:focus-visible { outline: 2px solid #70baff; outline-offset: 2px; }
+.controls > span { margin-left: auto; color: #bbb; }
+.output { margin: 18px 0; }
+.output label { display: block; margin-bottom: 6px; font-weight: 600; }
+.output > div { display: flex; gap: 8px; }
+.output input { min-width: 0; flex: 1; padding: 8px 10px; background: #111; color: inherit; border: 1px solid #555; border-radius: 4px; font: inherit; text-overflow: ellipsis; }
+.output small { display: block; margin-top: 8px; color: #aaa; }
+.queue { height: clamp(150px, 30vh, 330px); overflow: auto; border: 1px solid #424242; border-radius: 5px; background: #151515; }
+.queue table { width: 100%; border-collapse: collapse; table-layout: fixed; text-align: left; }
+.queue th { position: sticky; top: 0; background: #292929; color: #bbb; font-size: 12px; }
+.queue th:first-child { width: 46%; }
+.queue th, .queue td { padding: 10px 12px; border-bottom: 1px solid #333; overflow-wrap: anywhere; vertical-align: top; }
+.queue small { display: block; color: #aaa; }
+.queue small.failed, .failed { color: #ffa28e; }
+.pending { color: #aaa; }
+.converting { color: #70baff; }
+.success { color: #93d5a3; }
+.empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 20px; text-align: center; color: #aaa; }
+.empty strong { color: #ddd; font-size: 15px; }
+.footer { margin-top: 18px; flex-wrap: wrap; }
+.footer p { margin: 0; color: #bbb; }
+.dialog button.primary { background: #235d8f; border-color: #448bc6; }
+.dialog button.primary:hover:enabled { background: #2d70a7; }
+@media (max-width: 600px) { .dialog { padding: 16px; } .output > div, .actions { flex-wrap: wrap; } .output input { flex-basis: 100%; } }

@@ -33,6 +33,7 @@ export const ConnectedTopBar = memo(function ConnectedTopBar(props: Omit<TopBarP
 export interface TopBarProps {
   clock: string;
   onOpenSettings?: () => void;
+  onOpenNcm?: () => void;
   /**
    * Master output level, 0 to 1. There is no audio engine behind this yet, so
    * it is drawn at rest rather than omitted — an absent meter reads as a
@@ -64,6 +65,7 @@ function clamp(value: number): number {
 export function TopBar({
   clock,
   onOpenSettings,
+  onOpenNcm,
   level = 1,
   onLevelChange,
   vu,
@@ -77,6 +79,7 @@ export function TopBar({
   return (
     <header className={styles.topBar}>
       <LayoutMenu layout={layout} onChange={onLayoutChange} />
+      {onOpenNcm ? <button type="button" className={styles.ncm} onClick={onOpenNcm}>NCM format conversion</button> : null}
 
       <span className={styles.spacer} />
 

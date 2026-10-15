@@ -265,7 +265,8 @@
     "简体中文",
     "繁體中文",
     "遗失曲目",
-    "한국어"
+    "한국어",
+    "NCM → MP3 / FLAC"
   ],
   "reviewedAgainst": "rekordbox 7.2.19.0342 chinese_simplified.lang"
 }

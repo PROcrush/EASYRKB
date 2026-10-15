@@ -17,7 +17,7 @@ import type {
   LinkStatus, MissingExportFile, MissingTrack, MissingTracks, PreviewState, UnanalysedTracks, ReferenceStickSettings, RelocateReport, RowDto, ScriptRequest, Tick,
   TreeNode, ViewHandle,
   SelectionDetails, TrackDetails, TrackLookups,
-  PinyinReading, PinyinGenerated, PinyinProgress,
+  PinyinReading, PinyinGenerated, PinyinProgress, NcmConverted,
   UsbRecoveryDiagnosis, UsbRecoveryPreview, UsbRecoveryExecution, UsbRecoveryProgress, UsbRecoveryCacheInfo,
 } from "./types";
 import { tauriInvoke } from "./invoke";
@@ -130,6 +130,16 @@ function subscribe<T>(event: string, listener: (payload: T) => void): () => void
 async function realBackend(): Promise<Backend> {
   const invoke = await tauriInvoke();
   return {
+    ncmSelectFiles: async () => {
+      const { open } = await localizedDialog();
+      return open({ title: "Select NCM files", multiple: true, filters: [{ name: "NCM files", extensions: ["ncm"] }] });
+    },
+    ncmSelectOutput: async () => {
+      const { open } = await localizedDialog();
+      return open({ title: "Choose output folder", directory: true });
+    },
+    ncmConvertFile: (source, directory) => invoke<NcmConverted>("ncm_convert_file", { source, directory }),
+    ncmOpenOutput: directory => invoke<void>("ncm_open_output", { directory }),
     pinyinReading: id => invoke<PinyinReading>("pinyin_reading", { id }),
     pinyinSave: (id, originalTitle, originalArtist, title, artist) => invoke<PinyinReading>("pinyin_save", { id, originalTitle, originalArtist, title, artist }),
     pinyinGenerate: (tracks, jobId) => invoke<PinyinGenerated>("pinyin_generate", { tracks, jobId }),

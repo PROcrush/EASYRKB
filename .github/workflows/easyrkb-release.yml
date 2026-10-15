@@ -67,12 +67,14 @@ jobs:
       - name: Dependencies
         run: pnpm install --frozen-lockfile
       - name: Frontend and startup regression checks
-        run: pnpm exec vitest run src/ipc/client.startup.test.ts src/app/App.zoom.test.tsx src/app/App.export.test.tsx src/views/player/Player.sync.test.tsx src/lib/sync.test.ts src/lib/player.test.ts src/components/ExportTargetDialog.test.tsx src/views/settings/UsbExportPane.test.tsx src/views/sync/SyncManager.test.tsx src/lib/bugReport.test.ts
+        run: pnpm exec vitest run src/views/ncm/NcmConverter.test.tsx src/ipc/ncm.test.ts src/ipc/client.startup.test.ts src/app/App.zoom.test.tsx src/app/App.export.test.tsx src/views/player/Player.sync.test.tsx src/lib/sync.test.ts src/lib/player.test.ts src/components/ExportTargetDialog.test.tsx src/views/settings/UsbExportPane.test.tsx src/views/sync/SyncManager.test.tsx src/lib/bugReport.test.ts
       - name: Chinese and release notes
         shell: bash
         run: |
           pnpm exec vitest run src/i18n/chinese.test.ts
           node scripts/release-notes.mjs validate release-notes.json 1.8.2
+      - name: NCM conversion regression checks
+        run: cargo test --locked -p rbl-ncm
       - name: Native production build
         run: pnpm tauri build --bundles ${{ matrix.bundles }} --config ${{ matrix.config }} -- --locked
       - name: Inspect and package

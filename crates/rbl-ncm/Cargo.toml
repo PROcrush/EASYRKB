@@ -1,0 +1,18 @@
+[package]
+name = "rbl-ncm"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Offline, streaming NCM audio extraction."
+
+[lints]
+workspace = true
+
+[dependencies]
+aes = "0.8"
+thiserror.workspace = true
+tempfile = "3"
+
+[[example]]
+name = "convert"
